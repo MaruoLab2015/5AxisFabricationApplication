@@ -43,26 +43,6 @@ void MainWindow::setToolbar()
 }
 
 /* SLOT */
-void MainWindow::fileMenuSelected()
-{
-    QAction *action = qobject_cast<QAction *>(sender());
-    if(action)
-    {
-        qDebug() << "File Menu: " << action->text();
-    }
-}
-
-void MainWindow::stageMenuSelected()
-{
-
-    QAction *action = qobject_cast<QAction *>(sender());
-    if(action)
-    {
-        qDebug() << "Stage Menu: " << action->text();
-    }
-}
-
-
 void MainWindow::on_actionStageSetting_triggered()
 {
     qDebug() << "stage setting";

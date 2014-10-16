@@ -13,8 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    stagesettingdialog.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    stagesettingdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    stagesettingdialog.ui

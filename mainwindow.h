@@ -16,9 +16,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void fileMenuSelected();
-    void stageMenuSelected();
-
     void on_actionStageSetting_triggered();
     void on_actionOpenStage_triggered(bool checked);
 
