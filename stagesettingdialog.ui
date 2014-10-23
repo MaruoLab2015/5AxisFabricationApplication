@@ -21,7 +21,7 @@
      </property>
      <widget class="QWidget" name="connectionTab">
       <attribute name="title">
-       <string>connection</string>
+       <string>X軸</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
@@ -211,12 +211,12 @@
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
-       <string>Tab 2</string>
+       <string>Y軸</string>
       </attribute>
      </widget>
      <widget class="QWidget" name="tab">
       <attribute name="title">
-       <string>ページ</string>
+       <string>Z軸</string>
       </attribute>
      </widget>
     </widget>

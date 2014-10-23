@@ -24,6 +24,8 @@ StageSettingDialog::StageSettingDialog(QWidget *parent) :
     setSerialComboBoxButton(new QString("BaudRate"), ui->baudrateComboBox);
     setSerialComboBoxButton(new QString("Parity"), ui->parityComboBox);
     setSerialComboBoxButton(new QString("StopBits"), ui->stopbitComboBox);
+
+    setCompanyComboBoxButton();
 }
 
 StageSettingDialog::~StageSettingDialog()
@@ -56,5 +58,19 @@ void setSerialComboBoxButton(QString *name, QComboBox *box)
     {
         QString item = QString::fromUtf8(enumType.key(i));
         box->addItem(item);
+    }
+}
+
+void StageSettingDialog::setCompanyComboBoxButton()
+{
+
+    const QMetaObject *metaObj = this->metaObject();
+    QMetaEnum enumType = metaObj->enumerator(metaObj->indexOfEnumerator("Company"));
+    qDebug() << enumType.keyCount();
+
+    for (int i=0; i< enumType.keyCount(); ++i)
+    {
+        QString item = QString::fromUtf8(enumType.key(i));
+        ui->campanyComboBox->addItem(item);
     }
 }
