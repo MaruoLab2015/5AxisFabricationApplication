@@ -63,6 +63,9 @@
    <property name="text">
     <string>Stage setting</string>
    </property>
+   <property name="shortcut">
+    <string>Meta+,</string>
+   </property>
   </action>
   <action name="actionOpenStage">
    <property name="checkable">

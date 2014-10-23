@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "stagesettingdialog.h"
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -42,10 +43,13 @@ void MainWindow::setToolbar()
 {
 }
 
-/* SLOT */
+/* Button Action */
+
 void MainWindow::on_actionStageSetting_triggered()
 {
     qDebug() << "stage setting";
+    StageSettingDialog *dialog = new StageSettingDialog(this);
+    dialog->exec();
 }
 
 void MainWindow::on_actionOpenStage_triggered(bool checked)

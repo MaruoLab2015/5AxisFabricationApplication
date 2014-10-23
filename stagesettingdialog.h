@@ -2,6 +2,10 @@
 #define STAGESETTINGDIALOG_H
 
 #include <QDialog>
+#include <QTableWidget>
+#include <QDialogButtonBox>
+
+class QComboBox;
 
 namespace Ui {
 class StageSettingDialog;
@@ -13,10 +17,15 @@ class StageSettingDialog : public QDialog
 
 public:
     explicit StageSettingDialog(QWidget *parent = 0);
+
     ~StageSettingDialog();
+
+private slots:
+    void on_buttonBox_clicked(QAbstractButton *button);
 
 private:
     Ui::StageSettingDialog *ui;
+
 };
 
 #endif // STAGESETTINGDIALOG_H
