@@ -3,6 +3,9 @@
 #include "stagesettingdialog.h"
 #include <QDebug>
 #include <QLabel>
+#include <QJsonObject>
+#include <QJsonDocument>
+#include <QFile>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&xAxisThread, SIGNAL(error(QString)), this, SLOT(processError(QString)));
     connect(&xAxisThread, SIGNAL(timeout(QString)), this, SLOT(processTimeout(QString)));
 
+    //Load setting
+    loadStageSettings(MainWindow::Json);
 }
 
 MainWindow::~MainWindow()
@@ -47,7 +52,9 @@ void MainWindow::setMenu()
     connect(stageSettingAction, SIGNAL(triggered()), this, SLOT(stageMenuSelected()));
 
     QMenu *stageMenu = this->menuBar()->addMenu(tr("Stage"));
+
     stageMenu->addAction(stageSettingAction);
+    xAxisThread.setAxis(xAxisThread.XAxis);
 }
 
 /* Button Action */
@@ -66,6 +73,7 @@ void MainWindow::applySettings(QString portName, int baudrate, QSerialPort::Stop
 {
 
     xAxisThread.setSerialSettings(portName, waitTime, baudrate, parity, stopbits);
+    saveStageSettings(MainWindow::Json);
 }
 
 /* Serial Communication */
@@ -75,14 +83,14 @@ void MainWindow::on_actionOpenStage_triggered(bool checked)
     QString request = "aiueo";
     if (checked)
     {
-        qDebug() << "check!";
+//        qDebug() << "check!";
         statusLabel->setText(tr("Status: Running, connected to port %1.")
                              .arg(xAxisThread.portName));
         ui->debugTextBrowser->append(statusLabel->text());
         xAxisThread.transaction(request);
     }else
     {
-        qDebug() << "uncheck!";
+//        qDebug() << "uncheck!";
     }
 }
 
@@ -110,4 +118,78 @@ void MainWindow::processTimeout(const QString &s)
     ui->debugTextBrowser->append(statusLabel->text());
     ui->actionOpenStage->setChecked(false);
 
+}
+
+/* Load and Save settings */
+
+void MainWindow::defaultSettings()
+{
+
+    QSerialPort serial;
+    xAxisThread.setSerialSettings(QString("COM1"),
+                                  1000,
+                                  115200,
+                                  serial.NoParity,
+                                  serial.OneStop
+                                  );
+}
+
+void MainWindow::read(const QJsonObject &json)
+{
+
+    xAxisThread.read(json["xaxis"].toObject());
+}
+
+void MainWindow::write(QJsonObject &json) const
+{
+
+    QJsonObject xAxisObject;
+    xAxisThread.write(xAxisObject);
+    json["xaxis"] = xAxisObject;
+}
+
+bool MainWindow::loadStageSettings(SaveFormat saveFormat)
+{
+
+    QFile loadFile(saveFormat == Json
+                   ? QStringLiteral("save.json")
+                   : QStringLiteral("save.dat"));
+    if (!loadFile.open(QIODevice::ReadOnly))
+    {
+        qWarning("Couldn't open save file");
+        return false;
+    }
+
+    QByteArray saveData = loadFile.readAll();
+
+    QJsonDocument loadDoc(saveFormat == Json
+                            ? QJsonDocument::fromJson(saveData)
+                            : QJsonDocument::fromBinaryData(saveData));
+    read(loadDoc.object());
+
+    return true;
+}
+
+bool MainWindow::saveStageSettings(SaveFormat saveFormat) const
+{
+
+    QFile saveFile(saveFormat == Json
+                   ? QStringLiteral("save.json")
+                   : QStringLiteral("save.dat"));
+
+    if (!saveFile.open(QIODevice::WriteOnly))
+    {
+        qWarning("Couldn't open save File");
+        return false;
+    }
+
+    QJsonObject settingObject;
+    write(settingObject);
+
+    QJsonDocument saveDoc(settingObject);
+    saveFile.write(saveFormat == Json
+                   ? saveDoc.toJson()
+                   : saveDoc.toBinaryData());
+
+    return true;
 }

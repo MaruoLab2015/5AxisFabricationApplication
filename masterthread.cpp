@@ -4,6 +4,7 @@
 
 #include <QTime>
 #include <QDebug>
+#include <QJsonObject>
 
 MasterThread::MasterThread(QObject *parent) :
     QThread(parent),
@@ -18,6 +19,29 @@ MasterThread::~MasterThread()
     cond.wakeOne();
     mutex.unlock();
     wait();
+}
+
+void MasterThread::setAxis(const MasterThread::Axis &axis)
+{
+    this->axis = axis;
+}
+
+void MasterThread::read(const QJsonObject &json)
+{
+    this->portName = json["portName"].toString();
+    this->waitTime = json["waitTime"].toInt();
+    this->baudrate = json["baudrate"].toInt();
+    this->parity   = (QSerialPort::Parity)json["parity"].toInt();
+    this->stopbits = (QSerialPort::StopBits)json["stopbits"].toInt();
+}
+
+void MasterThread::write(QJsonObject &json) const
+{
+    json["portName"] = this->portName;
+    json["waitTime"] = this->waitTime;
+    json["baudrate"] = this->baudrate;
+    json["parity"]   = this->parity;
+    json["stopbits"] = this->stopbits;
 }
 
 void MasterThread::transaction(QString &request)
@@ -41,7 +65,6 @@ void MasterThread::setSerialSettings(const QString &portName, int waitTime, int 
     this->baudrate = baudrate;
     this->stopbits = stopbits;
     this->parity = parity;
-
 }
 
 void MasterThread::run()
@@ -77,7 +100,6 @@ void MasterThread::run()
 
             if (!serial.open(QIODevice::ReadWrite)){
                 emit error(tr("Can't open %1, errorcode %2").arg(portName).arg(serial.error()));
-                serial.close();//add
                 return;
             }
         }
@@ -104,12 +126,10 @@ void MasterThread::run()
             }else{
 
                 emit timeout(tr("Wait read response timeout %1").arg(QTime::currentTime().toString()));
-//                serial.close();//add
             }
         }else{
 
             emit timeout(tr("Wait write request timeout 1").arg(QTime::currentTime().toString()));
-//            serial.close();//add
         }
 
         mutex.lock();

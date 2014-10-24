@@ -20,6 +20,17 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    enum SaveFormat{
+        Json, Binary
+    };
+
+    void defaultSettings();
+    bool loadStageSettings(SaveFormat saveFormat);
+    bool saveStageSettings(SaveFormat saveFormat) const;
+
+    void read(const QJsonObject &json);
+    void write(QJsonObject &json) const;
+
 public slots:
     void showResponse(const QString &s);
     void processError(const QString &s);

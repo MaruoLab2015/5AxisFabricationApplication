@@ -12,6 +12,16 @@ public:
     explicit MasterThread(QObject *parent = 0);
     ~MasterThread();
 
+    enum Axis
+    {
+        XAxis,
+        YAxis,
+        ZAxis
+    };
+
+    MasterThread::Axis axis;
+    void setAxis(const MasterThread::Axis &axis);
+
     void transaction(QString &request);
     void setSerialSettings(const QString &portName,
                            int waitTimeout,
@@ -19,6 +29,9 @@ public:
                            QSerialPort::Parity parity,
                            QSerialPort::StopBits stopbits);
     void run();
+
+    void read(const QJsonObject &json);
+    void write(QJsonObject &json) const;
 
     QString portName;
 
