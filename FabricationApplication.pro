@@ -15,10 +15,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    stagesettingdialog.cpp
+    stagesettingdialog.cpp \
+    masterthread.cpp
 
 HEADERS  += mainwindow.h \
-    stagesettingdialog.h
+    stagesettingdialog.h \
+    masterthread.h
 
 FORMS    += mainwindow.ui \
     stagesettingdialog.ui

@@ -3,6 +3,7 @@
 
 #include <QThread>
 #include <QWaitCondition>
+#include <QSerialPort>
 
 class MasterThread : public QThread
 {
@@ -10,8 +11,16 @@ class MasterThread : public QThread
 public:
     explicit MasterThread(QObject *parent = 0);
     ~MasterThread();
-    void transaction(const QString &portName, int waitTimeout, const QString &request);
+
+    void transaction(QString &request);
+    void setSerialSettings(const QString &portName,
+                           int waitTimeout,
+                           int baudrate,
+                           QSerialPort::Parity parity,
+                           QSerialPort::StopBits stopbits);
     void run();
+
+    QString portName;
 
 signals:
     void response(const QString &s);
@@ -21,9 +30,12 @@ signals:
 public slots:
 
 private:
-    QString portName;
+
+    int waitTime;
+    int baudrate;
+    QSerialPort::Parity parity;
+    QSerialPort::StopBits stopbits;
     QString request;
-    int waitTimeout;
     QMutex mutex;
     QWaitCondition cond;
     bool quit;

@@ -2,13 +2,24 @@
 #include "ui_mainwindow.h"
 #include "stagesettingdialog.h"
 #include <QDebug>
+#include <QLabel>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
+  ,transactionCount(0)
+  ,statusLabel(new QLabel(tr("Status: Not runnning.")))
 {
     ui->setupUi(this);
-//    this->setMenu();
+
+    //Status bar
+    ui->statusBar->addPermanentWidget(statusLabel, 100);
+
+    /* SIGNALS & SLOTS*/
+    connect(&xAxisThread, SIGNAL(response(QString)), this, SLOT(showResponse(QString)));
+    connect(&xAxisThread, SIGNAL(error(QString)), this, SLOT(processError(QString)));
+    connect(&xAxisThread, SIGNAL(timeout(QString)), this, SLOT(processTimeout(QString)));
+
 }
 
 MainWindow::~MainWindow()
@@ -39,26 +50,64 @@ void MainWindow::setMenu()
     stageMenu->addAction(stageSettingAction);
 }
 
-void MainWindow::setToolbar()
-{
-}
-
 /* Button Action */
 
 void MainWindow::on_actionStageSetting_triggered()
 {
     qDebug() << "stage setting";
-    StageSettingDialog *dialog = new StageSettingDialog(this);
-    dialog->exec();
+    StageSettingDialog *settingDialog = new StageSettingDialog(this);
+    connect(settingDialog, SIGNAL(applySetting(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)),
+            this, SLOT(applySettings(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)));
+
+    settingDialog->exec();
 }
+
+void MainWindow::applySettings(QString portName, int baudrate, QSerialPort::StopBits stopbits, QSerialPort::Parity parity, int waitTime)
+{
+
+    xAxisThread.setSerialSettings(portName, waitTime, baudrate, parity, stopbits);
+}
+
+/* Serial Communication */
 
 void MainWindow::on_actionOpenStage_triggered(bool checked)
 {
+    QString request = "aiueo";
     if (checked)
     {
         qDebug() << "check!";
+        statusLabel->setText(tr("Status: Running, connected to port %1.")
+                             .arg(xAxisThread.portName));
+        ui->debugTextBrowser->append(statusLabel->text());
+        xAxisThread.transaction(request);
     }else
     {
         qDebug() << "uncheck!";
     }
+}
+
+
+void MainWindow::showResponse(const QString &s)
+{
+
+    ui->debugTextBrowser->append(tr("Traffic, transaction #%1:"
+//                             "\n\r-request: %2"
+                             "\n\r-response: %2")
+                          .arg(++transactionCount).arg(s));
+}
+
+void MainWindow::processError(const QString &s)
+{
+
+    statusLabel->setText(tr("Status: Not runnning, %1").arg(s));
+    ui->debugTextBrowser->append(statusLabel->text());
+    ui->actionOpenStage->setChecked(false);
+}
+
+void MainWindow::processTimeout(const QString &s)
+{
+    statusLabel->setText(tr("Status: Running, %1.").arg(s));
+    ui->debugTextBrowser->append(statusLabel->text());
+    ui->actionOpenStage->setChecked(false);
+
 }

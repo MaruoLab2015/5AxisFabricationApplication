@@ -6,7 +6,8 @@
 #include <QDebug>
 
 MasterThread::MasterThread(QObject *parent) :
-    QThread(parent)
+    QThread(parent),
+    waitTime(1000)
 {
 }
 
@@ -19,12 +20,10 @@ MasterThread::~MasterThread()
     wait();
 }
 
-void MasterThread::transaction(const QString &portName, int waitTimeout, const QString &request)
+void MasterThread::transaction(QString &request)
 {
     QMutexLocker locker(&mutex);
-    this->portName = portName;
-    this->waitTimeout = waitTimeout;
-    this->request = request;
+
     if (!isRunning())
     {
         start();
@@ -34,10 +33,19 @@ void MasterThread::transaction(const QString &portName, int waitTimeout, const Q
     }
 }
 
-void MasterThread::run()
+void MasterThread::setSerialSettings(const QString &portName, int waitTime, int baudrate, QSerialPort::Parity parity, QSerialPort::StopBits stopbits)
 {
 
-//    qDebug() << "run";
+    this->portName = portName;
+    this->waitTime = waitTime;
+    this->baudrate = baudrate;
+    this->stopbits = stopbits;
+    this->parity = parity;
+
+}
+
+void MasterThread::run()
+{
 
     bool currentPortNameChanged = false;
 
@@ -49,7 +57,7 @@ void MasterThread::run()
         currentPortNameChanged = true;
     }
 
-    int currentWaitTimeout = waitTimeout;
+    int currentWaitTimeout = waitTime;
     QString currentRequest = request;
     mutex.unlock();
 
@@ -62,9 +70,9 @@ void MasterThread::run()
         {
             serial.close();
             serial.setPortName(currentPortName);
-            serial.setBaudRate(serial.Baud115200);
-            serial.setStopBits(serial.OneStop);
-            serial.setParity(serial.NoParity);
+            serial.setBaudRate(this->baudrate);
+            serial.setStopBits(this->stopbits);
+            serial.setParity(this->parity);
             serial.setDataBits(serial.Data8);
 
             if (!serial.open(QIODevice::ReadWrite)){
@@ -78,7 +86,7 @@ void MasterThread::run()
         //write request
         QByteArray requestData = currentRequest.toLocal8Bit();
         serial.write(requestData);
-        if (serial.waitForBytesWritten(waitTimeout))
+        if (serial.waitForBytesWritten(waitTime))
         {
             //read response
             if (serial.waitForReadyRead(currentWaitTimeout))
@@ -96,12 +104,12 @@ void MasterThread::run()
             }else{
 
                 emit timeout(tr("Wait read response timeout %1").arg(QTime::currentTime().toString()));
-                serial.close();//add
+//                serial.close();//add
             }
         }else{
 
             emit timeout(tr("Wait write request timeout 1").arg(QTime::currentTime().toString()));
-            serial.close();//add
+//            serial.close();//add
         }
 
         mutex.lock();
@@ -114,7 +122,7 @@ void MasterThread::run()
 
             currentPortNameChanged = false;
         }
-        currentWaitTimeout = waitTimeout;
+        currentWaitTimeout = waitTime;
         currentRequest = request;
         mutex.unlock();
     }
