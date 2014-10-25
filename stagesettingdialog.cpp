@@ -6,6 +6,7 @@
 #include <QSerialPort>
 #include <QMetaObject>
 #include <QMetaEnum>
+#include <QJsonObject>
 
 void setSerialComboBoxButton(QString *name, QComboBox *box);
 
@@ -121,4 +122,34 @@ void StageSettingDialog::setComboBoxSetting()
                 ui->waitTimeSpinBox->value()
                 );
 
+}
+
+void StageSettingDialog::read(const QJsonObject &json)
+{
+    QString portName = json["portName"].toString();
+    for (int i=0;i < ui->portComboBox->count(); i++)
+    {
+        if ( portName == ui->portComboBox->itemText(i))
+        {
+            ui->portComboBox->setCurrentIndex(i);
+            break;
+        }
+    }
+
+    ui->baudrateComboBox->setCurrentIndex(json["baudrateIndex"].toInt());
+    ui->stopbitComboBox->setCurrentIndex(json["stopbitsIndex"].toInt());
+    ui->parityComboBox->setCurrentIndex(json["parityIndex"].toInt());
+    ui->waitTimeSpinBox->setValue(json["waitTime"].toInt());
+    ui->campanyComboBox->setCurrentIndex(json["company"].toInt());
+}
+
+void StageSettingDialog::write(QJsonObject &json) const
+{
+
+    json["portName"] = ui->portComboBox->currentText();
+    json["baudrateIndex"] = ui->baudrateComboBox->currentIndex();
+    json["stopbitsIndex"] = ui->stopbitComboBox->currentIndex();
+    json["parityIndex"] = ui->parityComboBox->currentIndex();
+    json["waitTime"] = ui->waitTimeSpinBox->value();
+    json["company"] = ui->campanyComboBox->currentIndex();
 }

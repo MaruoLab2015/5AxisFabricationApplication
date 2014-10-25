@@ -28,6 +28,9 @@ public:
         Shutter = 2
     };
 
+    void read(const QJsonObject &json);
+    void write(QJsonObject &json) const;
+
 Q_SIGNALS:
     void accepted(QString *string);
     void applySetting(QString portName,
@@ -47,7 +50,6 @@ private:
     Ui::StageSettingDialog *ui;
     void setCompanyComboBoxButton();
     void setComboBoxSetting();
-
 };
 
 #endif // STAGESETTINGDIALOG_H

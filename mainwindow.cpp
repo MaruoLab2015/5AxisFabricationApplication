@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&xAxisThread, SIGNAL(timeout(QString)), this, SLOT(processTimeout(QString)));
 
     //Load setting
+    defaultSettings();
     loadStageSettings(MainWindow::Json);
 }
 
@@ -61,10 +62,7 @@ void MainWindow::setMenu()
 
 void MainWindow::on_actionStageSetting_triggered()
 {
-    qDebug() << "stage setting";
-    StageSettingDialog *settingDialog = new StageSettingDialog(this);
-    connect(settingDialog, SIGNAL(applySetting(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)),
-            this, SLOT(applySettings(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)));
+//    qDebug() << "stage setting";
 
     settingDialog->exec();
 }
@@ -132,24 +130,35 @@ void MainWindow::defaultSettings()
                                   serial.NoParity,
                                   serial.OneStop
                                   );
+
+    // create Dialog
+    settingDialog = new StageSettingDialog(this);
+    connect(settingDialog, SIGNAL(applySetting(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)),
+            this, SLOT(applySettings(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)));
+
 }
 
 void MainWindow::read(const QJsonObject &json)
 {
 
     xAxisThread.read(json["xaxis"].toObject());
+    settingDialog->read(json["xaxisDialog"].toObject());
 }
 
 void MainWindow::write(QJsonObject &json) const
 {
 
     QJsonObject xAxisObject;
+    QJsonObject xAxisDialogObject;
     xAxisThread.write(xAxisObject);
+    settingDialog->write(xAxisDialogObject);
     json["xaxis"] = xAxisObject;
+    json["xaxisDialog"] = xAxisDialogObject;
 }
 
 bool MainWindow::loadStageSettings(SaveFormat saveFormat)
 {
+//    qDebug() << "loadStageSettings";
 
     QFile loadFile(saveFormat == Json
                    ? QStringLiteral("save.json")

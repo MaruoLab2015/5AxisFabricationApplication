@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "masterthread.h"
+#include "stagesettingdialog.h"
 
 class QSerialPort;
 class QLabel;
@@ -52,6 +53,7 @@ private:
     int transactionCount;
     MasterThread xAxisThread;
     QLabel *statusLabel;
+    StageSettingDialog *settingDialog;
 
     void setMenu();
 };
