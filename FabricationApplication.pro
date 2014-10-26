@@ -17,12 +17,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     stagesettingdialog.cpp \
     masterthread.cpp \
-    stagewidget.cpp
+    stagewidget.cpp \
+    stagethread.cpp
 
 HEADERS  += mainwindow.h \
     stagesettingdialog.h \
     masterthread.h \
-    stagewidget.h
+    stagewidget.h \
+    stagethread.h
 
 FORMS    += mainwindow.ui \
     stagesettingdialog.ui

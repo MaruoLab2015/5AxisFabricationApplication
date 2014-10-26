@@ -28,7 +28,7 @@ void StageWidget::initialLayout()
     QLabel *baudrateLabel = new QLabel(tr("baudrate"));
     QLabel *stopbitsLabel = new QLabel(tr("stopbits"));
     QLabel *parityLabel = new QLabel(tr("parity"));
-    QLabel *waitTimeLabel = new QLabel(tr("waitTime"));
+    QLabel *waitTimeLabel = new QLabel(tr("waitTime[ms] (1000~10000)"));
     dialogButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok |
                                                              QDialogButtonBox::Cancel);
 
@@ -38,6 +38,8 @@ void StageWidget::initialLayout()
     stopbitsComboBox = new QComboBox(this);
     parityComboBox = new QComboBox(this);
     waitTimeSpinBox = new QSpinBox(this);
+
+    waitTimeSpinBox->setRange(1000, 10000);
 
     QGridLayout *layout = new QGridLayout;
 
