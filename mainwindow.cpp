@@ -54,6 +54,7 @@ void MainWindow::setMenu()
 
     QMenu *stageMenu = this->menuBar()->addMenu(tr("Stage"));
 
+    // set
     stageMenu->addAction(stageSettingAction);
     xAxisThread.setAxis(xAxisThread.XAxis);
 }
@@ -67,12 +68,12 @@ void MainWindow::on_actionStageSetting_triggered()
     settingDialog->exec();
 }
 
-void MainWindow::applySettings(QString portName, int baudrate, QSerialPort::StopBits stopbits, QSerialPort::Parity parity, int waitTime)
-{
+//void MainWindow::applySettings(QString portName, int baudrate, QSerialPort::StopBits stopbits, QSerialPort::Parity parity, int waitTime)
+//{
 
-    xAxisThread.setSerialSettings(portName, waitTime, baudrate, parity, stopbits);
-    saveStageSettings(MainWindow::Json);
-}
+//    xAxisThread.setSerialSettings(portName, waitTime, baudrate, parity, stopbits);
+//    saveStageSettings(MainWindow::Json);
+//}
 
 /* Serial Communication */
 
@@ -133,8 +134,8 @@ void MainWindow::defaultSettings()
 
     // create Dialog
     settingDialog = new StageSettingDialog(this);
-    connect(settingDialog, SIGNAL(applySetting(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)),
-            this, SLOT(applySettings(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)));
+//    connect(settingDialog, SIGNAL(applySetting(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)),
+//            this, SLOT(applySettings(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)));
 
 }
 
@@ -142,18 +143,7 @@ void MainWindow::read(const QJsonObject &json)
 {
 
     xAxisThread.read(json["xaxis"].toObject());
-    settingDialog->read(json["xaxisDialog"].toObject());
-}
-
-void MainWindow::write(QJsonObject &json) const
-{
-
-    QJsonObject xAxisObject;
-    QJsonObject xAxisDialogObject;
-    xAxisThread.write(xAxisObject);
-    settingDialog->write(xAxisDialogObject);
-    json["xaxis"] = xAxisObject;
-    json["xaxisDialog"] = xAxisDialogObject;
+    settingDialog->read(json);
 }
 
 bool MainWindow::loadStageSettings(SaveFormat saveFormat)
@@ -175,30 +165,6 @@ bool MainWindow::loadStageSettings(SaveFormat saveFormat)
                             ? QJsonDocument::fromJson(saveData)
                             : QJsonDocument::fromBinaryData(saveData));
     read(loadDoc.object());
-
-    return true;
-}
-
-bool MainWindow::saveStageSettings(SaveFormat saveFormat) const
-{
-
-    QFile saveFile(saveFormat == Json
-                   ? QStringLiteral("save.json")
-                   : QStringLiteral("save.dat"));
-
-    if (!saveFile.open(QIODevice::WriteOnly))
-    {
-        qWarning("Couldn't open save File");
-        return false;
-    }
-
-    QJsonObject settingObject;
-    write(settingObject);
-
-    QJsonDocument saveDoc(settingObject);
-    saveFile.write(saveFormat == Json
-                   ? saveDoc.toJson()
-                   : saveDoc.toBinaryData());
 
     return true;
 }

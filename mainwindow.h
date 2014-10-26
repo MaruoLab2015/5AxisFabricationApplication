@@ -27,10 +27,7 @@ public:
 
     void defaultSettings();
     bool loadStageSettings(SaveFormat saveFormat);
-    bool saveStageSettings(SaveFormat saveFormat) const;
-
     void read(const QJsonObject &json);
-    void write(QJsonObject &json) const;
 
 public slots:
     void showResponse(const QString &s);
@@ -41,11 +38,11 @@ private slots:
     void on_actionStageSetting_triggered();
     void on_actionOpenStage_triggered(bool checked);
 
-    void applySettings(QString portName,
-                       int baudrate,
-                       QSerialPort::StopBits stopbits,
-                       QSerialPort::Parity parity,
-                       int waitTime);
+//    void applySettings(QString portName,
+//                       int baudrate,
+//                       QSerialPort::StopBits stopbits,
+//                       QSerialPort::Parity parity,
+//                       int waitTime);
 
 private:
     Ui::MainWindow *ui;

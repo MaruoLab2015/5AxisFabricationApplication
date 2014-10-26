@@ -1,5 +1,6 @@
 #include "stagesettingdialog.h"
 #include "ui_stagesettingdialog.h"
+#include "stagewidget.h"
 
 #include <QSerialPortInfo>
 #include <QDebug>
@@ -7,6 +8,13 @@
 #include <QMetaObject>
 #include <QMetaEnum>
 #include <QJsonObject>
+
+const QString xKey = "xaxis";
+const QString yKey = "yaxis";
+const QString zKey = "zaxis";
+const QString thetaKey = "thetaaxis";
+const QString phiKey = "phiaxis";
+const QString shutterKey = "shutter";
 
 void setSerialComboBoxButton(QString *name, QComboBox *box);
 
@@ -17,18 +25,7 @@ StageSettingDialog::StageSettingDialog(QWidget *parent) :
 
     ui->setupUi(this);
 
-    foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
-    {
-        ui->portComboBox->addItem(info.portName());
-    }
-
-    setSerialComboBoxButton(new QString("BaudRate"), ui->baudrateComboBox);
-    setSerialComboBoxButton(new QString("Parity"), ui->parityComboBox);
-    setSerialComboBoxButton(new QString("StopBits"), ui->stopbitComboBox);
-
-    setCompanyComboBoxButton();
-
-
+    initialTabs();
 }
 
 StageSettingDialog::~StageSettingDialog()
@@ -36,120 +33,88 @@ StageSettingDialog::~StageSettingDialog()
     delete ui;
 }
 
-void StageSettingDialog::on_buttonBox_clicked(QAbstractButton *button)
+void StageSettingDialog::initialTabs()
+{
+
+    xAxisWidget = createTabWithTitle(tr("X軸"));
+    yAxisWidget = createTabWithTitle(tr("Y軸"));
+    zAxisWidget = createTabWithTitle(tr("Z軸"));
+    thetaAxisWidget = createTabWithTitle(tr("θ軸"));
+    phiAxisWidget = createTabWithTitle(tr("Φ軸"));
+    shutterWidget = createTabWithTitle(tr("シャッター"));
+}
+
+StageWidget* StageSettingDialog::createTabWithTitle(QString title)
+{
+
+    StageWidget *aTabWidget = new StageWidget();
+    ui->tabWidget->addTab(aTabWidget, QIcon(), title);
+    connect(aTabWidget->dialogButtonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(onButtonBoxClicked(QAbstractButton*)));
+    return aTabWidget;
+}
+
+void StageSettingDialog::onButtonBoxClicked(QAbstractButton *button)
 {
     if (button->text() == "OK")
     {
-        setComboBoxSetting();
+        saveStageSettingss(StageSettingDialog::Json);
     }
 
     this->close();
 }
 
-void setSerialComboBoxButton(QString *name, QComboBox *box)
+bool StageSettingDialog::saveStageSettingss(SaveFormat saveFormat) const
 {
 
-    const QSerialPort *serial = new QSerialPort;
+    QFile saveFile(saveFormat == Json
+                   ? QStringLiteral("save.json")
+                   : QStringLiteral("save.dat"));
 
-    const QMetaObject *metaObj = serial->metaObject();
-    QMetaEnum enumType = metaObj->enumerator(metaObj->indexOfEnumerator(name->toLocal8Bit().constData()));
-    for (int i=0; i< enumType.keyCount(); ++i)
+    if (!saveFile.open(QIODevice::WriteOnly))
     {
-        QString item = QString::fromUtf8(enumType.key(i));
-        box->addItem(item);
+        qWarning("Couldn't open save File");
+        return false;
     }
+
+    QJsonObject settingObject;
+    write(settingObject);
+
+    QJsonDocument saveDoc(settingObject);
+    saveFile.write(saveFormat == Json
+                   ? saveDoc.toJson()
+                   : saveDoc.toBinaryData());
+
+    return true;
 }
 
-void StageSettingDialog::setCompanyComboBoxButton()
-{
-
-    const QMetaObject *metaObj = this->metaObject();
-    QMetaEnum enumType = metaObj->enumerator(metaObj->indexOfEnumerator("Company"));
-
-    for (int i=0; i< enumType.keyCount(); ++i)
-    {
-        QString item = QString::fromUtf8(enumType.key(i));
-        ui->campanyComboBox->addItem(item);
-    }
-}
-
-const int technoHands = 0;
-const int sigmaStage = 1;
-const int shutter = 2;
-
-void StageSettingDialog::on_campanyComboBox_currentIndexChanged(int index)
-{
-
-    switch (index) {
-    case technoHands:
-
-        ui->baudrateComboBox->setCurrentIndex(7);
-        break;
-
-    case sigmaStage:
-        ui->baudrateComboBox->setCurrentIndex(5);
-        break;
-
-    case shutter:
-
-        ui->baudrateComboBox->setCurrentIndex(3);
-        break;
-    default:
-        return;
-    }
-}
-
-void StageSettingDialog::on_pushButton_clicked()
-{
-    setComboBoxSetting();
-}
-
-void StageSettingDialog::setComboBoxSetting()
-{
-
-    const QSerialPort *serial = new QSerialPort;
-
-    const QMetaObject *metaObj = serial->metaObject();
-    QMetaEnum baudrateEnumType = metaObj->enumerator(metaObj->indexOfEnumerator("BaudRate"));
-    QMetaEnum stopBitsEnumType = metaObj->enumerator(metaObj->indexOfEnumerator("StopBits"));
-    QMetaEnum parityEnumType = metaObj->enumerator(metaObj->indexOfEnumerator("Parity"));
-
-    this->applySetting(
-                ui->portComboBox->currentText(),
-                baudrateEnumType.value(ui->baudrateComboBox->currentIndex()),
-                (QSerialPort::StopBits)stopBitsEnumType.value(ui->stopbitComboBox->currentIndex()),
-                (QSerialPort::Parity)parityEnumType.value(ui->parityComboBox->currentIndex()),
-                ui->waitTimeSpinBox->value()
-                );
-
-}
 
 void StageSettingDialog::read(const QJsonObject &json)
 {
-    QString portName = json["portName"].toString();
-    for (int i=0;i < ui->portComboBox->count(); i++)
-    {
-        if ( portName == ui->portComboBox->itemText(i))
-        {
-            ui->portComboBox->setCurrentIndex(i);
-            break;
-        }
-    }
-
-    ui->baudrateComboBox->setCurrentIndex(json["baudrateIndex"].toInt());
-    ui->stopbitComboBox->setCurrentIndex(json["stopbitsIndex"].toInt());
-    ui->parityComboBox->setCurrentIndex(json["parityIndex"].toInt());
-    ui->waitTimeSpinBox->setValue(json["waitTime"].toInt());
-    ui->campanyComboBox->setCurrentIndex(json["company"].toInt());
+    xAxisWidget->read(json[xKey].toObject());
+    yAxisWidget->read(json[yKey].toObject());
+    zAxisWidget->read(json[zKey].toObject());
+    thetaAxisWidget->read(json[thetaKey].toObject());
+    phiAxisWidget->read(json[phiKey].toObject());
+    shutterWidget->read(json[shutterKey].toObject());
 }
+
 
 void StageSettingDialog::write(QJsonObject &json) const
 {
 
-    json["portName"] = ui->portComboBox->currentText();
-    json["baudrateIndex"] = ui->baudrateComboBox->currentIndex();
-    json["stopbitsIndex"] = ui->stopbitComboBox->currentIndex();
-    json["parityIndex"] = ui->parityComboBox->currentIndex();
-    json["waitTime"] = ui->waitTimeSpinBox->value();
-    json["company"] = ui->campanyComboBox->currentIndex();
+    QJsonObject xAxisObject, yAxisObject, zAxisObject,
+            thetaAxisObject, phiAxisObject, shutterObject;
+    xAxisWidget->write(xAxisObject);
+    yAxisWidget->write(yAxisObject);
+    zAxisWidget->write(zAxisObject);
+    thetaAxisWidget->write(thetaAxisObject);
+    phiAxisWidget->write(phiAxisObject);
+    shutterWidget->write(shutterObject);
+
+    json[xKey] = xAxisObject;
+    json[yKey] = yAxisObject;
+    json[zKey] = zAxisObject;
+    json[thetaKey] = thetaAxisObject;
+    json[phiKey] = phiAxisObject;
+    json[shutterKey] = shutterObject;
 }
