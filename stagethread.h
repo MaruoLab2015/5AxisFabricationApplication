@@ -4,6 +4,7 @@
 #include <QThread>
 #include <QWaitCondition>
 #include <QSerialPort>
+#include <QMutex>
 
 class StageThread : public QThread
 {
