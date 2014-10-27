@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "stagesettingdialog.h"
+
 #include <QDebug>
 #include <QLabel>
 #include <QJsonObject>
@@ -10,18 +11,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-  ,transactionCount(0)
   ,statusLabel(new QLabel(tr("Status: Not runnning.")))
 {
     ui->setupUi(this);
-
-    //Status bar
-    ui->statusBar->addPermanentWidget(statusLabel, 100);
-
-    /* SIGNALS & SLOTS*/
-    connect(&xAxisThread, SIGNAL(response(QString)), this, SLOT(showResponse(QString)));
-    connect(&xAxisThread, SIGNAL(error(QString)), this, SLOT(processError(QString)));
-    connect(&xAxisThread, SIGNAL(timeout(QString)), this, SLOT(processTimeout(QString)));
 
     //Load setting
     defaultSettings();
@@ -56,7 +48,6 @@ void MainWindow::setMenu()
 
     // set
     stageMenu->addAction(stageSettingAction);
-    xAxisThread.setAxis(xAxisThread.XAxis);
 }
 
 /* Button Action */
@@ -68,13 +59,6 @@ void MainWindow::on_actionStageSetting_triggered()
     settingDialog->exec();
 }
 
-//void MainWindow::applySettings(QString portName, int baudrate, QSerialPort::StopBits stopbits, QSerialPort::Parity parity, int waitTime)
-//{
-
-//    xAxisThread.setSerialSettings(portName, waitTime, baudrate, parity, stopbits);
-//    saveStageSettings(MainWindow::Json);
-//}
-
 /* Serial Communication */
 
 void MainWindow::on_actionOpenStage_triggered(bool checked)
@@ -82,41 +66,32 @@ void MainWindow::on_actionOpenStage_triggered(bool checked)
     QString request = "aiueo";
     if (checked)
     {
-//        qDebug() << "check!";
-        statusLabel->setText(tr("Status: Running, connected to port %1.")
-                             .arg(xAxisThread.portName));
+
+        statusLabel->setText(tr("Status: Running, connected to ports."));
         ui->debugTextBrowser->append(statusLabel->text());
-        xAxisThread.transaction(request);
+        masterThread.openStages();
     }else
     {
-//        qDebug() << "uncheck!";
+
+        masterThread.closeStages();
     }
 }
 
-
-void MainWindow::showResponse(const QString &s)
+/* SLOTS */
+void MainWindow::showDebugLog(const QString &s, bool isError)
 {
+    ui->debugTextBrowser->append(s);
 
-    ui->debugTextBrowser->append(tr("Traffic, transaction #%1:"
-//                             "\n\r-request: %2"
-                             "\n\r-response: %2")
-                          .arg(++transactionCount).arg(s));
+    if (isError)
+    {
+        ui->actionOpenStage->setChecked(false);
+        statusLabel->setText("Status: Not runnning.");
+    }
 }
 
-void MainWindow::processError(const QString &s)
+void MainWindow::applySettings()
 {
-
-    statusLabel->setText(tr("Status: Not runnning, %1").arg(s));
-    ui->debugTextBrowser->append(statusLabel->text());
-    ui->actionOpenStage->setChecked(false);
-}
-
-void MainWindow::processTimeout(const QString &s)
-{
-    statusLabel->setText(tr("Status: Running, %1.").arg(s));
-    ui->debugTextBrowser->append(statusLabel->text());
-    ui->actionOpenStage->setChecked(false);
-
+    loadStageSettings(MainWindow::Json);
 }
 
 /* Load and Save settings */
@@ -124,25 +99,29 @@ void MainWindow::processTimeout(const QString &s)
 void MainWindow::defaultSettings()
 {
 
-    QSerialPort serial;
-    xAxisThread.setSerialSettings(QString("COM1"),
-                                  1000,
-                                  115200,
-                                  serial.NoParity,
-                                  serial.OneStop
-                                  );
+    //Status bar
+    ui->statusBar->addPermanentWidget(statusLabel, 100);
+
+    /* SIGNALS & SLOTS*/
+    connect(&masterThread, SIGNAL(sendDebugMessage(QString,bool)), this, SLOT(showDebugLog(QString,bool)));
 
     // create Dialog
     settingDialog = new StageSettingDialog(this);
-//    connect(settingDialog, SIGNAL(applySetting(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)),
-//            this, SLOT(applySettings(QString,int,QSerialPort::StopBits,QSerialPort::Parity,int)));
+    connect(settingDialog, SIGNAL(applySettings()), this, SLOT(applySettings()));
+
+    //set Control Tabs
+    printTab = new PrintPanel();
+    connect(printTab, SIGNAL(sendLineEditText(QString)), &masterThread, SLOT(receiveRequestText(QString)));
+//    connect(printTab, SIGNAL(sendLineEditText(QString), masterThread.xStage, SLOT(receiveRequestText(QString))));
+    ui->tabWidget->addTab(printTab, QIcon(), tr("Print Panel"));
+    ui->tabWidget->setCurrentIndex(3);
 
 }
 
 void MainWindow::read(const QJsonObject &json)
 {
 
-    xAxisThread.read(json["xaxis"].toObject());
+    masterThread.read(json);
     settingDialog->read(json);
 }
 

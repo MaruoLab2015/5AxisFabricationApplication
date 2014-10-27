@@ -7,9 +7,14 @@
 #include <QJsonObject>
 
 MasterThread::MasterThread(QObject *parent) :
-    QThread(parent),
-    waitTime(1000)
+    QThread(parent)
 {
+
+    xStage = new StageThread(this);
+    connect(xStage, SIGNAL(response(QString)), this, SLOT(showResponse(QString)));
+    connect(xStage, SIGNAL(error(QString)), this, SLOT(processError(QString)));
+    connect(xStage, SIGNAL(timeout(QString)), this, SLOT(processTimeout(QString)));
+
 }
 
 MasterThread::~MasterThread()
@@ -21,27 +26,22 @@ MasterThread::~MasterThread()
     wait();
 }
 
-void MasterThread::setAxis(const MasterThread::Axis &axis)
+void MasterThread::openStages()
 {
-    this->axis = axis;
+    qDebug() << "open";
+    xStage->openSerialCommunication();
 }
+
+void MasterThread::closeStages()
+{
+    qDebug() << "close";
+    xStage->closeSerialCommunication();
+}
+
 
 void MasterThread::read(const QJsonObject &json)
 {
-    this->portName = json["portName"].toString();
-    this->waitTime = json["waitTime"].toInt();
-    this->baudrate = json["baudrate"].toInt();
-    this->parity   = (QSerialPort::Parity)json["parity"].toInt();
-    this->stopbits = (QSerialPort::StopBits)json["stopbits"].toInt();
-}
-
-void MasterThread::write(QJsonObject &json) const
-{
-    json["portName"] = this->portName;
-    json["waitTime"] = this->waitTime;
-    json["baudrate"] = this->baudrate;
-    json["parity"]   = this->parity;
-    json["stopbits"] = this->stopbits;
+    xStage->read(json["xaxis"].toObject());
 }
 
 void MasterThread::transaction(QString &request)
@@ -57,93 +57,37 @@ void MasterThread::transaction(QString &request)
     }
 }
 
-void MasterThread::setSerialSettings(const QString &portName, int waitTime, int baudrate, QSerialPort::Parity parity, QSerialPort::StopBits stopbits)
-{
-
-    this->portName = portName;
-    this->waitTime = waitTime;
-    this->baudrate = baudrate;
-    this->stopbits = stopbits;
-    this->parity = parity;
-}
-
 void MasterThread::run()
 {
 
-    bool currentPortNameChanged = false;
+}
 
-    mutex.lock();
-    QString currentPortName;
-    if (currentPortName != portName)
-    {
-        currentPortName = portName;
-        currentPortNameChanged = true;
-    }
+/* SLOTS */
+void MasterThread::receiveRequestText(QString request)
+{
+    qDebug() << "transaction";
+    xStage->transaction(request);
+    transaction(request);
+}
 
-    int currentWaitTimeout = waitTime;
-    QString currentRequest = request;
-    mutex.unlock();
+void MasterThread::showResponse(const QString &s)
+{
 
-    QSerialPort serial;
+    sendDebugMessage(s, false);
+//    ui->debugTextBrowser->append(tr("Traffic, transaction #%1:"
+//                             "\n\r-request: %2"
+//                             "\n\r-response: %2")
+//                          .arg(++transactionCount).arg(s));
+}
 
-    while(!quit)
-    {
+void MasterThread::processError(const QString &s)
+{
 
-        if (currentPortNameChanged)
-        {
-            serial.close();
-            serial.setPortName(currentPortName);
-            serial.setBaudRate(this->baudrate);
-            serial.setStopBits(this->stopbits);
-            serial.setParity(this->parity);
-            serial.setDataBits(serial.Data8);
+    emit sendDebugMessage(s, true);
+}
 
-            if (!serial.open(QIODevice::ReadWrite)){
-                emit error(tr("Can't open %1, errorcode %2").arg(portName).arg(serial.error()));
-                return;
-            }
-        }
+void MasterThread::processTimeout(const QString &s)
+{
 
-
-        //write request
-        QByteArray requestData = currentRequest.toLocal8Bit();
-        serial.write(requestData);
-        if (serial.waitForBytesWritten(waitTime))
-        {
-            //read response
-            if (serial.waitForReadyRead(currentWaitTimeout))
-            {
-                QByteArray responseData = serial.readAll();
-                while (serial.waitForReadyRead(10))
-                {
-                    responseData += serial.readAll();
-                }
-
-                qDebug() << responseData;
-                QString response(responseData);
-                emit this->response(response);
-
-            }else{
-
-                emit timeout(tr("Wait read response timeout %1").arg(QTime::currentTime().toString()));
-            }
-        }else{
-
-            emit timeout(tr("Wait write request timeout 1").arg(QTime::currentTime().toString()));
-        }
-
-        mutex.lock();
-        cond.wait(&mutex);
-        if (currentPortName != portName)
-        {
-            currentPortName = portName;
-            currentPortNameChanged = true;
-        }else{
-
-            currentPortNameChanged = false;
-        }
-        currentWaitTimeout = waitTime;
-        currentRequest = request;
-        mutex.unlock();
-    }
+    emit sendDebugMessage(s, true);
 }

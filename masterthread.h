@@ -5,6 +5,8 @@
 #include <QWaitCondition>
 #include <QSerialPort>
 
+#include "stagethread.h"
+
 class MasterThread : public QThread
 {
     Q_OBJECT
@@ -12,46 +14,34 @@ public:
     explicit MasterThread(QObject *parent = 0);
     ~MasterThread();
 
-    enum Axis
-    {
-        XAxis,
-        YAxis,
-        ZAxis
-    };
-
-    MasterThread::Axis axis;
-    void setAxis(const MasterThread::Axis &axis);
-
     void transaction(QString &request);
-    void setSerialSettings(const QString &portName,
-                           int waitTimeout,
-                           int baudrate,
-                           QSerialPort::Parity parity,
-                           QSerialPort::StopBits stopbits);
     void run();
 
     void read(const QJsonObject &json);
-    void write(QJsonObject &json) const;
 
-    QString portName;
+    void openStages();
+    void closeStages();
 
 signals:
-    void response(const QString &s);
-    void error(const QString &s);
-    void timeout(const QString &s);
+    void sendDebugMessage(const QString&s, bool isError);
 
 public slots:
+    void showResponse(const QString &s);
+    void processError(const QString &s);
+    void processTimeout(const QString &s);
+
+public slots:
+    void receiveRequestText(QString request);
 
 private:
 
-    int waitTime;
-    int baudrate;
-    QSerialPort::Parity parity;
-    QSerialPort::StopBits stopbits;
     QString request;
     QMutex mutex;
     QWaitCondition cond;
     bool quit;
+    StageThread *xStage, *yStage, *zStage;
+    StageThread *thetaStage, *phiStage;
+    StageThread *shutterStage;
 
 };
 

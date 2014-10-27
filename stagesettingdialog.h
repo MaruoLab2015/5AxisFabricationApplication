@@ -38,7 +38,8 @@ public:
 
     bool saveStageSettingss(SaveFormat saveFormat) const;
 
-Q_SIGNALS:
+signals:
+    void applySettings();
 //    void applySetting(QString portName,
 //                      int baudrate,
 //                      QSerialPort::StopBits stopbits,

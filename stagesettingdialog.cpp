@@ -58,6 +58,7 @@ void StageSettingDialog::onButtonBoxClicked(QAbstractButton *button)
     if (button->text() == "OK")
     {
         saveStageSettingss(StageSettingDialog::Json);
+        emit applySettings();
     }
 
     this->close();

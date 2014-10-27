@@ -5,6 +5,7 @@
 
 #include "masterthread.h"
 #include "stagesettingdialog.h"
+#include "printpanel.h"
 
 class QSerialPort;
 class QLabel;
@@ -30,27 +31,21 @@ public:
     void read(const QJsonObject &json);
 
 public slots:
-    void showResponse(const QString &s);
-    void processError(const QString &s);
-    void processTimeout(const QString &s);
+    void showDebugLog(const QString &s, bool isError);
+    void applySettings();
 
 private slots:
     void on_actionStageSetting_triggered();
     void on_actionOpenStage_triggered(bool checked);
 
-//    void applySettings(QString portName,
-//                       int baudrate,
-//                       QSerialPort::StopBits stopbits,
-//                       QSerialPort::Parity parity,
-//                       int waitTime);
-
 private:
     Ui::MainWindow *ui;
 
     int transactionCount;
-    MasterThread xAxisThread;
+    MasterThread masterThread;
     QLabel *statusLabel;
     StageSettingDialog *settingDialog;
+    PrintPanel *printTab;
 
     void setMenu();
 };
