@@ -14,6 +14,7 @@ public:
     ~StageController();
 
     void loadStageSettings(const QJsonObject &json);
+    QMap<int, QString> canOpenStages();
 
 signals:
     void sendDebugMessage(const QString &s);

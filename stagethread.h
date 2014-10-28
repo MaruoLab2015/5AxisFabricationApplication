@@ -22,7 +22,7 @@ public:
 
     void setAxis(const EnumList::Axis);
 
-    void openSerialCommunication();
+    bool canOpenPort();
 
 signals:
     void response(const QString &s);

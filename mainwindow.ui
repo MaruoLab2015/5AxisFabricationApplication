@@ -98,7 +98,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionOpenStage"/>
+   <addaction name="actionCanOpenStage"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpenSTL">
@@ -119,15 +119,15 @@
     <string>Meta+,</string>
    </property>
   </action>
-  <action name="actionOpenStage">
+  <action name="actionCanOpenStage">
    <property name="checkable">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="checked">
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>ステージ接続</string>
+    <string>ステージ接続確認</string>
    </property>
    <property name="toolTip">
     <string>openStage</string>

@@ -23,6 +23,22 @@ void StageController::loadStageSettings(const QJsonObject &json)
     xStage->read(json["xaxis"].toObject());
 }
 
+QMap<int, QString> StageController::canOpenStages()
+{
+
+    QString openPortName, canNotOpenString;
+    openPortName = "Success Open  ";
+    canNotOpenString = "Can't open ";
+
+    QMap<int, QString> map;
+    if (xStage->canOpenPort())
+        map.insert(EnumList::x, openPortName.append(xStage->portName));
+    else
+        map.insert(EnumList::x, canNotOpenString.append(xStage->portName));
+
+    return map;
+}
+
 /* SLOTS */
 
 void StageController::receiveLineEditText(const QString s)

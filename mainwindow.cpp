@@ -62,21 +62,15 @@ void MainWindow::on_actionStageSetting_triggered()
     settingDialog->exec();
 }
 
-/* Serial Communication */
-
-void MainWindow::on_actionOpenStage_triggered(bool checked)
+void MainWindow::on_actionCanOpenStage_triggered()
 {
-    if (checked)
-    {
 
+    canOpenStageList = stageManeger.canOpenStages();
+    xStatusLabel->setText(canOpenStageList[EnumList::x]);
+    this->showDebugLog(xStatusLabel->text());
 //        statusLabel->setText(tr("Status: Running, connected to ports."));
 //        ui->debugTextBrowser->append(statusLabel->text());
-//        masterThread.openStages();
-    }else
-    {
 
-//        masterThread.closeStages();
-    }
 }
 
 /* SLOTS */
@@ -146,3 +140,4 @@ bool MainWindow::loadStageSettings(SaveFormat saveFormat)
 
     return true;
 }
+

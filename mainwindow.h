@@ -36,7 +36,7 @@ public slots:
 
 private slots:
     void on_actionStageSetting_triggered();
-    void on_actionOpenStage_triggered(bool checked);
+    void on_actionCanOpenStage_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -48,6 +48,7 @@ private:
     QLabel *xStatusLabel, *yStatusLabel;
     StageSettingDialog *settingDialog;
     PrintPanel *printTab;
+    QMap<int, QString> canOpenStageList;
 
     void setMenu();
 };

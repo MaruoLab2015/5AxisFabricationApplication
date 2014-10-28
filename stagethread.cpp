@@ -31,26 +31,19 @@ void StageThread::setAxis(const EnumList::Axis selectedAxis)
     axis = selectedAxis;
 }
 
-void StageThread::openSerialCommunication()
+bool StageThread::canOpenPort()
 {
 
-    qDebug() << "axis : " << this->axis;
-//    emit response(tr("Attempting to connect to %1").arg(portName));
+//    qDebug() << "axis : " << this->axis;
 
-//    serial.setPortName(portName);
-//    serial.setBaudRate(this->baudrate);
-//    serial.setStopBits(this->stopbits);
-//    serial.setParity(this->parity);
-//    serial.setDataBits(serial.Data8);
+    QSerialPort serial;
+    serial.setPortName(portName);
+    serial.setBaudRate(this->baudrate);
+    serial.setStopBits(this->stopbits);
+    serial.setParity(this->parity);
+    serial.setDataBits(serial.Data8);
 
-//    if (!serial.open(QIODevice::ReadWrite)){
-//        emit error(tr("Can't open %1, error %2").arg(portName).arg(serial.errorString()));
-//        return;
-//    }else
-//    {
-//        emit response(tr("Connection opend"));
-//    }
-
+    return serial.open(QIODevice::ReadWrite);
 }
 
 void StageThread::transaction(QString &request)
