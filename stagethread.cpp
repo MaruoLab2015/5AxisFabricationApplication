@@ -9,6 +9,13 @@ StageThread::StageThread(QObject *parent) :
 {
 }
 
+StageThread::StageThread(QObject *parent, EnumList::Axis stageAxis):
+    QThread(parent)
+{
+    this->axis = stageAxis;
+}
+
+
 void StageThread::read(const QJsonObject &json)
 {
     portName = json["portName"].toString();
@@ -16,33 +23,42 @@ void StageThread::read(const QJsonObject &json)
     baudrate = json["baudrate"].toInt();
     parity   = (QSerialPort::Parity)json["parity"].toInt();
     stopbits = (QSerialPort::StopBits)json["stopbits"].toInt();
+    company  = (EnumList::Company)json["company"].toInt();
+}
+
+void StageThread::setAxis(const EnumList::Axis selectedAxis)
+{
+    axis = selectedAxis;
 }
 
 void StageThread::openSerialCommunication()
 {
 
-    serial.setPortName(portName);
-    serial.setBaudRate(this->baudrate);
-    serial.setStopBits(this->stopbits);
-    serial.setParity(this->parity);
-    serial.setDataBits(serial.Data8);
+    qDebug() << "axis : " << this->axis;
+//    emit response(tr("Attempting to connect to %1").arg(portName));
 
-    if (!serial.open(QIODevice::ReadWrite)){
-        emit error(tr("Can't open %1, errorcode %2").arg(portName).arg(serial.error()));
-        return;
-    }
-}
+//    serial.setPortName(portName);
+//    serial.setBaudRate(this->baudrate);
+//    serial.setStopBits(this->stopbits);
+//    serial.setParity(this->parity);
+//    serial.setDataBits(serial.Data8);
 
-void StageThread::closeSerialCommunication()
-{
-    serial.close();
+//    if (!serial.open(QIODevice::ReadWrite)){
+//        emit error(tr("Can't open %1, error %2").arg(portName).arg(serial.errorString()));
+//        return;
+//    }else
+//    {
+//        emit response(tr("Connection opend"));
+//    }
+
 }
 
 void StageThread::transaction(QString &request)
 {
-//    qDebug() << "stage transaction";
 
     QMutexLocker locker(&mutex);
+
+    this->request = applyFormat(request);
 
     if (!isRunning())
     {
@@ -53,30 +69,57 @@ void StageThread::transaction(QString &request)
     }
 }
 
+QString StageThread::applyFormat(QString &request)
+{
+    QString stx, etx; // stx = Start of TeXt, etx = End of TeXt
+    QString sendRequest;
+
+    switch (this->company) {
+    case EnumList::TechnoHands:
+        stx = ">";
+        etx = "\r";
+        break;
+    default:
+        break;
+    }
+
+    sendRequest.append(stx);
+    sendRequest.append(request);
+    sendRequest.append(etx);
+
+    return sendRequest;
+}
+
 
 void StageThread::run()
 {
 
-    bool currentPortNameChanged = false;
-
     mutex.lock();
-    QString currentPortName;
-    if (currentPortName != portName)
-    {
-        currentPortName = portName;
-        currentPortNameChanged = true;
-    }
 
     int currentWaitTimeout = waitTime;
     QString currentRequest = request;
     mutex.unlock();
+    QSerialPort serial;
 
     while(!quit)
     {
 
+        serial.setPortName(portName);
+        serial.setBaudRate(this->baudrate);
+        serial.setStopBits(this->stopbits);
+        serial.setParity(this->parity);
+        serial.setDataBits(serial.Data8);
+
+        if (!serial.open(QIODevice::ReadWrite)){
+            emit error(tr("Can't open %1, error %2").arg(portName).arg(serial.errorString()));
+            return;
+        }
+
         //write request
         QByteArray requestData = currentRequest.toLocal8Bit();
-        qDebug() << "write: " << request;
+
+        emit response(tr("request : %1").arg(this->request));
+
         serial.write(requestData);
         if (serial.waitForBytesWritten(waitTime))
         {
@@ -84,12 +127,11 @@ void StageThread::run()
             if (serial.waitForReadyRead(currentWaitTimeout))
             {
                 QByteArray responseData = serial.readAll();
-                while (serial.waitForReadyRead(10))
+                while (serial.waitForReadyRead(100))
                 {
                     responseData += serial.readAll();
                 }
 
-                qDebug() << responseData;
                 QString response(responseData);
                 emit this->response(response);
 
@@ -104,14 +146,6 @@ void StageThread::run()
 
         mutex.lock();
         cond.wait(&mutex);
-        if (currentPortName != portName)
-        {
-            currentPortName = portName;
-            currentPortNameChanged = true;
-        }else{
-
-            currentPortNameChanged = false;
-        }
         currentWaitTimeout = waitTime;
         currentRequest = request;
         mutex.unlock();

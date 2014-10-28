@@ -40,12 +40,6 @@ public:
 
 signals:
     void applySettings();
-//    void applySetting(QString portName,
-//                      int baudrate,
-//                      QSerialPort::StopBits stopbits,
-//                      QSerialPort::Parity parity,
-//                      int waitTime);
-
 
 private slots:
     void onButtonBoxClicked(QAbstractButton *button);

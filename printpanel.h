@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "enumList.h"
+
 namespace Ui {
 class PrintPanel;
 }
@@ -16,7 +18,9 @@ public:
     ~PrintPanel();
 
 signals:
-    void sendLineEditText(QString);
+    void sendLineEditText(QString lineEditText);
+    void sendRequestToStage(QString request, EnumList::Axis axis);
+
 private slots:
 
     void on_sendRequestButton_clicked();

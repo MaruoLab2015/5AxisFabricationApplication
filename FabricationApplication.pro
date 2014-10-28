@@ -16,17 +16,18 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     stagesettingdialog.cpp \
-    masterthread.cpp \
     stagewidget.cpp \
     stagethread.cpp \
-    printpanel.cpp
+    printpanel.cpp \
+    stagecontroller.cpp
 
 HEADERS  += mainwindow.h \
     stagesettingdialog.h \
-    masterthread.h \
     stagewidget.h \
     stagethread.h \
-    printpanel.h
+    printpanel.h \
+    enumList.h \
+    stagecontroller.h
 
 FORMS    += mainwindow.ui \
     stagesettingdialog.ui \

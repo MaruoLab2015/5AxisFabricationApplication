@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 
-#include "masterthread.h"
+#include "stagecontroller.h"
 #include "stagesettingdialog.h"
 #include "printpanel.h"
 
@@ -31,7 +31,7 @@ public:
     void read(const QJsonObject &json);
 
 public slots:
-    void showDebugLog(const QString &s, bool isError);
+    void showDebugLog(const QString &s);
     void applySettings();
 
 private slots:
@@ -42,8 +42,10 @@ private:
     Ui::MainWindow *ui;
 
     int transactionCount;
-    MasterThread masterThread;
-    QLabel *statusLabel;
+
+    StageController stageManeger;
+    QLabel *xLabel, *yLabel;
+    QLabel *xStatusLabel, *yStatusLabel;
     StageSettingDialog *settingDialog;
     PrintPanel *printTab;
 

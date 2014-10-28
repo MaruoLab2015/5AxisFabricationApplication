@@ -5,6 +5,8 @@
 #include <QWaitCondition>
 #include <QSerialPort>
 
+#include "enumList.h"
+
 class StageThread : public QThread
 {
     Q_OBJECT
@@ -12,30 +14,15 @@ class StageThread : public QThread
 
 public:
     explicit StageThread(QObject *parent = 0);
-
-    enum Axis{
-        x,
-        y,
-        z,
-        theta,
-        phi,
-        shutter
-    };
-
+    StageThread(QObject *parent, EnumList::Axis stageAxis);
     void transaction(QString &request);
-//    void setSerialSettings(const QString &portName,
-//                           int waitTimeout,
-//                           int baudrate,
-//                           QSerialPort::Parity parity,
-//                           QSerialPort::StopBits stopbits);
     void run();
 
     void read(const QJsonObject &json);
 
-    void setAxis(const StageThread::Axis);
+    void setAxis(const EnumList::Axis);
 
     void openSerialCommunication();
-    void closeSerialCommunication();
 
 signals:
     void response(const QString &s);
@@ -54,7 +41,12 @@ public:
     QWaitCondition cond;
     bool quit;
     QString portName;
-    QSerialPort serial;
+    EnumList::Company company;
+
+private:
+    EnumList::Axis axis;
+
+    QString applyFormat(QString &request);
 };
 
 #endif // STAGETHREAD_H

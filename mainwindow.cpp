@@ -11,7 +11,10 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-  ,statusLabel(new QLabel(tr("Status: Not runnning.")))
+  ,xLabel(new QLabel(tr("x : ")))
+  ,yLabel(new QLabel(tr("y : ")))
+  ,xStatusLabel(new QLabel(tr("Not connecting")))
+  ,yStatusLabel(new QLabel(tr("Not connecting")))
 {
     ui->setupUi(this);
 
@@ -63,30 +66,23 @@ void MainWindow::on_actionStageSetting_triggered()
 
 void MainWindow::on_actionOpenStage_triggered(bool checked)
 {
-    QString request = "aiueo";
     if (checked)
     {
 
-        statusLabel->setText(tr("Status: Running, connected to ports."));
-        ui->debugTextBrowser->append(statusLabel->text());
-        masterThread.openStages();
+//        statusLabel->setText(tr("Status: Running, connected to ports."));
+//        ui->debugTextBrowser->append(statusLabel->text());
+//        masterThread.openStages();
     }else
     {
 
-        masterThread.closeStages();
+//        masterThread.closeStages();
     }
 }
 
 /* SLOTS */
-void MainWindow::showDebugLog(const QString &s, bool isError)
+void MainWindow::showDebugLog(const QString &s)
 {
     ui->debugTextBrowser->append(s);
-
-    if (isError)
-    {
-        ui->actionOpenStage->setChecked(false);
-        statusLabel->setText("Status: Not runnning.");
-    }
 }
 
 void MainWindow::applySettings()
@@ -100,10 +96,14 @@ void MainWindow::defaultSettings()
 {
 
     //Status bar
-    ui->statusBar->addPermanentWidget(statusLabel, 100);
+    ui->statusBar->addPermanentWidget(xLabel, 0);
+    ui->statusBar->addPermanentWidget(xStatusLabel, 10);
+    ui->statusBar->addPermanentWidget(yLabel, 0);
+    ui->statusBar->addPermanentWidget(yStatusLabel, 10);
+
 
     /* SIGNALS & SLOTS*/
-    connect(&masterThread, SIGNAL(sendDebugMessage(QString,bool)), this, SLOT(showDebugLog(QString,bool)));
+    connect(&stageManeger, SIGNAL(sendDebugMessage(QString)), this, SLOT(showDebugLog(QString)));
 
     // create Dialog
     settingDialog = new StageSettingDialog(this);
@@ -111,8 +111,8 @@ void MainWindow::defaultSettings()
 
     //set Control Tabs
     printTab = new PrintPanel();
-    connect(printTab, SIGNAL(sendLineEditText(QString)), &masterThread, SLOT(receiveRequestText(QString)));
-//    connect(printTab, SIGNAL(sendLineEditText(QString), masterThread.xStage, SLOT(receiveRequestText(QString))));
+    connect(printTab, SIGNAL(sendLineEditText(QString)), &stageManeger, SLOT(receiveLineEditText(QString)));
+    connect(printTab, SIGNAL(sendRequestToStage(QString,EnumList::Axis)), &stageManeger, SLOT(receiveRequest(QString,EnumList::Axis)));
     ui->tabWidget->addTab(printTab, QIcon(), tr("Print Panel"));
     ui->tabWidget->setCurrentIndex(3);
 
@@ -121,13 +121,12 @@ void MainWindow::defaultSettings()
 void MainWindow::read(const QJsonObject &json)
 {
 
-    masterThread.read(json);
+    stageManeger.loadStageSettings(json);
     settingDialog->read(json);
 }
 
 bool MainWindow::loadStageSettings(SaveFormat saveFormat)
 {
-//    qDebug() << "loadStageSettings";
 
     QFile loadFile(saveFormat == Json
                    ? QStringLiteral("save.json")
