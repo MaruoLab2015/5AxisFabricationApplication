@@ -17,11 +17,11 @@ public:
     bool hasText();
 
     bool hasG(){ return  (g != USHRT_MAX);};
-    bool hasX();
-    bool hasY();
-    bool hasZ();
-    bool hasE();
-    bool hasF();
+    bool hasX(){ return  (x != FLT_MAX);};
+    bool hasY(){ return  (y != FLT_MAX);};
+    bool hasZ(){ return  (z != FLT_MAX);};
+    bool hasE(){ return  (e != FLT_MAX);};
+    bool hasF(){ return  (f != FLT_MAX);};
 
     bool isComment;
 
