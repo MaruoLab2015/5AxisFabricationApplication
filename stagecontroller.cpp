@@ -11,6 +11,7 @@ StageController::StageController(QObject *parent) :
     connect(xStage, SIGNAL(response(QString)), this, SLOT(showResponse(QString)));
     connect(xStage, SIGNAL(timeout(QString)), this, SLOT(processTimeout(QString)));
     connect(xStage, SIGNAL(error(QString)), this, SLOT(processError(QString)));
+
 }
 
 StageController::~StageController()
@@ -37,6 +38,12 @@ QMap<int, QString> StageController::canOpenStages()
         map.insert(EnumList::x, canNotOpenString.append(xStage->portName));
 
     return map;
+}
+
+void StageController::getStagePositions()
+{
+    stagePositionList.insert(EnumList::x, xStage->getCurrentPosition());
+    qDebug() << stagePositionList[EnumList::x];
 }
 
 /* SLOTS */

@@ -2,6 +2,7 @@
 #define STAGECONTROLLER_H
 
 #include <QObject>
+#include <QMap>
 
 #include "enumList.h"
 #include "stagethread.h"
@@ -16,6 +17,8 @@ public:
     void loadStageSettings(const QJsonObject &json);
     QMap<int, QString> canOpenStages();
 
+    void getStagePositions();
+
 signals:
     void sendDebugMessage(const QString &s);
 
@@ -29,6 +32,8 @@ public slots:
 
 private:
     StageThread *xStage;
+    QMap<int, QString> stagePositionList;
+
 };
 
 #endif // STAGECONTROLLER_H

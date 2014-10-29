@@ -249,6 +249,19 @@
     <string>Open</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_3">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>60</y>
+     <width>151</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>CurrentPosition</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

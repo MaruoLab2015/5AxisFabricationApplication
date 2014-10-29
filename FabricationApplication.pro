@@ -7,6 +7,7 @@
 QT       += core gui
 QT       += serialport
 
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = FabricationApplication
@@ -19,7 +20,8 @@ SOURCES += main.cpp\
     stagewidget.cpp \
     stagethread.cpp \
     printpanel.cpp \
-    stagecontroller.cpp
+    stagecontroller.cpp \
+    gcode.cpp
 
 HEADERS  += mainwindow.h \
     stagesettingdialog.h \
@@ -27,7 +29,8 @@ HEADERS  += mainwindow.h \
     stagethread.h \
     printpanel.h \
     enumList.h \
-    stagecontroller.h
+    stagecontroller.h \
+    gcode.h
 
 FORMS    += mainwindow.ui \
     stagesettingdialog.ui \

@@ -57,7 +57,6 @@ void MainWindow::setMenu()
 
 void MainWindow::on_actionStageSetting_triggered()
 {
-//    qDebug() << "stage setting";
 
     settingDialog->exec();
 }
@@ -65,12 +64,12 @@ void MainWindow::on_actionStageSetting_triggered()
 void MainWindow::on_actionCanOpenStage_triggered()
 {
 
+    // get serial communication status
     canOpenStageList = stageManeger.canOpenStages();
     xStatusLabel->setText(canOpenStageList[EnumList::x]);
     this->showDebugLog(xStatusLabel->text());
-//        statusLabel->setText(tr("Status: Running, connected to ports."));
-//        ui->debugTextBrowser->append(statusLabel->text());
 
+    stageManeger.getStagePositions();
 }
 
 /* SLOTS */

@@ -23,6 +23,7 @@ public:
     void setAxis(const EnumList::Axis);
 
     bool canOpenPort();
+    QString getCurrentPosition();
 
 signals:
     void response(const QString &s);
@@ -47,6 +48,7 @@ private:
     EnumList::Axis axis;
 
     QString applyFormat(QString &request);
+    void setCurrentSrialSetting(QSerialPort &serial);
 };
 
 #endif // STAGETHREAD_H

@@ -37,13 +37,55 @@ bool StageThread::canOpenPort()
 //    qDebug() << "axis : " << this->axis;
 
     QSerialPort serial;
-    serial.setPortName(portName);
-    serial.setBaudRate(this->baudrate);
-    serial.setStopBits(this->stopbits);
-    serial.setParity(this->parity);
-    serial.setDataBits(serial.Data8);
+    setCurrentSrialSetting(serial);
 
     return serial.open(QIODevice::ReadWrite);
+}
+
+QString StageThread::getCurrentPosition()
+{
+//    QSerialPort serial;
+//    setCurrentSrialSetting(serial);
+
+//    QString currentRequest = ">cp\r";
+//    int currentWaitTimeout = waitTime;
+
+//    QString failString = "<p>fail</p>";
+
+//    if (!serial.open(QIODevice::ReadWrite)){
+//            emit error(tr("Can't open %1, error %2").arg(portName).arg(serial.errorString()));
+//            return failString;
+//        }
+
+//        //write request
+//        QByteArray requestData = currentRequest.toLocal8Bit();
+
+//        emit response(tr("request : %1").arg(this->request));
+
+//        serial.write(requestData);
+//        if (serial.waitForBytesWritten(waitTime))
+//        {
+//            //read response
+//            if (serial.waitForReadyRead(currentWaitTimeout))
+//            {
+//                QByteArray responseData = serial.readAll();
+//                while (serial.waitForReadyRead(20))
+//                {
+//                    responseData += serial.readAll();
+//                }
+
+//                QString response(responseData);
+//                emit this->response(response);
+
+//            }else{
+
+//                emit timeout(tr("Wait read response timeout %1").arg(QTime::currentTime().toString()));
+//            }
+//        }else{
+
+//            emit timeout(tr("Wait write request timeout %1").arg(QTime::currentTime().toString()));
+//        }
+
 }
 
 void StageThread::transaction(QString &request)
@@ -97,12 +139,8 @@ void StageThread::run()
     while(!quit)
     {
 
-        serial.setPortName(portName);
-        serial.setBaudRate(this->baudrate);
-        serial.setStopBits(this->stopbits);
-        serial.setParity(this->parity);
-        serial.setDataBits(serial.Data8);
-
+        setCurrentSrialSetting(serial);
+        serial.close();
         if (!serial.open(QIODevice::ReadWrite)){
             emit error(tr("Can't open %1, error %2").arg(portName).arg(serial.errorString()));
             return;
@@ -143,4 +181,14 @@ void StageThread::run()
         currentRequest = request;
         mutex.unlock();
     }
+}
+
+void StageThread::setCurrentSrialSetting(QSerialPort &serial)
+{
+
+    serial.setPortName(portName);
+    serial.setBaudRate(this->baudrate);
+    serial.setStopBits(this->stopbits);
+    serial.setParity(this->parity);
+    serial.setDataBits(serial.Data8);
 }
