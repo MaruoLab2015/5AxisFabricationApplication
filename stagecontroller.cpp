@@ -50,6 +50,7 @@ void StageController::getStagePositions()
 
 void StageController::receiveLineEditText(const QString s)
 {
+
     qDebug() << "receive line edit text : " << s;
 
     QString request = s;
@@ -58,25 +59,27 @@ void StageController::receiveLineEditText(const QString s)
 
 void StageController::receiveRequest(const QString s, EnumList::Axis axis)
 {
-    qDebug() << "receive request : " << s << ", Axis : " << axis;
 
+    qDebug() << "receive request : " << s << ", Axis : " << axis;
 }
 
 void StageController::showResponse(const QString &s)
 {
+
     qDebug() << "response" << s;
     emit sendDebugMessage(s);
-
 }
 
 void StageController::processError(const QString &s)
 {
-    emit sendDebugMessage(s);
 
+    qDebug() << "response" << s;
+    emit sendDebugMessage(s);
 }
 
 void StageController::processTimeout(const QString &s)
 {
-    emit sendDebugMessage(s);
 
+    qDebug() << "response" << s;
+    emit sendDebugMessage(s);
 }

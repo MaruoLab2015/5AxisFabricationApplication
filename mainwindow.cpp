@@ -65,16 +65,17 @@ void MainWindow::on_actionCanOpenStage_triggered()
 {
 
     // get serial communication status
-    canOpenStageList = stageManeger.canOpenStages();
+    canOpenStageList = printTab->stageManager.canOpenStages();
     xStatusLabel->setText(canOpenStageList[EnumList::x]);
     this->showDebugLog(xStatusLabel->text());
 
-    stageManeger.getStagePositions();
+//    stageManeger.getStagePositions();
 }
 
 /* SLOTS */
 void MainWindow::showDebugLog(const QString &s)
 {
+    qDebug() << "debug";
     ui->debugTextBrowser->append(s);
 }
 
@@ -94,27 +95,24 @@ void MainWindow::defaultSettings()
     ui->statusBar->addPermanentWidget(yLabel, 0);
     ui->statusBar->addPermanentWidget(yStatusLabel, 10);
 
-
-    /* SIGNALS & SLOTS*/
-    connect(&stageManeger, SIGNAL(sendDebugMessage(QString)), this, SLOT(showDebugLog(QString)));
-
     // create Dialog
     settingDialog = new StageSettingDialog(this);
     connect(settingDialog, SIGNAL(applySettings()), this, SLOT(applySettings()));
 
     //set Control Tabs
     printTab = new PrintPanel();
-    connect(printTab, SIGNAL(sendLineEditText(QString)), &stageManeger, SLOT(receiveLineEditText(QString)));
-    connect(printTab, SIGNAL(sendRequestToStage(QString,EnumList::Axis)), &stageManeger, SLOT(receiveRequest(QString,EnumList::Axis)));
     ui->tabWidget->addTab(printTab, QIcon(), tr("Print Panel"));
     ui->tabWidget->setCurrentIndex(3);
+
+    /* SIGNALS & SLOTS*/
+//    connect(printTab->stageManager, SIGNAL(sendDebugMessage(QString)), this, SLOT(showDebugLog(QString)));
 
 }
 
 void MainWindow::read(const QJsonObject &json)
 {
 
-    stageManeger.loadStageSettings(json);
+    printTab->stageManager.loadStageSettings(json);
     settingDialog->read(json);
 }
 

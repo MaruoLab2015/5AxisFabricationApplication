@@ -3,7 +3,9 @@
 
 #include <QWidget>
 
+#include "stagecontroller.h"
 #include "enumList.h"
+#include "gcode.h"
 
 namespace Ui {
 class PrintPanel;
@@ -16,6 +18,8 @@ class PrintPanel : public QWidget
 public:
     explicit PrintPanel(QWidget *parent = 0);
     ~PrintPanel();
+
+    StageController stageManager;
 
 signals:
     void sendLineEditText(QString lineEditText);

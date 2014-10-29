@@ -43,7 +43,7 @@ private:
 
     int transactionCount;
 
-    StageController stageManeger;
+//    StageController stageManeger;
     QLabel *xLabel, *yLabel;
     QLabel *xStatusLabel, *yStatusLabel;
     StageSettingDialog *settingDialog;

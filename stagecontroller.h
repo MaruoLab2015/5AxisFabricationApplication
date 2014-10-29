@@ -20,7 +20,7 @@ public:
     void getStagePositions();
 
 signals:
-    void sendDebugMessage(const QString &s);
+    void sendDebugMessage(const QString s);
 
 public slots:
     void receiveLineEditText(const QString s);
