@@ -18,46 +18,50 @@ void ResponseAnalyzer::parseTechnoHandsResponseText(QString response)
 
     int l = orig.length();
     qDebug() << l;
-    int mode = 0; // 0 = search code, 1 = search value
+    int mode = 0; // 0 = search response, 1 = search code, 2 = search value
     int c1, p1, p2;
+    int j;
     c1 = p1 = p2 = 0;
     QString code;
 
     for (int i=0; i<l ; i++)
     {
+        j++;
         QString c = orig.at(i);
         if ( c == QString("<"))
         {
-            continue;
-        }
-        if(mode == 0 && c >= QString("a") && c <= QString("z"))
-        {
-//            qDebug() << "code" << i;
-            c1 = i;
             mode = 1;
             continue;
         }
-        else if( mode == 1 && c == QString(" "))
+        if(mode == 1 && c >= QString("a") && c <= QString("z"))
+        {
+//            qDebug() << "code" << i;
+            c1 = i;
+            j = 0;
+            mode = 2;
+            continue;
+        }
+        else if( mode == 2 && c == QString(" "))
         {
 //            mode = 1;
 //            qDebug() << "space" << i;
 
-            code = orig.mid(c1, i-1);
+            code = orig.mid(c1, j);
             p1 = i+1;
         }
-        if ( c == QString("\r"))
+        if ( mode == 2 && c == QString("\r"))
         {
 //            qDebug() << "cr" << i;
 
             p2 = i;
             mode = 0;
+
+            addParameter(code, orig.mid(p1, p2-p1));
         }
 
 
     }
 
-    addParameter(code, orig.mid(p1, p2-p1));
-//    qDebug() << "code : " << code << ", param :" << orig.mid(p1, p2 - p1);
 }
 
 void ResponseAnalyzer::addParameter(QString c, QString val)
@@ -68,5 +72,5 @@ void ResponseAnalyzer::addParameter(QString c, QString val)
 
     if (c == QString("cp")) this->currentPosition = (double)d;
 
-    qDebug() << this->currentPosition;
+    qDebug() << "code : " << c << ", param :" << val;
 }
