@@ -17,7 +17,7 @@ void ResponseAnalyzer::parseTechnoHandsResponseText(QString response)
     qDebug() << orig;
 
     int l = orig.length();
-    qDebug() << l;
+//    qDebug() << l;
     int mode = 0; // 0 = search response, 1 = search code, 2 = search value
     int c1, p1, p2;
     int j; // number of code caracters

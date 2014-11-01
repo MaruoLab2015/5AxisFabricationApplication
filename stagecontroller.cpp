@@ -10,6 +10,7 @@ StageController::StageController(QObject *parent) :
     QObject(parent)
 {
     xStage = new Stage(EnumList::x);
+    connect(xStage, SIGNAL(sendDebugMessage(QString)), this, SLOT(receiveDebugMessage(QString)));
 }
 
 StageController::~StageController()
@@ -24,17 +25,11 @@ void StageController::loadStageSettings(const QJsonObject &json)
 
 QMap<int, QString> StageController::canOpenStages()
 {
-
-    if (xStage->openSerialPort())
-        qDebug() << "success open xstage";
-    else
-        qDebug() << "fail to open";
-
     QMap<int, QString> map;
-//    if (xStage->canOpenPort())
-//        map.insert(EnumList::x, openPortName.append(xStage->portName));
-//    else
-//        map.insert(EnumList::x, canNotOpenString.append(xStage->portName));
+    if (xStage->openSerialPort())
+        map.insert(EnumList::x, xStage->portName);
+    else
+        map.insert(EnumList::x, QString("Not connecting"));
 
     return map;
 }
@@ -83,8 +78,7 @@ void StageController::move(EnumList::Axis axis, float value, bool isAbsolute)
 void StageController::receiveLineEditText(const QString s)
 {
 
-
-    qDebug() << "receive line edit text : " << s;
+//    qDebug() << "receive line edit text : " << s;
 
     QString request = s;
     xStage->sendCommandDirectly(request);
@@ -93,5 +87,10 @@ void StageController::receiveLineEditText(const QString s)
 void StageController::receiveRequest(const QString s, EnumList::Axis axis)
 {
 
-    qDebug() << "receive request : " << s << ", Axis : " << axis;
+//    qDebug() << "receive request : " << s << ", Axis : " << axis;
+}
+
+void StageController::receiveDebugMessage(QString s)
+{
+    emit sendDebugMessage(s);
 }

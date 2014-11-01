@@ -14,6 +14,13 @@ Stage::Stage(EnumList::Axis stageAxis):
 
 {
     this->axis = stageAxis;
+    switch (axis) {
+    case EnumList::x:
+        axisString = QString("X");
+        break;
+    default:
+        break;
+    }
 }
 
 // Stage action
@@ -21,7 +28,7 @@ QString Stage::sendCommandDirectly(QString &cmd)
 {
     if (!couldOpenSerialPort) return errorString;
 
-    QString sendRequest;
+    QString sendRequest, debugMessage;
     QString stx, etx; // stx = Start of TeXt, etx = End of TeXt
     switch (this->company) {
     case EnumList::TechnoHands:
@@ -38,6 +45,9 @@ QString Stage::sendCommandDirectly(QString &cmd)
 
     QByteArray requestData = sendRequest.toLocal8Bit();
 
+
+    debugMessage = QString("<stage:%1> => ").arg(axisString);
+    emit sendDebugMessage(debugMessage + sendRequest);
     serial->write(requestData);
     QByteArray responseData = serial->readAll();
     while (serial->waitForReadyRead(100))
@@ -45,6 +55,8 @@ QString Stage::sendCommandDirectly(QString &cmd)
         responseData += serial->readAll();
     }
     QString response(responseData);
+
+    emit sendDebugMessage(debugMessage + response);
 
     res = new ResponseAnalyzer();
     res->parseTechnoHandsResponseText(response);
@@ -115,7 +127,7 @@ bool Stage::openSerialPort()
     return couldOpenSerialPort;
 }
 
-bool Stage::closeSerialPort()
+void Stage::closeSerialPort()
 {
     serial->close();
 }

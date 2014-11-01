@@ -57,19 +57,15 @@ void MainWindow::setMenu()
 
 void MainWindow::on_actionStageSetting_triggered()
 {
-
     settingDialog->exec();
 }
 
 void MainWindow::on_actionCanOpenStage_triggered()
 {
-
     // get serial communication status
     canOpenStageList = printTab->stageManager.canOpenStages();
     xStatusLabel->setText(canOpenStageList[EnumList::x]);
     this->showDebugLog(xStatusLabel->text());
-
-//    stageManeger.getStagePositions();
 }
 
 /* SLOTS */
@@ -88,7 +84,6 @@ void MainWindow::applySettings()
 
 void MainWindow::defaultSettings()
 {
-
     //Status bar
     ui->statusBar->addPermanentWidget(xLabel, 0);
     ui->statusBar->addPermanentWidget(xStatusLabel, 10);
@@ -105,20 +100,18 @@ void MainWindow::defaultSettings()
     ui->tabWidget->setCurrentIndex(3);
 
     /* SIGNALS & SLOTS*/
-//    connect(printTab->stageManager, SIGNAL(sendDebugMessage(QString)), this, SLOT(showDebugLog(QString)));
+    connect(&printTab->stageManager, SIGNAL(sendDebugMessage(QString)), this, SLOT(showDebugLog(QString)));
 
 }
 
 void MainWindow::read(const QJsonObject &json)
 {
-
     printTab->stageManager.loadStageSettings(json);
     settingDialog->read(json);
 }
 
 bool MainWindow::loadStageSettings(SaveFormat saveFormat)
 {
-
     QFile loadFile(saveFormat == Json
                    ? QStringLiteral("save.json")
                    : QStringLiteral("save.dat"));

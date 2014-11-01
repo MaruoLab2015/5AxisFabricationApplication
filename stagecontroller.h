@@ -28,13 +28,14 @@ public:
     void moveHome(EnumList::Axis axis);
     void move(EnumList::Axis axis, float value,bool isAbsolute);
 
-signals:
-    void sendDebugMessage(const QString s);
-
-public slots:
     void receiveLineEditText(const QString s);
     void receiveRequest(const QString s, EnumList::Axis axis);
 
+public slots:
+    void receiveDebugMessage(QString s);
+
+signals:
+    void sendDebugMessage(QString s);
 
 private:
     QMap<int, QString> stagePositionList;

@@ -2,6 +2,7 @@
 #define STAGE_H
 
 #include <QSerialPort>
+#include <QObject>
 
 #include "enumList.h"
 
@@ -9,8 +10,9 @@ class QString;
 class QJsonObject;
 class ResponseAnalyzer;
 
-class Stage
+class Stage : public QObject
 {
+    Q_OBJECT
 
 public:
     Stage();
@@ -27,7 +29,7 @@ public:
     // setting
     void read(const QJsonObject &json);
     bool openSerialPort();
-    bool closeSerialPort();
+    void closeSerialPort();
 
     // property
     QSerialPort *serial;
@@ -39,6 +41,10 @@ public:
 
     EnumList::Company company;
     EnumList::Axis axis;
+    QString axisString;
+
+signals:
+    void sendDebugMessage(QString s);
 
 private:
     bool couldOpenSerialPort;
