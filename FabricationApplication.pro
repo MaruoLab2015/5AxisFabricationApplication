@@ -18,23 +18,19 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     stagesettingdialog.cpp \
     stagewidget.cpp \
-    stagethread.cpp \
     printpanel.cpp \
     stagecontroller.cpp \
     gcode.cpp \
-    gcodeanalyzer.cpp \
     responseanalyzer.cpp \
     stage.cpp
 
 HEADERS  += mainwindow.h \
     stagesettingdialog.h \
     stagewidget.h \
-    stagethread.h \
     printpanel.h \
     enumList.h \
     stagecontroller.h \
     gcode.h \
-    gcodeanalyzer.h \
     responseanalyzer.h \
     stage.h
 

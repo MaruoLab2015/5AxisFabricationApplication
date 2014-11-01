@@ -9,8 +9,6 @@
 StageController::StageController(QObject *parent) :
     QObject(parent)
 {
-//    xStage = new StageThread(this, EnumList::x);
-
     xStage = new Stage();
 }
 
@@ -21,7 +19,6 @@ StageController::~StageController()
 
 void StageController::loadStageSettings(const QJsonObject &json)
 {
-//    xStage->read(json["xaxis"].toObject());
     xStage->read(json["xaxis"].toObject());
 }
 

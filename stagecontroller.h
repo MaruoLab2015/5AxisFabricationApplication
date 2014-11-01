@@ -5,7 +5,6 @@
 #include <QMap>
 
 #include "enumList.h"
-#include "stagethread.h"
 
 class Stage;
 
@@ -34,15 +33,8 @@ public slots:
     void receiveLineEditText(const QString s);
     void receiveRequest(const QString s, EnumList::Axis axis);
 
-//    void finishedThread();
-//    void startedThread();
-
-//    void showResponse(const QString &s);
-//    void processError(const QString &s);
-//    void processTimeout(const QString &s);
 
 private:
-//    StageThread *xStage;
     QMap<int, QString> stagePositionList;
 
 };
