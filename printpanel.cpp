@@ -25,5 +25,15 @@ void PrintPanel::on_sendRequestButton_clicked()
 
 
     qDebug() << gc->hasG();//str.toUtf8().data() ;
-//    emit sendLineEditText(ui->requestLineEdit->text());
+    emit sendLineEditText(ui->requestLineEdit->text());
+}
+
+void PrintPanel::on_homeX_clicked()
+{
+//    stageManager.itText("home");
+}
+
+void PrintPanel::on_pushButton_3_clicked()
+{
+    stageManager.getStagePositions();
 }

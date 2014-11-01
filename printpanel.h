@@ -29,6 +29,10 @@ private slots:
 
     void on_sendRequestButton_clicked();
 
+    void on_homeX_clicked();
+
+    void on_pushButton_3_clicked();
+
 private:
     Ui::PrintPanel *ui;
 };

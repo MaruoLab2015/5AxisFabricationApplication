@@ -22,7 +22,9 @@ SOURCES += main.cpp\
     printpanel.cpp \
     stagecontroller.cpp \
     gcode.cpp \
-    gcodeanalyzer.cpp
+    gcodeanalyzer.cpp \
+    responseanalyzer.cpp \
+    stage.cpp
 
 HEADERS  += mainwindow.h \
     stagesettingdialog.h \
@@ -32,7 +34,9 @@ HEADERS  += mainwindow.h \
     enumList.h \
     stagecontroller.h \
     gcode.h \
-    gcodeanalyzer.h
+    gcodeanalyzer.h \
+    responseanalyzer.h \
+    stage.h
 
 FORMS    += mainwindow.ui \
     stagesettingdialog.ui \

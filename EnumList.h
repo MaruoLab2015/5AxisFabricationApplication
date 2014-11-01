@@ -6,7 +6,7 @@
 class EnumList : public QObject
 {
 
-    Q_ENUMS( SaveFormat Company )
+    Q_ENUMS( SaveFormat Company StageShutter )
 
 public:
     enum SaveFormat{
@@ -26,6 +26,11 @@ public:
         theta,
         phi,
         shutter
+    };
+
+    enum StageShutter{
+        on = 1,
+        off = 0
     };
 
 

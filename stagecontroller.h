@@ -7,6 +7,8 @@
 #include "enumList.h"
 #include "stagethread.h"
 
+class Stage;
+
 class StageController : public QObject
 {
     Q_OBJECT
@@ -14,9 +16,15 @@ public:
     explicit StageController(QObject *parent = 0);
     ~StageController();
 
-    void loadStageSettings(const QJsonObject &json);
     QMap<int, QString> canOpenStages();
 
+    EnumList::StageShutter e;
+    float x, y, z;
+    float f;
+
+    Stage *xStage;
+
+    void loadStageSettings(const QJsonObject &json);
     void getStagePositions();
 
 signals:
@@ -26,12 +34,15 @@ public slots:
     void receiveLineEditText(const QString s);
     void receiveRequest(const QString s, EnumList::Axis axis);
 
-    void showResponse(const QString &s);
-    void processError(const QString &s);
-    void processTimeout(const QString &s);
+//    void finishedThread();
+//    void startedThread();
+
+//    void showResponse(const QString &s);
+//    void processError(const QString &s);
+//    void processTimeout(const QString &s);
 
 private:
-    StageThread *xStage;
+//    StageThread *xStage;
     QMap<int, QString> stagePositionList;
 
 };

@@ -35,6 +35,7 @@ public slots:
 public:
     int waitTime;
     int baudrate;
+    float currentPosition;
     QSerialPort::Parity parity;
     QSerialPort::StopBits stopbits;
     QString request;
@@ -48,6 +49,7 @@ private:
     EnumList::Axis axis;
 
     QString applyFormat(QString &request);
+    QString responseString;
     void setCurrentSrialSetting(QSerialPort &serial);
 };
 
