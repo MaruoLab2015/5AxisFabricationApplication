@@ -28,12 +28,32 @@ void PrintPanel::on_sendRequestButton_clicked()
     emit sendLineEditText(ui->requestLineEdit->text());
 }
 
-void PrintPanel::on_homeX_clicked()
-{
-//    stageManager.itText("home");
-}
+//void PrintPanel::on_moveN100X_clicked()
+//{
 
-void PrintPanel::on_pushButton_3_clicked()
-{
-    stageManager.getStagePositions();
-}
+//}
+
+//void PrintPanel::on_moveN10X_clicked()
+//{
+
+//}
+
+//void PrintPanel::on_moveN1X_clicked()
+//{
+
+//}
+
+//void PrintPanel::on_moveP1X_clicked()
+//{
+
+//}
+
+//void PrintPanel::on_moveP10X_clicked()
+//{
+
+//}
+
+//void PrintPanel::on_moveP100X_clicked()
+//{
+
+//}

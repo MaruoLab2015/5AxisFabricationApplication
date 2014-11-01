@@ -4,10 +4,16 @@
 #include <QJsonObject>
 #include <QDebug>
 
-Stage::Stage():
+Stage::Stage()
+{
+}
+
+Stage::Stage(EnumList::Axis stageAxis):
     couldOpenSerialPort(false)
   ,errorString(QString("Not connected"))
+
 {
+    this->axis = stageAxis;
 }
 
 // Stage action

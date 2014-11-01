@@ -29,9 +29,15 @@ private slots:
 
     void on_sendRequestButton_clicked();
 
-    void on_homeX_clicked();
+    void on_homeX_clicked(){stageManager.moveHome(EnumList::x);};
+    void on_cpX_clicked(){stageManager.getStagePositions(EnumList::x);};
 
-    void on_pushButton_3_clicked();
+    void on_moveN100X_clicked(){stageManager.move(EnumList::x, -100.f, false);};
+    void on_moveN10X_clicked(){stageManager.move(EnumList::x, -10.f, false);};;
+    void on_moveN1X_clicked(){stageManager.move(EnumList::x, -1.f, false);};;
+    void on_moveP1X_clicked(){stageManager.move(EnumList::x, 1.f, false);};;
+    void on_moveP10X_clicked(){stageManager.move(EnumList::x, 10.f, false);};;
+    void on_moveP100X_clicked(){stageManager.move(EnumList::x, 100.f, false);};;
 
 private:
     Ui::PrintPanel *ui;

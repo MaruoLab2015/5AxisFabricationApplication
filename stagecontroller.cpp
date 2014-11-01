@@ -9,7 +9,7 @@
 StageController::StageController(QObject *parent) :
     QObject(parent)
 {
-    xStage = new Stage();
+    xStage = new Stage(EnumList::x);
 }
 
 StageController::~StageController()
@@ -39,9 +39,43 @@ QMap<int, QString> StageController::canOpenStages()
     return map;
 }
 
-void StageController::getStagePositions()
+void StageController::getStagePositions(EnumList::Axis axis)
 {
-    xStage->getCurrentPosition();
+    switch (axis) {
+    case EnumList::x:
+
+        xStage->getCurrentPosition();
+        break;
+    default:
+        break;
+    }
+}
+
+void StageController::moveHome(EnumList::Axis axis)
+{
+    switch (axis) {
+    case EnumList::x:
+
+        xStage->moveHome();
+        break;
+    default:
+        break;
+    }
+
+}
+
+void StageController::move(EnumList::Axis axis, float value, bool isAbsolute)
+{
+    switch (axis) {
+    case EnumList::x:
+        if (isAbsolute)
+            xStage->moveAbsolute(value);
+        else
+            xStage->moveRelative(value);
+        break;
+    default:
+        break;
+    }
 }
 
 /* SLOTS */

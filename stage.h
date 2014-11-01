@@ -14,6 +14,7 @@ class Stage
 
 public:
     Stage();
+    Stage(EnumList::Axis stageAxis);
 
     // control Stage command
     QString sendCommandDirectly(QString &cmd);

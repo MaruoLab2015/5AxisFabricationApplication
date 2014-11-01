@@ -61,7 +61,7 @@
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QPushButton" name="pushButton_3">
+    <widget class="QPushButton" name="cpX">
      <property name="text">
       <string>CurrentPosition</string>
      </property>
@@ -73,7 +73,7 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QPushButton" name="moveN100X_2">
+      <widget class="QPushButton" name="moveN100X">
        <property name="minimumSize">
         <size>
          <width>60</width>
@@ -92,7 +92,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_9">
+      <widget class="QPushButton" name="moveN10X">
        <property name="minimumSize">
         <size>
          <width>60</width>
@@ -111,7 +111,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_10">
+      <widget class="QPushButton" name="moveN1X">
        <property name="minimumSize">
         <size>
          <width>60</width>
@@ -130,7 +130,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_11">
+      <widget class="QPushButton" name="moveP1X">
        <property name="minimumSize">
         <size>
          <width>60</width>
@@ -149,7 +149,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_12">
+      <widget class="QPushButton" name="moveP10X">
        <property name="minimumSize">
         <size>
          <width>60</width>
@@ -168,7 +168,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_13">
+      <widget class="QPushButton" name="moveP100X">
        <property name="minimumSize">
         <size>
          <width>60</width>

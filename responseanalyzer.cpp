@@ -20,7 +20,7 @@ void ResponseAnalyzer::parseTechnoHandsResponseText(QString response)
     qDebug() << l;
     int mode = 0; // 0 = search response, 1 = search code, 2 = search value
     int c1, p1, p2;
-    int j;
+    int j; // number of code caracters
     c1 = p1 = p2 = 0;
     QString code;
 
@@ -35,7 +35,6 @@ void ResponseAnalyzer::parseTechnoHandsResponseText(QString response)
         }
         if(mode == 1 && c >= QString("a") && c <= QString("z"))
         {
-//            qDebug() << "code" << i;
             c1 = i;
             j = 0;
             mode = 2;
@@ -43,25 +42,17 @@ void ResponseAnalyzer::parseTechnoHandsResponseText(QString response)
         }
         else if( mode == 2 && c == QString(" "))
         {
-//            mode = 1;
-//            qDebug() << "space" << i;
-
             code = orig.mid(c1, j);
             p1 = i+1;
         }
         if ( mode == 2 && c == QString("\r"))
         {
-//            qDebug() << "cr" << i;
-
             p2 = i;
             mode = 0;
 
             addParameter(code, orig.mid(p1, p2-p1));
         }
-
-
     }
-
 }
 
 void ResponseAnalyzer::addParameter(QString c, QString val)

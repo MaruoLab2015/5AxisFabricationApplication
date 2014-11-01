@@ -24,7 +24,9 @@ public:
     Stage *xStage;
 
     void loadStageSettings(const QJsonObject &json);
-    void getStagePositions();
+    void getStagePositions(EnumList::Axis axis);
+    void moveHome(EnumList::Axis axis);
+    void move(EnumList::Axis axis, float value,bool isAbsolute);
 
 signals:
     void sendDebugMessage(const QString s);
