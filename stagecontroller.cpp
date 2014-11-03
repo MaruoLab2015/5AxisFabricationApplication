@@ -11,16 +11,21 @@ StageController::StageController(QObject *parent) :
 {
     xStage = new Stage(EnumList::x);
     connect(xStage, SIGNAL(sendDebugMessage(QString)), this, SLOT(receiveDebugMessage(QString)));
+
+    yStage = new Stage(EnumList::y);
+    connect(yStage, SIGNAL(sendDebugMessage(QString)), this, SLOT(receiveDebugMessage(QString)));
 }
 
 StageController::~StageController()
 {
     delete xStage;
+    delete yStage;
 }
 
 void StageController::loadStageSettings(const QJsonObject &json)
 {
     xStage->read(json["xaxis"].toObject());
+    yStage->read(json["yaxis"].toObject());
 }
 
 QMap<int, QString> StageController::canOpenStages()
@@ -31,6 +36,11 @@ QMap<int, QString> StageController::canOpenStages()
     else
         map.insert(EnumList::x, QString("Not connecting"));
 
+    if (yStage->openSerialPort())
+        map.insert(EnumList::y, yStage->portName);
+    else
+        map.insert(EnumList::y, QString("Not connecting"));
+
     return map;
 }
 
@@ -39,7 +49,10 @@ void StageController::getStagePositions(EnumList::Axis axis)
     switch (axis) {
     case EnumList::x:
 
-        xStage->getCurrentPosition();
+        x = xStage->getCurrentPosition();
+        break;
+    case EnumList::y:
+        y = yStage->getCurrentPosition();
         break;
     default:
         break;
@@ -52,6 +65,9 @@ void StageController::moveHome(EnumList::Axis axis)
     case EnumList::x:
 
         xStage->moveHome();
+        break;
+    case EnumList::y:
+        yStage->moveHome();
         break;
     default:
         break;
@@ -68,6 +84,13 @@ void StageController::move(EnumList::Axis axis, float value, bool isAbsolute)
         else
             xStage->moveRelative(value);
         break;
+    case EnumList::y:
+        if (isAbsolute)
+            yStage->moveAbsolute(value);
+        else
+            yStage->moveRelative(value);
+        break;
+
     default:
         break;
     }
@@ -77,17 +100,33 @@ void StageController::move(EnumList::Axis axis, float value, bool isAbsolute)
 
 void StageController::receiveLineEditText(const QString s)
 {
-
-//    qDebug() << "receive line edit text : " << s;
-
     QString request = s;
     xStage->sendCommandDirectly(request);
 }
 
 void StageController::receiveRequest(const QString s, EnumList::Axis axis)
 {
+    QString request = s;
+    switch (axis) {
+    case EnumList::x:
+        xStage->sendCommandDirectly(request);
+        break;
+    case EnumList::y:
+        yStage->sendCommandDirectly(request);
+        break;
+    case EnumList::z:
 
-//    qDebug() << "receive request : " << s << ", Axis : " << axis;
+        break;
+    case EnumList::theta:
+
+        break;
+    case EnumList::phi:
+
+        break;
+    default:
+        break;
+    }
+
 }
 
 void StageController::receiveDebugMessage(QString s)

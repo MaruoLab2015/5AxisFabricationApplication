@@ -18,6 +18,9 @@ Stage::Stage(EnumList::Axis stageAxis):
     case EnumList::x:
         axisString = QString("X");
         break;
+    case EnumList::y:
+        axisString = QString("Y");
+        break;
     default:
         break;
     }
@@ -46,7 +49,7 @@ QString Stage::sendCommandDirectly(QString &cmd)
     QByteArray requestData = sendRequest.toLocal8Bit();
 
 
-    debugMessage = QString("<stage:%1> => ").arg(axisString);
+    debugMessage = QString("<stage:%1> ").arg(axisString);
     emit sendDebugMessage(debugMessage + sendRequest);
     serial->write(requestData);
     QByteArray responseData = serial->readAll();

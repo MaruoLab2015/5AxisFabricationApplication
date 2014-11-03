@@ -65,7 +65,9 @@ void MainWindow::on_actionCanOpenStage_triggered()
     // get serial communication status
     canOpenStageList = printTab->stageManager.canOpenStages();
     xStatusLabel->setText(canOpenStageList[EnumList::x]);
+    yStatusLabel->setText(canOpenStageList[EnumList::y]);
     this->showDebugLog(xStatusLabel->text());
+    this->showDebugLog(yStatusLabel->text());
 }
 
 /* SLOTS */

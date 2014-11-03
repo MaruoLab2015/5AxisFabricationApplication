@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     stagecontroller.cpp \
     gcode.cpp \
     responseanalyzer.cpp \
-    stage.cpp
+    stage.cpp \
+    shutter.cpp
 
 HEADERS  += mainwindow.h \
     stagesettingdialog.h \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
     stagecontroller.h \
     gcode.h \
     responseanalyzer.h \
-    stage.h
+    stage.h \
+    shutter.h
 
 FORMS    += mainwindow.ui \
     stagesettingdialog.ui \

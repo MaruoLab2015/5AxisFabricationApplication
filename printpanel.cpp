@@ -35,5 +35,18 @@ void PrintPanel::on_sendRequestButton_clicked()
         return;
     }
 
-    stageManager.receiveLineEditText(ui->requestLineEdit->text());
+    if (ui->sendAxisComboBox->currentIndex() != 0)
+        stageManager.receiveRequest(ui->requestLineEdit->text(), (EnumList::Axis)(ui->sendAxisComboBox->currentIndex()-1));
 }
+
+void PrintPanel::on_cpX_clicked()
+{
+    stageManager.getStagePositions(EnumList::x);
+    ui->positionX->setText(QString::number(stageManager.x));
+};
+
+void PrintPanel::on_cpY_clicked()
+{
+    stageManager.getStagePositions(EnumList::y);
+    ui->positionY->setText(QString::number(stageManager.y));
+};

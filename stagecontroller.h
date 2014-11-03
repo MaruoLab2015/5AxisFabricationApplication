@@ -21,7 +21,7 @@ public:
     float x, y, z;
     float f;
 
-    Stage *xStage;
+    Stage *xStage, *yStage;
 
     void loadStageSettings(const QJsonObject &json);
     void getStagePositions(EnumList::Axis axis);
