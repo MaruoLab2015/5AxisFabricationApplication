@@ -2,6 +2,7 @@
 #include "enumList.h"
 #include "responseanalyzer.h"
 #include "stage.h"
+#include "shutter.h"
 
 #include <QJsonObject>
 #include <QDebug>
@@ -14,18 +15,22 @@ StageController::StageController(QObject *parent) :
 
     yStage = new Stage(EnumList::y);
     connect(yStage, SIGNAL(sendDebugMessage(QString)), this, SLOT(receiveDebugMessage(QString)));
+
+    shutter = new Shutter(this);
 }
 
 StageController::~StageController()
 {
     delete xStage;
     delete yStage;
+    delete shutter;
 }
 
 void StageController::loadStageSettings(const QJsonObject &json)
 {
     xStage->read(json["xaxis"].toObject());
     yStage->read(json["yaxis"].toObject());
+    shutter->read(json["shutter"].toObject());
 }
 
 QMap<int, QString> StageController::canOpenStages()
@@ -40,6 +45,10 @@ QMap<int, QString> StageController::canOpenStages()
         map.insert(EnumList::y, yStage->portName);
     else
         map.insert(EnumList::y, QString("Not connecting"));
+    if (shutter->openSerialPort())
+        map.insert(EnumList::shutter, shutter->portName);
+    else
+        map.insert(EnumList::shutter, QString("Not connecting"));
 
     return map;
 }
@@ -94,6 +103,12 @@ void StageController::move(EnumList::Axis axis, float value, bool isAbsolute)
     default:
         break;
     }
+}
+
+void StageController::pressTheShutter(bool isOpen)
+{
+    if (isOpen) shutter->open();
+    else shutter->close();
 }
 
 /* SLOTS */

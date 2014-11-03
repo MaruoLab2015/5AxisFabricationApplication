@@ -43,8 +43,8 @@ private:
 
     int transactionCount;
 
-    QLabel *xLabel, *yLabel;
-    QLabel *xStatusLabel, *yStatusLabel;
+    QLabel *xLabel, *yLabel, *shutterLabel;
+    QLabel *xStatusLabel, *yStatusLabel, *shutterStatusLabel;
     StageSettingDialog *settingDialog;
     PrintPanel *printTab;
     QMap<int, QString> canOpenStageList;

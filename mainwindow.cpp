@@ -13,8 +13,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
   ,xLabel(new QLabel(tr("x : ")))
   ,yLabel(new QLabel(tr("y : ")))
+  ,shutterLabel(new QLabel("shutter:"))
   ,xStatusLabel(new QLabel(tr("Not connecting")))
   ,yStatusLabel(new QLabel(tr("Not connecting")))
+  ,shutterStatusLabel(new QLabel("Not connecting"))
+
 {
     ui->setupUi(this);
 
@@ -66,8 +69,10 @@ void MainWindow::on_actionCanOpenStage_triggered()
     canOpenStageList = printTab->stageManager.canOpenStages();
     xStatusLabel->setText(canOpenStageList[EnumList::x]);
     yStatusLabel->setText(canOpenStageList[EnumList::y]);
+    shutterStatusLabel->setText(canOpenStageList[EnumList::shutter]);
     this->showDebugLog(xStatusLabel->text());
     this->showDebugLog(yStatusLabel->text());
+    this->showDebugLog(shutterStatusLabel->text());
 }
 
 /* SLOTS */
@@ -91,6 +96,8 @@ void MainWindow::defaultSettings()
     ui->statusBar->addPermanentWidget(xStatusLabel, 10);
     ui->statusBar->addPermanentWidget(yLabel, 0);
     ui->statusBar->addPermanentWidget(yStatusLabel, 10);
+    ui->statusBar->addPermanentWidget(shutterLabel, 0);
+    ui->statusBar->addPermanentWidget(shutterStatusLabel, 10);
 
     // create Dialog
     settingDialog = new StageSettingDialog(this);

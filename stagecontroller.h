@@ -7,6 +7,7 @@
 #include "enumList.h"
 
 class Stage;
+class Shutter;
 
 class StageController : public QObject
 {
@@ -22,11 +23,14 @@ public:
     float f;
 
     Stage *xStage, *yStage;
+    Shutter *shutter;
 
     void loadStageSettings(const QJsonObject &json);
     void getStagePositions(EnumList::Axis axis);
     void moveHome(EnumList::Axis axis);
     void move(EnumList::Axis axis, float value,bool isAbsolute);
+
+    void pressTheShutter(bool isOpen);
 
     void receiveLineEditText(const QString s);
     void receiveRequest(const QString s, EnumList::Axis axis);

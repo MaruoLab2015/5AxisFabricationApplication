@@ -46,6 +46,8 @@ private slots:
     void on_moveP100X_clicked(){stageManager.move(EnumList::x, 100.f, false);};
     void on_moveP100Y_clicked(){stageManager.move(EnumList::y, 100.f, false);};
 
+    void on_shutterOpenButton_clicked(){stageManager.pressTheShutter(true);};
+    void on_shutterCloseButton_clicked(){stageManager.pressTheShutter(false);};
 
 private:
     Ui::PrintPanel *ui;
