@@ -23,7 +23,9 @@ SOURCES += main.cpp\
     gcode.cpp \
     responseanalyzer.cpp \
     stage.cpp \
-    shutter.cpp
+    shutter.cpp \
+    convertpanel.cpp \
+    editorpanel.cpp
 
 HEADERS  += mainwindow.h \
     stagesettingdialog.h \
@@ -34,8 +36,12 @@ HEADERS  += mainwindow.h \
     gcode.h \
     responseanalyzer.h \
     stage.h \
-    shutter.h
+    shutter.h \
+    convertpanel.h \
+    editorpanel.h
 
 FORMS    += mainwindow.ui \
     stagesettingdialog.ui \
-    printpanel.ui
+    printpanel.ui \
+    convertpanel.ui \
+    editorpanel.ui

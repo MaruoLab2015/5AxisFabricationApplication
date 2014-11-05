@@ -1,6 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "stagesettingdialog.h"
+#include "convertpanel.h"
+#include "editorpanel.h"
+#include "printpanel.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -104,9 +107,15 @@ void MainWindow::defaultSettings()
     connect(settingDialog, SIGNAL(applySettings()), this, SLOT(applySettings()));
 
     //set Control Tabs
+    convertTab = new ConvertPanel(this);
+    ui->tabWidget->addTab(convertTab, QIcon(), tr("Convert"));
+    editorTab = new EditorPanel(this);
+    ui->tabWidget->addTab(editorTab, QIcon(), tr("G-Code"));
+
     printTab = new PrintPanel();
     ui->tabWidget->addTab(printTab, QIcon(), tr("Print Panel"));
-    ui->tabWidget->setCurrentIndex(3);
+
+    ui->tabWidget->setCurrentIndex(1);
 
     /* SIGNALS & SLOTS*/
     connect(&printTab->stageManager, SIGNAL(sendDebugMessage(QString)), this, SLOT(showDebugLog(QString)));

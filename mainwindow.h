@@ -4,9 +4,11 @@
 #include <QMainWindow>
 
 #include "stagecontroller.h"
-#include "stagesettingdialog.h"
-#include "printpanel.h"
 
+class ConvertPanel;
+class EditorPanel;
+class PrintPanel;
+class StageSettingDialog;
 class QSerialPort;
 class QLabel;
 
@@ -46,6 +48,8 @@ private:
     QLabel *xLabel, *yLabel, *shutterLabel;
     QLabel *xStatusLabel, *yStatusLabel, *shutterStatusLabel;
     StageSettingDialog *settingDialog;
+    ConvertPanel *convertTab;
+    EditorPanel *editorTab;
     PrintPanel *printTab;
     QMap<int, QString> canOpenStageList;
 
