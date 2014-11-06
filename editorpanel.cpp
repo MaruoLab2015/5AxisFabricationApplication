@@ -12,3 +12,8 @@ EditorPanel::~EditorPanel()
 {
     delete ui;
 }
+
+void EditorPanel::receiveGcodeText(QString gcText)
+{
+     ui->mainTextEdit->setText(gcText);
+}

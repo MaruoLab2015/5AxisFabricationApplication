@@ -119,6 +119,7 @@ void MainWindow::defaultSettings()
 
     /* SIGNALS & SLOTS*/
     connect(&printTab->stageManager, SIGNAL(sendDebugMessage(QString)), this, SLOT(showDebugLog(QString)));
+    connect(convertTab, SIGNAL(sendGcodeText(QString)), editorTab, SLOT(receiveGcodeText(QString)));
 
 }
 

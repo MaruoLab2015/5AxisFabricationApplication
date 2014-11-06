@@ -15,6 +15,9 @@ public:
     explicit EditorPanel(QWidget *parent = 0);
     ~EditorPanel();
 
+public slots:
+    void receiveGcodeText(QString gcText);
+
 private:
     Ui::EditorPanel *ui;
 };
