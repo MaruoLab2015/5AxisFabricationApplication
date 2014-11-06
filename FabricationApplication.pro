@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui opengl
 QT       += serialport
 
 
@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     stage.cpp \
     shutter.cpp \
     convertpanel.cpp \
-    editorpanel.cpp
+    editorpanel.cpp \
+    graphicswidget.cpp
 
 HEADERS  += mainwindow.h \
     stagesettingdialog.h \
@@ -38,7 +39,8 @@ HEADERS  += mainwindow.h \
     stage.h \
     shutter.h \
     convertpanel.h \
-    editorpanel.h
+    editorpanel.h \
+    graphicswidget.h
 
 FORMS    += mainwindow.ui \
     stagesettingdialog.ui \

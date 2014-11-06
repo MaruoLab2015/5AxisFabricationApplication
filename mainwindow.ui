@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>600</height>
+    <width>833</width>
+    <height>514</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,14 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QGraphicsView" name="graphicsView"/>
+         <widget class="GraphicsWidget" name="graphicWidget" native="true">
+          <property name="minimumSize">
+           <size>
+            <width>500</width>
+            <height>200</height>
+           </size>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QTabWidget" name="tabWidget">
@@ -61,7 +68,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
+     <width>833</width>
      <height>22</height>
     </rect>
    </property>
@@ -125,6 +132,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>GraphicsWidget</class>
+   <extends>QWidget</extends>
+   <header>graphicswidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
