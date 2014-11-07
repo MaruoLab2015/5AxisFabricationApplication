@@ -16,34 +16,34 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    stagesettingdialog.cpp \
-    stagewidget.cpp \
-    printpanel.cpp \
-    stagecontroller.cpp \
-    gcode.cpp \
-    responseanalyzer.cpp \
-    stage.cpp \
-    shutter.cpp \
-    convertpanel.cpp \
-    editorpanel.cpp \
-    graphicswidget.cpp
+    settingDialog/stagesettingdialog.cpp \
+    printpanel/stagewidget.cpp \
+    printpanel/printpanel.cpp \
+    printpanel/stagecontroller.cpp \
+    model/gcode.cpp \
+    model/responseanalyzer.cpp \
+    printpanel/stage.cpp \
+    printpanel/shutter.cpp \
+    convert/convertpanel.cpp \
+    editor/editorpanel.cpp \
+    graphic/graphicswidget.cpp \
 
 HEADERS  += mainwindow.h \
-    stagesettingdialog.h \
-    stagewidget.h \
-    printpanel.h \
+    settingDialog/stagesettingdialog.h \
+    printpanel/stagewidget.h \
+    printpanel/printpanel.h \
     enumList.h \
-    stagecontroller.h \
-    gcode.h \
-    responseanalyzer.h \
-    stage.h \
-    shutter.h \
-    convertpanel.h \
-    editorpanel.h \
-    graphicswidget.h
+    printpanel/stagecontroller.h \
+    model/gcode.h \
+    model/responseanalyzer.h \
+    printpanel/stage.h \
+    printpanel/shutter.h \
+    convert/convertpanel.h \
+    editor/editorpanel.h \
+    graphic/graphicswidget.h \
 
 FORMS    += mainwindow.ui \
-    stagesettingdialog.ui \
-    printpanel.ui \
-    convertpanel.ui \
-    editorpanel.ui
+    settingDialog/stagesettingdialog.ui \
+    printpanel/printpanel.ui \
+    convert/convertpanel.ui \
+    editor/editorpanel.ui \

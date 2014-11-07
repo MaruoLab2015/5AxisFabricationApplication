@@ -22,7 +22,8 @@ protected:
     void mouseMoveEvent(QMouseEvent *event);
 
 private:
-    void draw();
+    void drawAxis(int size);
+    void drawTile(float size);
 
     void setXRotation(int angle);
     void setYRotation(int angle);
