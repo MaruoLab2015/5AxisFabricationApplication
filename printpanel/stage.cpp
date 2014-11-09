@@ -127,6 +127,11 @@ bool Stage::openSerialPort()
     serial->setDataBits(QSerialPort::Data8);
 
     couldOpenSerialPort = serial->open(QIODevice::ReadWrite);
+    if (couldOpenSerialPort)
+        qDebug() << QString("Open %1").arg(portName);
+    else
+        qDebug() << QString("Couldn't open %1").arg(portName);
+
     return couldOpenSerialPort;
 }
 

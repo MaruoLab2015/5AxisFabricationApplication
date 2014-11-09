@@ -4,12 +4,14 @@
 #include "convert/convertpanel.h"
 #include "editor/editorpanel.h"
 #include "printpanel/printpanel.h"
+#include "logbrowser.h"
 
 #include <QDebug>
 #include <QLabel>
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QFile>
+#include <QTime>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -72,18 +74,35 @@ void MainWindow::on_actionCanOpenStage_triggered()
     canOpenStageList = printTab->stageManager.canOpenStages();
     xStatusLabel->setText(canOpenStageList[EnumList::x]);
     yStatusLabel->setText(canOpenStageList[EnumList::y]);
-    shutterStatusLabel->setText(canOpenStageList[EnumList::shutter]);
-    this->showDebugLog(xStatusLabel->text());
-    this->showDebugLog(yStatusLabel->text());
-    this->showDebugLog(shutterStatusLabel->text());
+    shutterStatusLabel->setText(canOpenStageList[EnumList::shutter]);    
+}
+
+/* received debug Message */
+
+void MainWindow::outputMessage(QtMsgType type, const QString &msg)
+{
+    QString debugMsg = QTime::currentTime().toString("hh:mm:ss:zzz");
+
+    switch (type) {
+    case QtDebugMsg:
+        debugMsg.append(QString(" [Debug] %1\n").arg(msg));
+        break;
+    case QtWarningMsg:
+        debugMsg.append(QString(" [Warning] %1\n").arg(msg));
+
+        break;
+    case QtCriticalMsg:
+        debugMsg.append(QString(" [Critical] %1\n").arg(msg));
+        break;
+    case QtFatalMsg:
+        debugMsg.append(QString(" [Fatal] %1\n").arg(msg));
+        abort();
+    }
+
+    ui->debugTextBrowser->append(debugMsg);
 }
 
 /* SLOTS */
-void MainWindow::showDebugLog(const QString &s)
-{
-    qDebug() << "debug";
-    ui->debugTextBrowser->append(s);
-}
 
 void MainWindow::applySettings()
 {
@@ -118,7 +137,6 @@ void MainWindow::defaultSettings()
     ui->tabWidget->setCurrentIndex(1);
 
     /* SIGNALS & SLOTS*/
-    connect(&printTab->stageManager, SIGNAL(sendDebugMessage(QString)), this, SLOT(showDebugLog(QString)));
     connect(convertTab, SIGNAL(sendGcodeText(QString)), editorTab, SLOT(receiveGcodeText(QString)));
 
 }
@@ -137,7 +155,11 @@ bool MainWindow::loadStageSettings(SaveFormat saveFormat)
     if (!loadFile.open(QIODevice::ReadOnly))
     {
         qWarning("Couldn't open save file");
+        qDebug("Couldn't open save file");
         return false;
+    }else
+    {
+        qDebug("Succeeded in opening save file");
     }
 
     QByteArray saveData = loadFile.readAll();

@@ -146,5 +146,5 @@ void StageController::receiveRequest(const QString s, EnumList::Axis axis)
 
 void StageController::receiveDebugMessage(QString s)
 {
-    emit sendDebugMessage(s);
+    qDebug() << s;
 }

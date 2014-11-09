@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <QTextBrowser>
+
 #include "printpanel/stagecontroller.h"
 
 class ConvertPanel;
@@ -11,6 +13,7 @@ class PrintPanel;
 class StageSettingDialog;
 class QSerialPort;
 class QLabel;
+class LogBrowser;
 
 namespace Ui {
 class MainWindow;
@@ -32,8 +35,9 @@ public:
     bool loadStageSettings(SaveFormat saveFormat);
     void read(const QJsonObject &json);
 
+    void outputMessage( QtMsgType type, const QString &msg);
+
 public slots:
-    void showDebugLog(const QString &s);
     void applySettings();
 
 private slots:
