@@ -1,6 +1,6 @@
 #include "stagesettingdialog.h"
 #include "ui_stagesettingdialog.h"
-#include "stagewidget.h"
+#include "printpanel/stagewidget.h"
 
 #include <QSerialPortInfo>
 #include <QDebug>

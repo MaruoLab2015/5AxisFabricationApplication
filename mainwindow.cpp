@@ -1,9 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "stagesettingdialog.h"
-#include "convertpanel.h"
-#include "editorpanel.h"
-#include "printpanel.h"
+#include "settingDialog/stagesettingdialog.h"
+#include "convert/convertpanel.h"
+#include "editor/editorpanel.h"
+#include "printpanel/printpanel.h"
 
 #include <QDebug>
 #include <QLabel>

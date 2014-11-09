@@ -5,7 +5,7 @@
 
 #include "stagecontroller.h"
 #include "enumList.h"
-#include "gcode.h"
+#include "model/gcode.h"
 
 namespace Ui {
 class PrintPanel;

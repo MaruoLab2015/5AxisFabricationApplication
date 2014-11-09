@@ -3,7 +3,7 @@
 
 #include <QMainWindow>
 
-#include "stagecontroller.h"
+#include "printpanel/stagecontroller.h"
 
 class ConvertPanel;
 class EditorPanel;

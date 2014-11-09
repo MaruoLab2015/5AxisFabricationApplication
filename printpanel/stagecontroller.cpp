@@ -1,6 +1,6 @@
 #include "stagecontroller.h"
 #include "enumList.h"
-#include "responseanalyzer.h"
+#include "model/responseanalyzer.h"
 #include "stage.h"
 #include "shutter.h"
 

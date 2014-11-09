@@ -20,7 +20,7 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="GraphicsWidget" name="graphicWidget" native="true">
+         <widget class="GraphicWidget" name="graphicWidget" native="true">
           <property name="minimumSize">
            <size>
             <width>500</width>
@@ -134,9 +134,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>GraphicsWidget</class>
+   <class>GraphicWidget</class>
    <extends>QWidget</extends>
-   <header>graphicswidget.h</header>
+   <header>graphicwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
