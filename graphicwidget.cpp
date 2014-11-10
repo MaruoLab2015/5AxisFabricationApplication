@@ -1,4 +1,5 @@
 #include "graphicwidget.h"
+#include "graphic/giqglviewer.h"
 
 #include <QGridLayout>
 #include <QDebug>
@@ -7,13 +8,9 @@ GraphicWidget::GraphicWidget(QWidget *parent) :
     QWidget(parent)
 {
 
-    qDebug() << "layout";
-    Renderer *renderer = new Renderer();
-
-    Scene *scene = new Scene();
-
+    GIQGLViewer *viewer = new GIQGLViewer();
     QGridLayout* layout = new QGridLayout();
-    layout->addWidget(renderer);
+    layout->addWidget(viewer);
 
     setLayout(layout);
 }
