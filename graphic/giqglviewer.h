@@ -14,6 +14,8 @@ protected:
     virtual void init();
     virtual void animate();
 
+private:
+    void initCamera();
 signals:
 
 public slots:
