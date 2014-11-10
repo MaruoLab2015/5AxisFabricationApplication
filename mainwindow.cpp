@@ -4,7 +4,6 @@
 #include "convert/convertpanel.h"
 #include "editor/editorpanel.h"
 #include "printpanel/printpanel.h"
-#include "logbrowser.h"
 
 #include <QDebug>
 #include <QLabel>

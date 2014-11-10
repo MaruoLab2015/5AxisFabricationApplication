@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "logbrowser.h"
 #include <QApplication>
 #include <QPointer>
 #include <QDebug>

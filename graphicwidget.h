@@ -2,7 +2,6 @@
 #define GRAPHICWIDGET_H
 
 #include <QWidget>
-#include "graphic/GIThree.h"
 
 class GraphicWidget : public QWidget
 {

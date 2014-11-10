@@ -27,15 +27,6 @@ SOURCES += main.cpp\
     convert/convertpanel.cpp \
     editor/editorpanel.cpp \
     graphic/graphicswidget.cpp \
-    graphic/renderer.cpp \
-    graphic/scene.cpp \
-    graphic/camera.cpp \
-    graphic/light.cpp \
-    graphic/geometry.cpp \
-    graphic/mesh.cpp \
-    graphic/face.cpp \
-    graphic/vector3.cpp \
-    graphic/material.cpp \
     graphicwidget.cpp
 
 HEADERS  += mainwindow.h \
@@ -51,16 +42,6 @@ HEADERS  += mainwindow.h \
     convert/convertpanel.h \
     editor/editorpanel.h \
     graphic/graphicswidget.h \
-    graphic/GIThree.h \
-    graphic/renderer.h \
-    graphic/scene.h \
-    graphic/camera.h \
-    graphic/light.h \
-    graphic/geometry.h \
-    graphic/mesh.h \
-    graphic/face.h \
-    graphic/vector3.h \
-    graphic/material.h \
     graphicwidget.h
 
 FORMS    += mainwindow.ui \
