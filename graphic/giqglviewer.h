@@ -1,7 +1,7 @@
 #ifndef GIQGLVIEWER_H
 #define GIQGLVIEWER_H
 
-#include "QGLViewer/qglviewer.h"
+#include <QGLViewer/qglviewer.h>
 
 class GIQGLViewer : public QGLViewer
 {
