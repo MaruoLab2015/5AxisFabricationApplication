@@ -1,7 +1,7 @@
-#include "graphicswidget.h"
+﻿#include "graphicswidget.h"
 
 #include <QtOpenGL>
-#include <GLUT/glut.h>
+//#include <GLUT/glut.h>
 
 GraphicsWidget::GraphicsWidget(QWidget *parent) :
     QGLWidget(parent)
@@ -33,10 +33,10 @@ void GraphicsWidget::resizeGL(int width, int height)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45, (float)width/height, 0.01, 100.0);
+//    gluPerspective(45, (float)width/height, 0.01, 100.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0,0,5, 0,0,0, 0,1,0);
+//    gluLookAt(0,0,5, 0,0,0, 0,1,0);
 }
 
 // Rotation
