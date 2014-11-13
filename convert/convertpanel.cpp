@@ -1,5 +1,6 @@
-#include "convertpanel.h"
+﻿#include "convertpanel.h"
 #include "ui_convertpanel.h"
+#include "model/gcode.h"
 
 #include <QFileDialog>
 #include <QDebug>
@@ -43,6 +44,7 @@ void ConvertPanel::on_openLayerFolderButton_clicked()
 void ConvertPanel::on_convertPushButton_clicked()
 {
     QString gcodeText;
+    QList<GCode*> gcodeList;
     startLayer = ui->startLayerLineEdit->text().toInt();
     endLayer = ui->endLayerLineEdit->text().toInt();
 
@@ -69,16 +71,23 @@ void ConvertPanel::on_convertPushButton_clicked()
         QTextStream in(&file);
         while(!in.atEnd())
         {
-            gcodeText.append(convertCSVToGCodeXY(in.readLine()));
+            QString gString = convertCSVToGCodeXY(in.readLine());
+            gcodeText.append(gString);
+            GCode *g = new GCode();
+            g->parse(gString);
+            gcodeList.append(g);
         }
 
         file.close();
 
-        gcodeText.append(convertCSVToGCodeZ(ui->layerPitchLineEdit->text().toFloat()));
+        QString gString = convertCSVToGCodeZ(ui->layerPitchLineEdit->text().toFloat() * (i + 1) );
+        gcodeText.append(gString);
+        GCode *g = new GCode();
+        g->parse(gString);
+        gcodeList.append(g);
     }
 
-    emit sendGcodeText(gcodeText);
-
+    emit sendGcodeText(gcodeList);
 }
 
 QString ConvertPanel::convertCSVToGCodeXY(QString line)

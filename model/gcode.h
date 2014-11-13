@@ -1,4 +1,4 @@
-#ifndef GCODE_H
+﻿#ifndef GCODE_H
 #define GCODE_H
 
 #include <QObject>
@@ -27,13 +27,13 @@ public:
 
     ushort g;
     float x, y, z, e, f;
+    QString origText;
 
 signals:
 
 public slots:
 
 private:
-    QString *text;
     QString orig;
 
 };

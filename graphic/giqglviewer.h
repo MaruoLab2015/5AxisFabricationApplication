@@ -1,7 +1,8 @@
-#ifndef GIQGLVIEWER_H
+﻿#ifndef GIQGLVIEWER_H
 #define GIQGLVIEWER_H
 
 #include <QGLViewer/qglviewer.h>
+#include "model/gcode.h"
 
 class GIQGLViewer : public QGLViewer
 {
@@ -10,16 +11,19 @@ public:
     explicit GIQGLViewer(QWidget *parent = 0);
 
 protected:
+//    virtual void fastDraw();
     virtual void draw();
     virtual void init();
     virtual void animate();
 
 private:
     void initCamera();
+
+    QList<GCode*> _gcodeList;
 signals:
 
 public slots:
-
+    void drawLines(QList<GCode*> lines);
 };
 
 #endif // GIQGLVIEWER_H

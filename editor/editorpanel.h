@@ -1,7 +1,9 @@
-#ifndef EDITORPANEL_H
+﻿#ifndef EDITORPANEL_H
 #define EDITORPANEL_H
 
 #include <QWidget>
+
+#include "model/gcode.h"
 
 namespace Ui {
 class EditorPanel;
@@ -15,8 +17,13 @@ public:
     explicit EditorPanel(QWidget *parent = 0);
     ~EditorPanel();
 
+    QList<GCode> gcodeList;
+
+signals:
+    void sendGCodeListToGraphicArea(QList<GCode *> gcodeList);
+
 public slots:
-    void receiveGcodeText(QString gcText);
+    void receiveGcodeText(QList<GCode*> gcodeList);
 
 private:
     Ui::EditorPanel *ui;

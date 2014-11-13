@@ -1,5 +1,7 @@
-#include "editorpanel.h"
+﻿#include "editorpanel.h"
 #include "ui_editorpanel.h"
+
+#include <QDebug>
 
 EditorPanel::EditorPanel(QWidget *parent) :
     QWidget(parent),
@@ -13,7 +15,16 @@ EditorPanel::~EditorPanel()
     delete ui;
 }
 
-void EditorPanel::receiveGcodeText(QString gcText)
+void EditorPanel::receiveGcodeText(QList<GCode*> gcodeList)
 {
-     ui->mainTextEdit->setText(gcText);
+    GCode *gcode;
+    QString gcText;
+    foreach(gcode, gcodeList)
+    {
+        gcText.append(gcode->origText);
+    }
+
+    ui->mainTextEdit->setText(gcText);
+
+    emit sendGCodeListToGraphicArea(gcodeList);
 }

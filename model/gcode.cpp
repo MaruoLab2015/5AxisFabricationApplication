@@ -1,4 +1,4 @@
-#include "gcode.h"
+﻿#include "gcode.h"
 #include "climits"
 
 #include <QDebug>
@@ -15,18 +15,17 @@ GCode::GCode(QObject *parent) :
 void GCode::parse(QString s)
 {
 
+    origText = s;
     orig = s.trimmed(); // delete pre and post spaces
 
     orig = orig.toUpper();// convert string to uppercase
 
-
-//    fields = 128;
     int l = orig.length();
     int mode = 0; // 0 = search code, 1= search value
     int p1 = 0;
     QString code = ";";
 
-    qDebug() << l;
+//    qDebug() << l;
 
     for (int i=0; i<l ; i++)
     {
@@ -63,7 +62,7 @@ void GCode::parse(QString s)
     }
 
 
-    qDebug() << orig.toUtf8().data();
+//    qDebug() << orig.toUtf8().data();
 }
 
 void GCode::addCode(QString c, QString val)

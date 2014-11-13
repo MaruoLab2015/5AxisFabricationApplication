@@ -1,7 +1,9 @@
-#ifndef CONVERTPANEL_H
+﻿#ifndef CONVERTPANEL_H
 #define CONVERTPANEL_H
 
 #include <QWidget>
+
+class GCode;
 
 namespace Ui {
 class ConvertPanel;
@@ -16,7 +18,7 @@ public:
     ~ConvertPanel();
 
 signals:
-    void sendGcodeText(QString GcodeText);
+    void sendGcodeText(QList<GCode*> gcodeList);
 
 private slots:
     void on_openFolderPathButton_clicked();

@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "settingDialog/stagesettingdialog.h"
 #include "convert/convertpanel.h"
@@ -136,7 +136,8 @@ void MainWindow::defaultSettings()
     ui->tabWidget->setCurrentIndex(1);
 
     /* SIGNALS & SLOTS*/
-    connect(convertTab, SIGNAL(sendGcodeText(QString)), editorTab, SLOT(receiveGcodeText(QString)));
+    connect(convertTab, SIGNAL(sendGcodeText(QList<GCode*>)), editorTab, SLOT(receiveGcodeText(QList<GCode*>)));
+    connect(editorTab, SIGNAL(sendGCodeListToGraphicArea(QList<GCode*>)), ui->graphicWidget, SLOT(drawLines(QList<GCode*>)));
 
 }
 
