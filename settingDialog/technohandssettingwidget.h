@@ -17,11 +17,18 @@ public:
     explicit TechnohandsSettingWidget(QWidget *parent = 0);
     ~TechnohandsSettingWidget();
 
+    void read(const QJsonObject &json);
+    void write(QJsonObject &json) const;
+
 private:
     Ui::TechnohandsSettingWidget *ui;
 
 private:
     StageWidget* createTabWithTitle(QString title);
+
+    StageWidget *zAxisSuppliedWidget;
+    StageWidget *thetaAxisSuppliedWidget;
+    StageWidget *phiAxisWidget;
 };
 
 #endif // TECHNOHANDSSETTINGWIDGET_H

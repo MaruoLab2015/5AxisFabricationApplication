@@ -97,6 +97,8 @@ void StageWidget::read(const QJsonObject &json)
     baudrateComboBox->setCurrentIndex(json["baudrateIndex"].toInt());
     stopbitsComboBox->setCurrentIndex(json["stopbitsIndex"].toInt());
     parityComboBox->setCurrentIndex(json["parityIndex"].toInt());
+    isEnableCheckBox->setCheckState((Qt::CheckState)json["disable"].toInt());
+    isEnableCheckBox->clicked(isEnableCheckBox->checkState());
 }
 
 void StageWidget::write(QJsonObject &json) const
@@ -115,4 +117,5 @@ void StageWidget::write(QJsonObject &json) const
     json["baudrate"]      = baudrateEnumType.value(baudrateComboBox->currentIndex()) ;
     json["stopbits"]      = stopBitsEnumType.value(stopbitsComboBox->currentIndex());
     json["parity"]        = parityEnumType.value(parityComboBox->currentIndex());
+    json["disable"]       = isEnableCheckBox->checkState();
 }

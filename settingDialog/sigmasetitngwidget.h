@@ -27,6 +27,9 @@ public:
     explicit SigmaSetitngWidget(QWidget *parent = 0);
     ~SigmaSetitngWidget();
 
+    void read(const QJsonObject &json);
+    void write(QJsonObject &json) const;
+
 private:
     Ui::SigmaSetitngWidget *ui;
 

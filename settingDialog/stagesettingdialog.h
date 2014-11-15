@@ -7,6 +7,8 @@
 #include <QSerialPort>
 
 class StageWidget;
+class SigmaSetitngWidget;
+class TechnohandsSettingWidget;
 class QComboBox;
 
 namespace Ui {
@@ -47,15 +49,9 @@ private slots:
 private:
     Ui::StageSettingDialog *ui;
 
-//    StageWidget *xAxisWidget;
-//    StageWidget *yAxisWidget;
-    StageWidget *zAxisSuppliedWidget;
-    StageWidget *thetaAxisSuppliedWidget;
-    StageWidget *phiAxisWidget;
+    SigmaSetitngWidget *sigmaWidget;
+    TechnohandsSettingWidget *technoWidget;
     StageWidget *shutterWidget;
-
-//    void initialTabs();
-//    StageWidget* createTabWithTitle(QString);
 };
 
 #endif // STAGESETTINGDIALOG_H

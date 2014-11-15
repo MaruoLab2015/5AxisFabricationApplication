@@ -3,7 +3,6 @@
 #include "printpanel/stagewidget.h"
 #include "settingDialog/sigmasetitngwidget.h"
 #include "settingDialog/technohandssettingwidget.h"
-#include "settingDialog/shuttersettingwidget.h"
 
 #include <QSerialPortInfo>
 #include <QDebug>
@@ -13,11 +12,8 @@
 #include <QJsonObject>
 #include <QStackedWidget>
 
-const QString xKey = "xaxis";
-const QString yKey = "yaxis";
-const QString zKey = "zaxis";
-const QString thetaKey = "thetaaxis";
-const QString phiKey = "phiaxis";
+const QString technoKey = "Techno";
+const QString sigmaKey = "sigma";
 const QString shutterKey = "shutter";
 
 void setSerialComboBoxButton(QString *name, QComboBox *box);
@@ -28,13 +24,13 @@ StageSettingDialog::StageSettingDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    SigmaSetitngWidget *sigmaWidget = new SigmaSetitngWidget;
+    sigmaWidget = new SigmaSetitngWidget;
     ui->stackedWidget->addWidget(sigmaWidget);
 
-    TechnohandsSettingWidget *technoWidget = new TechnohandsSettingWidget;
+    technoWidget = new TechnohandsSettingWidget;
     ui->stackedWidget->addWidget(technoWidget);
 
-    ShutterSettingWidget *shutterWidget = new ShutterSettingWidget;
+    shutterWidget = new StageWidget;
     ui->stackedWidget->addWidget(shutterWidget);
 
     connect(ui->settingComboBox, SIGNAL(currentIndexChanged(int)),
@@ -75,33 +71,23 @@ bool StageSettingDialog::saveStageSettingss(SaveFormat saveFormat) const
 
 void StageSettingDialog::read(const QJsonObject &json)
 {
-//    xAxisWidget->read(json[xKey].toObject());
-//    yAxisWidget->read(json[yKey].toObject());
-//    zAxisWidget->read(json[zKey].toObject());
-//    thetaAxisWidget->read(json[thetaKey].toObject());
-//    phiAxisWidget->read(json[phiKey].toObject());
-//    shutterWidget->read(json[shutterKey].toObject());
+    sigmaWidget->read(json[sigmaKey].toObject());
+    technoWidget->read(json[technoKey].toObject());
+    shutterWidget->read(json[shutterKey].toObject());
 }
 
 
 void StageSettingDialog::write(QJsonObject &json) const
 {
 
-//    QJsonObject xAxisObject, yAxisObject, zAxisObject,
-//            thetaAxisObject, phiAxisObject, shutterObject;
-//    xAxisWidget->write(xAxisObject);
-//    yAxisWidget->write(yAxisObject);
-//    zAxisWidget->write(zAxisObject);
-//    thetaAxisWidget->write(thetaAxisObject);
-//    phiAxisWidget->write(phiAxisObject);
-//    shutterWidget->write(shutterObject);
+    QJsonObject technoObject, sigmaObject, shutterObject;
+    sigmaWidget->write(sigmaObject);
+    technoWidget->write(technoObject);
+    shutterWidget->write(shutterObject);
 
-//    json[xKey] = xAxisObject;
-//    json[yKey] = yAxisObject;
-//    json[zKey] = zAxisObject;
-//    json[thetaKey] = thetaAxisObject;
-//    json[phiKey] = phiAxisObject;
-//    json[shutterKey] = shutterObject;
+    json[sigmaKey] = sigmaObject;
+    json[technoKey] = technoObject;
+    json[shutterKey] = shutterObject;
 }
 
 void StageSettingDialog::on_buttonBox_clicked(QAbstractButton *button)

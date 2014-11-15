@@ -64,6 +64,7 @@ void MainWindow::setMenu()
 
 void MainWindow::on_actionStageSetting_triggered()
 {
+    loadStageSettings(Json);
     settingDialog->exec();
 }
 

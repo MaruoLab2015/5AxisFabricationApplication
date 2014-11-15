@@ -28,8 +28,6 @@ private:
     void initialLayout();
     void initialComboBoxContent();
     void initialSerialComboBoxButton(QString *name, QComboBox *box);
-
-
 };
 
 #endif // STAGEWIDGET_H
