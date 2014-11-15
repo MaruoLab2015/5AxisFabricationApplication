@@ -15,11 +15,15 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
-  ,xLabel(new QLabel(tr("x : ")))
-  ,yLabel(new QLabel(tr("y : ")))
+  ,sigmaLabel(new QLabel(tr("Sigma : ")))
+  ,technoPhiLabel(new QLabel(tr("Techno Φ: ")))
+  ,technoZLabel(new QLabel(tr("tZ : ")))
+  ,technoThetaLabel(new QLabel(tr("tθ")))
   ,shutterLabel(new QLabel("shutter:"))
-  ,xStatusLabel(new QLabel(tr("Not connecting")))
-  ,yStatusLabel(new QLabel(tr("Not connecting")))
+  ,sigmaStatusLabel(new QLabel(tr("Not connecting")))
+  ,technoStatusPhiLabel(new QLabel(tr("Notconnecting")))
+  ,technoStatusZLabel(new QLabel(tr("Notconnecting")))
+  ,technoStatusThetaLabel(new QLabel(tr("Notconnecting")))
   ,shutterStatusLabel(new QLabel("Not connecting"))
 
 {
@@ -72,8 +76,8 @@ void MainWindow::on_actionCanOpenStage_triggered()
 {
     // get serial communication status
     canOpenStageList = printTab->stageManager.canOpenStages();
-    xStatusLabel->setText(canOpenStageList[EnumList::x]);
-    yStatusLabel->setText(canOpenStageList[EnumList::y]);
+    sigmaStatusLabel->setText(canOpenStageList[EnumList::x]);
+//    yStatusLabel->setText(canOpenStageList[EnumList::y]);
     shutterStatusLabel->setText(canOpenStageList[EnumList::shutter]);    
 }
 
@@ -114,12 +118,16 @@ void MainWindow::applySettings()
 void MainWindow::defaultSettings()
 {
     //Status bar
-    ui->statusBar->addPermanentWidget(xLabel, 0);
-    ui->statusBar->addPermanentWidget(xStatusLabel, 10);
-    ui->statusBar->addPermanentWidget(yLabel, 0);
-    ui->statusBar->addPermanentWidget(yStatusLabel, 10);
+    ui->statusBar->addPermanentWidget(sigmaLabel, 0);
+    ui->statusBar->addPermanentWidget(sigmaStatusLabel, 10);
+    ui->statusBar->addPermanentWidget(technoPhiLabel, 0);
+    ui->statusBar->addPermanentWidget(technoStatusPhiLabel, 0);
+    ui->statusBar->addPermanentWidget(technoZLabel, 0);
+    ui->statusBar->addPermanentWidget(technoZLabel, 0);
+    ui->statusBar->addPermanentWidget(technoThetaLabel, 0);
+    ui->statusBar->addPermanentWidget(technoStatusThetaLabel, 10);
     ui->statusBar->addPermanentWidget(shutterLabel, 0);
-    ui->statusBar->addPermanentWidget(shutterStatusLabel, 10);
+    ui->statusBar->addPermanentWidget(shutterStatusLabel, 0);
 
     // create Dialog
     settingDialog = new StageSettingDialog(this);
