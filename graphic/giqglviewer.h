@@ -3,6 +3,7 @@
 
 #include <QGLViewer/qglviewer.h>
 #include "model/gcode.h"
+#include "model/lines.h"
 
 class GIQGLViewer : public QGLViewer
 {
@@ -20,6 +21,7 @@ private:
     void initCamera();
 
     QList<GCode*> _gcodeList;
+    Lines *lineList;
 signals:
 
 public slots:

@@ -1,4 +1,4 @@
-#ifndef STAGESETTINGDIALOG_H
+﻿#ifndef STAGESETTINGDIALOG_H
 #define STAGESETTINGDIALOG_H
 
 #include <QDialog>
@@ -42,7 +42,7 @@ signals:
     void applySettings();
 
 private slots:
-    void onButtonBoxClicked(QAbstractButton *button);
+    void on_buttonBox_clicked(QAbstractButton *button);
 
 private:
     Ui::StageSettingDialog *ui;
@@ -54,8 +54,8 @@ private:
     StageWidget *phiAxisWidget;
     StageWidget *shutterWidget;
 
-    void initialTabs();
-    StageWidget* createTabWithTitle(QString);
+//    void initialTabs();
+//    StageWidget* createTabWithTitle(QString);
 };
 
 #endif // STAGESETTINGDIALOG_H

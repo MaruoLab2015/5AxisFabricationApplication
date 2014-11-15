@@ -110,5 +110,7 @@ void GIQGLViewer::animate()
 void GIQGLViewer::drawLines(QList<GCode*> gcodeList)
 {
     _gcodeList = gcodeList;
+    lineList = new Lines(gcodeList);
+    lineList->computedBoudingBox();
     updateGL();
 }

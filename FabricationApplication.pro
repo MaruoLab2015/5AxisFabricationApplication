@@ -28,7 +28,11 @@ SOURCES += main.cpp\
     editor/editorpanel.cpp \
     graphic/graphicswidget.cpp \
     graphicwidget.cpp \
-    graphic/giqglviewer.cpp
+    graphic/giqglviewer.cpp \
+    model/lines.cpp \
+    settingDialog/sigmasetitngwidget.cpp \
+    settingDialog/technohandssettingwidget.cpp \
+    settingDialog/shuttersettingwidget.cpp
 
 HEADERS  += mainwindow.h \
     settingDialog/stagesettingdialog.h \
@@ -45,13 +49,19 @@ HEADERS  += mainwindow.h \
     graphic/graphicswidget.h \
     graphicwidget.h \
     EnumList.h \
-    graphic/giqglviewer.h
+    graphic/giqglviewer.h \
+    model/lines.h \
+    settingDialog/sigmasetitngwidget.h \
+    settingDialog/technohandssettingwidget.h \
+    settingDialog/shuttersettingwidget.h
 
 FORMS    += mainwindow.ui \
     settingDialog/stagesettingdialog.ui \
     printpanel/printpanel.ui \
     convert/convertpanel.ui \
     editor/editorpanel.ui \
+    settingDialog/sigmasetitngwidget.ui \
+    settingDialog/technohandssettingwidget.ui
 
 ### setting
 ### Unix configuration ###

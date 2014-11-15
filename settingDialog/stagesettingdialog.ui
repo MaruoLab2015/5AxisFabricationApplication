@@ -7,17 +7,47 @@
     <x>0</x>
     <y>0</y>
     <width>478</width>
-    <height>344</height>
+    <height>327</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
+  <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>-1</number>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QComboBox" name="settingComboBox">
+       <item>
+        <property name="text">
+         <string>シグマ光機ステージ(x,y,z,θ)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>テクノハンズ(Φ), 樹脂供給用(z, θ)</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>シャッター</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QStackedWidget" name="stackedWidget">
+       <property name="currentIndex">
+        <number>-1</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
