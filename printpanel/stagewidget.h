@@ -7,7 +7,6 @@
 class StageWidget : public QWidget
 {
     Q_OBJECT
-    Q_ENUMS( Company )
 public:
     explicit StageWidget(QWidget *parent = 0);
 
@@ -15,6 +14,7 @@ public:
     QComboBox *baudrateComboBox;
     QComboBox *stopbitsComboBox;
     QComboBox *parityComboBox;
+    QCheckBox *isEnableCheckBox;
 
     void read(const QJsonObject &json);
     void write(QJsonObject &json) const;
@@ -22,11 +22,12 @@ public:
 signals:
 
 public slots:
-    void companyCurrentIndexChanged(int);
+    void enableCheckBoxChanged(bool);
 
 private:
     void initialLayout();
     void initialComboBoxContent();
+    void initialSerialComboBoxButton(QString *name, QComboBox *box);
 };
 
 #endif // STAGEWIDGET_H

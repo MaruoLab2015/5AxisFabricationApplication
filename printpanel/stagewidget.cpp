@@ -4,7 +4,6 @@
 #include <QMetaEnum>
 #include <QMetaObject>
 
-void initialSerialComboBoxButton(QString *name, QComboBox *box);
 
 StageWidget::StageWidget(QWidget *parent) :
     QWidget(parent)
@@ -15,15 +14,18 @@ StageWidget::StageWidget(QWidget *parent) :
 
 void StageWidget::initialLayout()
 {
-    QLabel *portLabel = new QLabel(tr("port"));
+    QLabel *portLabel = new QLabel(tr("portName"));
     QLabel *baudrateLabel = new QLabel(tr("baudrate"));
     QLabel *stopbitsLabel = new QLabel(tr("stopbits"));
     QLabel *parityLabel = new QLabel(tr("parity"));
+    QLabel *enableLabel = new QLabel(tr("接続しない"));
 
     portComboBox = new QComboBox(this);
     baudrateComboBox = new QComboBox(this);
     stopbitsComboBox = new QComboBox(this);
     parityComboBox = new QComboBox(this);
+    isEnableCheckBox = new QCheckBox(this);
+    connect(isEnableCheckBox, SIGNAL(clicked(bool)), this, SLOT(enableCheckBoxChanged(bool)));
 
     QGridLayout *layout = new QGridLayout;
 
@@ -35,6 +37,8 @@ void StageWidget::initialLayout()
     layout->addWidget(stopbitsComboBox, 2, 1);
     layout->addWidget(parityLabel, 3, 0);
     layout->addWidget(parityComboBox, 3, 1);
+    layout->addWidget(enableLabel, 4,0);
+    layout->addWidget(isEnableCheckBox, 4, 1);
 
     this->setLayout(layout);
 }
@@ -53,7 +57,7 @@ void StageWidget::initialComboBoxContent()
     initialSerialComboBoxButton(new QString("StopBits"), stopbitsComboBox);
 }
 
-void initialSerialComboBoxButton(QString *name, QComboBox *box)
+void StageWidget::initialSerialComboBoxButton(QString *name, QComboBox *box)
 {
     const QSerialPort *serial = new QSerialPort;
 
@@ -68,26 +72,12 @@ void initialSerialComboBoxButton(QString *name, QComboBox *box)
 
 /* SLOT */
 
-const int technoHands = 0;
-const int sigmaStage = 1;
-const int shutter = 2;
-
-void StageWidget::companyCurrentIndexChanged(int index)
+void StageWidget::enableCheckBoxChanged(bool isEnable)
 {
-    qDebug() << index;
-    switch (index) {
-    case technoHands:
-        baudrateComboBox->setCurrentIndex(7);
-        break;
-    case sigmaStage:
-        baudrateComboBox->setCurrentIndex(5);
-        break;
-    case shutter:
-        baudrateComboBox->setCurrentIndex(3);
-        break;
-    default:
-        return;
-    }
+    portComboBox->setDisabled(isEnable);
+    baudrateComboBox->setDisabled(isEnable);
+    stopbitsComboBox->setDisabled(isEnable);
+    parityComboBox->setDisabled(isEnable);
 }
 
 /* save and load */
@@ -107,6 +97,8 @@ void StageWidget::read(const QJsonObject &json)
     baudrateComboBox->setCurrentIndex(json["baudrateIndex"].toInt());
     stopbitsComboBox->setCurrentIndex(json["stopbitsIndex"].toInt());
     parityComboBox->setCurrentIndex(json["parityIndex"].toInt());
+    isEnableCheckBox->setCheckState((Qt::CheckState)json["disable"].toInt());
+    isEnableCheckBox->clicked(isEnableCheckBox->checkState());
 }
 
 void StageWidget::write(QJsonObject &json) const
@@ -125,4 +117,5 @@ void StageWidget::write(QJsonObject &json) const
     json["baudrate"]      = baudrateEnumType.value(baudrateComboBox->currentIndex()) ;
     json["stopbits"]      = stopBitsEnumType.value(stopbitsComboBox->currentIndex());
     json["parity"]        = parityEnumType.value(parityComboBox->currentIndex());
+    json["disable"]       = isEnableCheckBox->checkState();
 }

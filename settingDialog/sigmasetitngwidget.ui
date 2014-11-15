@@ -26,7 +26,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox"/>
+        <widget class="QComboBox" name="axis1ComboBox"/>
        </item>
       </layout>
      </item>
@@ -40,7 +40,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_2"/>
+        <widget class="QComboBox" name="axis2ComboBox"/>
        </item>
       </layout>
      </item>
@@ -54,7 +54,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_3"/>
+        <widget class="QComboBox" name="axis3ComboBox"/>
        </item>
       </layout>
      </item>
@@ -68,7 +68,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_4"/>
+        <widget class="QComboBox" name="axis4ComboBox"/>
        </item>
       </layout>
      </item>
@@ -86,7 +86,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_5"/>
+        <widget class="QComboBox" name="portNameComboBox"/>
        </item>
       </layout>
      </item>
@@ -100,7 +100,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_6"/>
+        <widget class="QComboBox" name="baudrateComboBox"/>
        </item>
       </layout>
      </item>
@@ -114,7 +114,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_7"/>
+        <widget class="QComboBox" name="stopbitsComboBox"/>
        </item>
       </layout>
      </item>
@@ -128,7 +128,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_8"/>
+        <widget class="QComboBox" name="parityComboBox"/>
        </item>
       </layout>
      </item>

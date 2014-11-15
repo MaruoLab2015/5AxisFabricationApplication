@@ -64,6 +64,7 @@ void MainWindow::setMenu()
 
 void MainWindow::on_actionStageSetting_triggered()
 {
+    loadStageSettings(Json);
     settingDialog->exec();
 }
 
@@ -154,12 +155,12 @@ bool MainWindow::loadStageSettings(SaveFormat saveFormat)
                    : QStringLiteral("save.dat"));
     if (!loadFile.open(QIODevice::ReadOnly))
     {
-        qWarning("Couldn't open save file");
+//        qWarning("Couldn't open save file");
         qDebug("Couldn't open save file");
         return false;
     }else
     {
-        qDebug("Succeeded in opening save file");
+//        qDebug("Succeeded in opening save file");
     }
 
     QByteArray saveData = loadFile.readAll();
