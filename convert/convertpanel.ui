@@ -116,7 +116,25 @@
        <item>
         <widget class="QLineEdit" name="layerPitchLineEdit">
          <property name="text">
-          <string>0.1</string>
+          <string>4000</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_5">
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>変換後のファイルの名前</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="covertNameLineEdit">
+         <property name="text">
+          <string/>
          </property>
         </widget>
        </item>

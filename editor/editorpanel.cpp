@@ -18,46 +18,34 @@ EditorPanel::~EditorPanel()
     delete ui;
 }
 
-void EditorPanel::receiveGcodeText(QList<GCode*> gcodeList)
+void EditorPanel::receiveGcodeText(QString fileName)
 {
-    GCode *gcode;
-    QString gcText;
-    foreach(gcode, gcodeList)
-    {
-        gcText.append(gcode->origText);
-    }
-
-    ui->mainTextEdit->textCursor().setPosition(0);
-    ui->mainTextEdit->setText(gcText);
-
+    QList<GCode*> gcodeList = createGcodeFromPlainText(fileName);
     emit sendGCodeListToGraphicArea(gcodeList);
 }
 
 void EditorPanel::on_openGcodeButton_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), QString(),
-            tr("Text Files (*.txt);;Gcode Files(*.gcode)"));
+    QString fileName = QFileDialog::getOpenFileName(
+                this,
+                tr("Open File"),
+                QString(),
+                QString(tr("Gcode Files(*.gcode)")));
 
     if (!fileName.isEmpty())
     {
-        QFile file(fileName);
-        if (!file.open(QIODevice::ReadOnly))
-        {
-            QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
-            return;
-        }
-
-        QTextStream in(&file);
-        ui->mainTextEdit->setText(in.readAll());
-        file.close();
+        QList<GCode*> gcodeList = createGcodeFromPlainText(fileName);
+        emit sendGCodeListToGraphicArea(gcodeList);
     }
-
 }
 
 void EditorPanel::on_saveGcodeButton_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Files"), QString(),
-                                                    tr("Text Files (*.txt);;Gcode Files(*.gcode)"));
+    QString fileName = QFileDialog::getSaveFileName(
+                this,
+                tr("Save Files"),
+                QString(),
+                QString(tr("Gcode Files(*.gcode)")));
     if (!fileName.isEmpty())
     {
         QFile file(fileName);
@@ -71,5 +59,32 @@ void EditorPanel::on_saveGcodeButton_clicked()
             file.close();
         }
     }
+}
 
+QList<GCode*> EditorPanel::createGcodeFromPlainText(QString fileName)
+{
+    QList<GCode*> gcodeList;
+    QString gcodeText;
+
+    QFile file(fileName);
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::critical(this, tr("Error"), tr("Could not open file"));
+        return gcodeList;
+    }
+    QTextStream in(&file);
+    while(!in.atEnd())
+    {
+        QString gString = in.readLine();
+        gcodeText.append(gString);
+        gcodeText.append("\n");
+        GCode *g = new GCode();
+        g->parse(gString);
+        gcodeList.append(g);
+    }
+    file.close();
+
+    ui->mainTextEdit->setText(gcodeText);
+
+    return gcodeList;
 }

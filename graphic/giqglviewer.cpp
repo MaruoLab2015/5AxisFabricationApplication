@@ -41,6 +41,9 @@ void GIQGLViewer::draw()
 {
     float curr_z, curr_y, curr_x;
     curr_x = curr_y = curr_z = 0.0f;
+    double shrinkRatio = lineList->maxSize();
+    float lineRadius = 1.0;
+
     for(int i=0;i<_gcodeList.count() - 1;i++)
     {
         GCode *s_Gcode;
@@ -53,28 +56,28 @@ void GIQGLViewer::draw()
 
         int e = 0;
 
-        if(s_Gcode->hasX()) s_Vec.x = s_Gcode->x / 100000.0;
+        if(s_Gcode->hasX()) s_Vec.x = s_Gcode->x / shrinkRatio;
         else s_Vec.x = curr_x;
-        if(s_Gcode->hasY()) s_Vec.y = s_Gcode->y / 100000.0;
+        if(s_Gcode->hasY()) s_Vec.y = s_Gcode->y / shrinkRatio;
         else s_Vec.y = curr_y;
-        if(s_Gcode->hasZ()) s_Vec.z = s_Gcode->z;
+        if(s_Gcode->hasZ()) s_Vec.z = s_Gcode->z / shrinkRatio;
         else s_Vec.z = curr_z;
 
         if(e_Gcode->hasX())
         {
-            e_Vec.x = e_Gcode->x / 100000.0;
+            e_Vec.x = e_Gcode->x / shrinkRatio;
             curr_x = e_Vec.x;
         }
         else e_Vec.x = curr_x;
         if(e_Gcode->hasY())
         {
-            e_Vec.y = e_Gcode->y / 100000.0;
+            e_Vec.y = e_Gcode->y / shrinkRatio;
             curr_y = e_Vec.y;
         }
         else e_Vec.y = curr_y;
         if(e_Gcode->hasZ())
         {
-            e_Vec.z = e_Gcode->z;
+            e_Vec.z = e_Gcode->z / shrinkRatio;
             curr_z = e_Vec.z;
         }
         else e_Vec.z = curr_z;
@@ -83,19 +86,16 @@ void GIQGLViewer::draw()
 
         if (e == 1)
         {
-            glColor3f(1, 0, 0);
-            glLineWidth(5.0);
+            glColor3f(0, 0, 1);
+            lineRadius = 0.003;
         }
         else
         {
             glColor3f(1,0,1);
-            glLineWidth(1.0);
+            lineRadius = 0.001;
         }
 
-        glBegin(GL_LINES);
-        glVertex3fv(s_Vec);
-        glVertex3fv(e_Vec);
-        glEnd();
+        drawArrow(s_Vec, e_Vec, lineRadius);
     }
 
     glColor3f(1.0,1.0,1.0);

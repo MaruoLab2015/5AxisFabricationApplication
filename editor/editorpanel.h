@@ -19,11 +19,13 @@ public:
 
     QList<GCode> gcodeList;
 
+    QList<GCode *> createGcodeFromPlainText(QString text);
+
 signals:
     void sendGCodeListToGraphicArea(QList<GCode *> gcodeList);
 
 public slots:
-    void receiveGcodeText(QList<GCode*> gcodeList);
+    void receiveGcodeText(QString gcodeText);
 
 private slots:
     void on_openGcodeButton_clicked();

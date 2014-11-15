@@ -26,7 +26,6 @@ SOURCES += main.cpp\
     printpanel/shutter.cpp \
     convert/convertpanel.cpp \
     editor/editorpanel.cpp \
-    graphic/graphicswidget.cpp \
     graphicwidget.cpp \
     graphic/giqglviewer.cpp \
     model/lines.cpp \
@@ -44,7 +43,6 @@ HEADERS  += mainwindow.h \
     printpanel/shutter.h \
     convert/convertpanel.h \
     editor/editorpanel.h \
-    graphic/graphicswidget.h \
     graphicwidget.h \
     EnumList.h \
     graphic/giqglviewer.h \

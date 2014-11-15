@@ -145,7 +145,7 @@ void MainWindow::defaultSettings()
     ui->tabWidget->setCurrentIndex(1);
 
     /* SIGNALS & SLOTS*/
-    connect(convertTab, SIGNAL(sendGcodeText(QList<GCode*>)), editorTab, SLOT(receiveGcodeText(QList<GCode*>)));
+    connect(convertTab, SIGNAL(sendGcodeText(QString)), editorTab, SLOT(receiveGcodeText(QString)));
     connect(editorTab, SIGNAL(sendGCodeListToGraphicArea(QList<GCode*>)), ui->graphicWidget, SLOT(drawLines(QList<GCode*>)));
 
 }
