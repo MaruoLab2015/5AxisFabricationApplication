@@ -27,7 +27,20 @@ void ConvertPanel::on_openFolderPathButton_clicked()
                                                options
                                                );
     QDir dir(fabDir);
-    ui->endLayerLineEdit->setText(QString::number(dir.count() - 3));
+
+    for (uint i=0;i<dir.count();i++)
+    {
+        QString modelName = QString("model.%2.csv")
+                .arg(i, 3, 10, QChar('0'));
+        if (dir.exists(modelName))
+            continue;
+        else
+        {
+            ui->endLayerLineEdit->setText(QString::number(i-1));
+            break;
+        }
+    }
+
     ui->modelDirLineEdit->setText(fabDir);
 }
 
@@ -95,7 +108,9 @@ QString ConvertPanel::convertCSVToGCodeXY(QString line)
     line = line.trimmed();
     QStringList list = line.split(",");
     QString gc = "";
-    if(list.count() == 0) return gc;
+
+    // Only "x,y,e"
+    if(list.count() != 3) return gc;
 
     QString e = "0";
     if (list[2] == QString("1")) e = "1";

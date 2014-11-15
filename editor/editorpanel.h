@@ -25,6 +25,10 @@ signals:
 public slots:
     void receiveGcodeText(QList<GCode*> gcodeList);
 
+private slots:
+    void on_openGcodeButton_clicked();
+    void on_saveGcodeButton_clicked();
+
 private:
     Ui::EditorPanel *ui;
 };

@@ -17,11 +17,22 @@
    <item row="0" column="0">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="pushButton">
-       <property name="text">
-        <string>Save</string>
-       </property>
-      </widget>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="openGcodeButton">
+         <property name="text">
+          <string>Open Gcode</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="saveGcodeButton">
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QTextEdit" name="mainTextEdit">
