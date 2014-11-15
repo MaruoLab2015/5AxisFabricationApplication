@@ -38,7 +38,6 @@ HEADERS  += mainwindow.h \
     settingDialog/stagesettingdialog.h \
     printpanel/stagewidget.h \
     printpanel/printpanel.h \
-    enumList.h \
     printpanel/stagecontroller.h \
     model/gcode.h \
     model/responseanalyzer.h \

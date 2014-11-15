@@ -25,6 +25,9 @@ SigmaSetitngWidget::~SigmaSetitngWidget()
 
 void SigmaSetitngWidget::initialComboBoxContent()
 {
+    // sigmaAxis
+    initSigmaAxisComboBox();
+
     // port
     foreach(const QSerialPortInfo &info, QSerialPortInfo::availablePorts())
     {
@@ -48,4 +51,19 @@ void SigmaSetitngWidget::initialSerialComboBoxButton(QString *name, QComboBox *b
         QString item = QString::fromUtf8(enumType.key(i));
         box->addItem(item);
     }
+}
+
+void SigmaSetitngWidget::initSigmaAxisComboBox()
+{
+    const QMetaObject *metaObj = this->metaObject();
+    QMetaEnum enumType = metaObj->enumerator(metaObj->indexOfEnumerator("SigmaAxis"));
+    for (int i=0; i< enumType.keyCount(); ++i)
+    {
+        QString item = QString::fromUtf8(enumType.key(i));
+        ui->axis1ComboBox->addItem(item);
+        ui->axis2ComboBox->addItem(item);
+        ui->axis3ComboBox->addItem(item);
+        ui->axis4ComboBox->addItem(item);
+    }
+
 }

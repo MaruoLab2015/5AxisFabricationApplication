@@ -47,10 +47,10 @@ private slots:
 private:
     Ui::StageSettingDialog *ui;
 
-    StageWidget *xAxisWidget;
-    StageWidget *yAxisWidget;
-    StageWidget *zAxisWidget;
-    StageWidget *thetaAxisWidget;
+//    StageWidget *xAxisWidget;
+//    StageWidget *yAxisWidget;
+    StageWidget *zAxisSuppliedWidget;
+    StageWidget *thetaAxisSuppliedWidget;
     StageWidget *phiAxisWidget;
     StageWidget *shutterWidget;
 

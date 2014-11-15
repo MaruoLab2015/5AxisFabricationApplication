@@ -18,11 +18,14 @@ void StageWidget::initialLayout()
     QLabel *baudrateLabel = new QLabel(tr("baudrate"));
     QLabel *stopbitsLabel = new QLabel(tr("stopbits"));
     QLabel *parityLabel = new QLabel(tr("parity"));
+    QLabel *enableLabel = new QLabel(tr("接続しない"));
 
     portComboBox = new QComboBox(this);
     baudrateComboBox = new QComboBox(this);
     stopbitsComboBox = new QComboBox(this);
     parityComboBox = new QComboBox(this);
+    isEnableCheckBox = new QCheckBox(this);
+    connect(isEnableCheckBox, SIGNAL(clicked(bool)), this, SLOT(enableCheckBoxChanged(bool)));
 
     QGridLayout *layout = new QGridLayout;
 
@@ -34,6 +37,8 @@ void StageWidget::initialLayout()
     layout->addWidget(stopbitsComboBox, 2, 1);
     layout->addWidget(parityLabel, 3, 0);
     layout->addWidget(parityComboBox, 3, 1);
+    layout->addWidget(enableLabel, 4,0);
+    layout->addWidget(isEnableCheckBox, 4, 1);
 
     this->setLayout(layout);
 }
@@ -67,26 +72,12 @@ void StageWidget::initialSerialComboBoxButton(QString *name, QComboBox *box)
 
 /* SLOT */
 
-const int technoHands = 0;
-const int sigmaStage = 1;
-const int shutter = 2;
-
-void StageWidget::companyCurrentIndexChanged(int index)
+void StageWidget::enableCheckBoxChanged(bool isEnable)
 {
-    qDebug() << index;
-    switch (index) {
-    case technoHands:
-        baudrateComboBox->setCurrentIndex(7);
-        break;
-    case sigmaStage:
-        baudrateComboBox->setCurrentIndex(5);
-        break;
-    case shutter:
-        baudrateComboBox->setCurrentIndex(3);
-        break;
-    default:
-        return;
-    }
+    portComboBox->setDisabled(isEnable);
+    baudrateComboBox->setDisabled(isEnable);
+    stopbitsComboBox->setDisabled(isEnable);
+    parityComboBox->setDisabled(isEnable);
 }
 
 /* save and load */
