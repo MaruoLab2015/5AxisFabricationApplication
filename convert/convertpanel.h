@@ -18,7 +18,7 @@ public:
     ~ConvertPanel();
 
 signals:
-    void sendGcodeText(QList<GCode*> gcodeList);
+    void sendGcodeText(QString gcodeText);
 
 private slots:
     void on_openFolderPathButton_clicked();

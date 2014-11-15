@@ -20,11 +20,8 @@ ConvertPanel::~ConvertPanel()
 
 void ConvertPanel::on_openFolderPathButton_clicked()
 {
-    QFileDialog::Options options = QFileDialog::DontResolveSymlinks | QFileDialog::ShowDirsOnly;
     QString fabDir = QFileDialog::getExistingDirectory(this,
-                                               tr("Open Directory"),
-                                               QString(),
-                                               options
+                                               tr("Open Directory")
                                                );
     QDir dir(fabDir);
 
@@ -42,6 +39,7 @@ void ConvertPanel::on_openFolderPathButton_clicked()
     }
 
     ui->modelDirLineEdit->setText(fabDir);
+    ui->covertNameLineEdit->setText(dir.dirName());
 }
 
 void ConvertPanel::on_openLayerFolderButton_clicked()
@@ -100,7 +98,26 @@ void ConvertPanel::on_convertPushButton_clicked()
         gcodeList.append(g);
     }
 
-    emit sendGcodeText(gcodeList);
+    // create gcode File
+    QString fileName = ui->covertNameLineEdit->text();
+    fileName += ".gcode";
+    if (!fileName.isEmpty())
+    {
+        QFile file(fileName);
+        if (!file.open(QIODevice::WriteOnly))
+        {
+            qDebug() << "Fail to create GCode File";
+
+        }else{
+            QTextStream stream(&file);
+            stream << gcodeText.toUtf8().data();
+            stream.flush();
+            file.close();
+            qDebug() << "Succeeded converting to Gcode.";
+        }
+    }
+
+    emit sendGcodeText(fileName);
 }
 
 QString ConvertPanel::convertCSVToGCodeXY(QString line)

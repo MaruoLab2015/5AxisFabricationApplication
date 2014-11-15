@@ -15,6 +15,8 @@ public:
 
     void computedBoudingBox();
     qglviewer::Vec size, center, min, max;
+
+    double maxSize() {return std::max(size.z, std::max(size.x, size.y));}
 };
 
 #endif // LINES_H
