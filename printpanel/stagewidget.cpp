@@ -4,7 +4,6 @@
 #include <QMetaEnum>
 #include <QMetaObject>
 
-void initialSerialComboBoxButton(QString *name, QComboBox *box);
 
 StageWidget::StageWidget(QWidget *parent) :
     QWidget(parent)
@@ -15,7 +14,7 @@ StageWidget::StageWidget(QWidget *parent) :
 
 void StageWidget::initialLayout()
 {
-    QLabel *portLabel = new QLabel(tr("port"));
+    QLabel *portLabel = new QLabel(tr("portName"));
     QLabel *baudrateLabel = new QLabel(tr("baudrate"));
     QLabel *stopbitsLabel = new QLabel(tr("stopbits"));
     QLabel *parityLabel = new QLabel(tr("parity"));
@@ -53,7 +52,7 @@ void StageWidget::initialComboBoxContent()
     initialSerialComboBoxButton(new QString("StopBits"), stopbitsComboBox);
 }
 
-void initialSerialComboBoxButton(QString *name, QComboBox *box)
+void StageWidget::initialSerialComboBoxButton(QString *name, QComboBox *box)
 {
     const QSerialPort *serial = new QSerialPort;
 

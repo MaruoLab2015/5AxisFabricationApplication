@@ -27,6 +27,8 @@ public slots:
 private:
     void initialLayout();
     void initialComboBoxContent();
+    void initialSerialComboBoxButton(QString *name, QComboBox *box);
+
 };
 
 #endif // STAGEWIDGET_H

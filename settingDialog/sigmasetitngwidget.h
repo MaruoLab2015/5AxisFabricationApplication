@@ -1,7 +1,9 @@
-#ifndef SIGMASETITNGWIDGET_H
+﻿#ifndef SIGMASETITNGWIDGET_H
 #define SIGMASETITNGWIDGET_H
 
 #include <QWidget>
+
+class QComboBox;
 
 namespace Ui {
 class SigmaSetitngWidget;
@@ -17,6 +19,9 @@ public:
 
 private:
     Ui::SigmaSetitngWidget *ui;
+
+    void initialComboBoxContent();
+    void initialSerialComboBoxButton(QString *name, QComboBox *box);
 };
 
 #endif // SIGMASETITNGWIDGET_H
