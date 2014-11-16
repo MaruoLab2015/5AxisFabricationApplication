@@ -17,6 +17,7 @@ signals:
 
 public slots:
     void drawLines(QList<GCode*> lines);
+    void changedCurrBlockNumber(int blockNumber);
 
 };
 
