@@ -23,11 +23,13 @@ void ConvertPanel::on_openFolderPathButton_clicked()
     QString fabDir = QFileDialog::getExistingDirectory(this,
                                                tr("Open Directory")
                                                );
+    if (fabDir.isEmpty()) return;
+
     QDir dir(fabDir);
 
     for (uint i=0;i<dir.count();i++)
     {
-        QString modelName = QString("model.%2.csv")
+        QString modelName = QString("model.%1.csv")
                 .arg(i, 3, 10, QChar('0'));
         if (dir.exists(modelName))
             continue;
