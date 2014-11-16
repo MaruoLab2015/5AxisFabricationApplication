@@ -11,8 +11,13 @@ class GIQGLViewer : public QGLViewer
 public:
     explicit GIQGLViewer(QWidget *parent = 0);
 
+    void drawLines(QList<GCode*> lines);
+//    void changeCurrBlockNumber(int blockNumber);
+
+    void setCurrBlockNumber(int currBlockNumber);
+
 protected:
-//    virtual void fastDraw();
+    //    virtual void fastDraw();
     virtual void draw();
     virtual void init();
     virtual void animate();
@@ -22,10 +27,7 @@ private:
 
     QList<GCode*> _gcodeList;
     Lines *lineList;
-signals:
-
-public slots:
-    void drawLines(QList<GCode*> lines);
+    int _currBlockNumber;
 };
 
 #endif // GIQGLVIEWER_H

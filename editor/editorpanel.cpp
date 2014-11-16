@@ -8,7 +8,9 @@
 
 EditorPanel::EditorPanel(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::EditorPanel)
+    ui(new Ui::EditorPanel),
+    currentBlockNumber(0),
+    isChangeText(false)
 {
     ui->setupUi(this);
 }
@@ -63,7 +65,6 @@ void EditorPanel::on_saveGcodeButton_clicked()
 
 QList<GCode*> EditorPanel::createGcodeFromPlainText(QString fileName)
 {
-    QList<GCode*> gcodeList;
     QString gcodeText;
 
     QFile file(fileName);
@@ -85,6 +86,41 @@ QList<GCode*> EditorPanel::createGcodeFromPlainText(QString fileName)
     file.close();
 
     ui->mainTextEdit->setText(gcodeText);
+    isChangeText = false;
 
     return gcodeList;
+}
+
+void EditorPanel::on_mainTextEdit_cursorPositionChanged()
+{
+    if (isChangeText)
+    {
+        gcodeList.clear();
+
+        QString tmpText = ui->mainTextEdit->toPlainText();
+        QStringList list = tmpText.split("\n");
+
+        for(int i=0;i<list.count();i++)
+        {
+            QString gString = list.at(i);
+            GCode *g = new GCode();
+            g->parse(gString);
+            gcodeList.append(g);
+        }
+
+        emit sendGCodeListToGraphicArea(gcodeList);
+    }
+    isChangeText = false;
+
+    if (currentBlockNumber == ui->mainTextEdit->textCursor().blockNumber())
+        return;
+
+    currentBlockNumber = ui->mainTextEdit->textCursor().blockNumber();
+
+    emit changedCurrBlockNumber(currentBlockNumber);
+}
+
+void EditorPanel::on_mainTextEdit_textChanged()
+{
+    isChangeText = true;
 }

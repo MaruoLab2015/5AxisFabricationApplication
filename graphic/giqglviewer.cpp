@@ -4,7 +4,8 @@
 #include <QDebug>
 
 GIQGLViewer::GIQGLViewer(QWidget *parent) :
-    QGLViewer(parent)
+    QGLViewer(parent),
+    _currBlockNumber(INT_MAX)
 {
 }
 
@@ -31,6 +32,13 @@ void GIQGLViewer::initCamera()
     initCamera->setZClippingCoefficient(10000);
     setCamera(initCamera);
 }
+
+void GIQGLViewer::setCurrBlockNumber(int currBlockNumber)
+{
+    _currBlockNumber = currBlockNumber;
+    updateGL();
+}
+
 
 //void GIQGLViewer::fastDraw()
 //{
@@ -94,6 +102,9 @@ void GIQGLViewer::draw()
             glColor3f(1,0,1);
             lineRadius = 0.001;
         }
+
+        if (i == (_currBlockNumber-1))
+            glColor3f(0,1,1);
 
         drawArrow(s_Vec, e_Vec, lineRadius);
     }

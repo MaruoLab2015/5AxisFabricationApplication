@@ -19,3 +19,8 @@ void GraphicWidget::drawLines(QList<GCode*> gcodeList)
 {
     viewer->drawLines(gcodeList);
 }
+
+void GraphicWidget::changedCurrBlockNumber(int blockNumber)
+{
+    viewer->setCurrBlockNumber(blockNumber);
+}
