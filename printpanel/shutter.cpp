@@ -1,9 +1,9 @@
-#include "shutter.h"
+﻿#include "shutter.h"
 
 #include <QJsonObject>
+#include <QDebug>
 
-Shutter::Shutter(QObject *parent) :
-    QObject(parent)
+Shutter::Shutter(QObject */*parent*/)
 {
 }
 
@@ -28,8 +28,6 @@ void Shutter::read(const QJsonObject &json)
     baudrate = json["baudrate"].toInt();
     parity   = (QSerialPort::Parity)json["parity"].toInt();
     stopbits = (QSerialPort::StopBits)json["stopbits"].toInt();
-    company  = (EnumList::Company)json["company"].toInt();
-
 }
 
 void Shutter::open()
@@ -39,7 +37,7 @@ void Shutter::open()
     QString sendRequest = QString("SH 1,1\r\n");
     QByteArray requestData = sendRequest.toLocal8Bit();
     QString debugMessage = QString("<Shutter> open");
-    emit sendDebugMessage(debugMessage);
+    qDebug() << debugMessage;
     serial->write(requestData);
 }
 
@@ -50,7 +48,7 @@ void Shutter::close()
     QString sendRequest = QString("SH 1,0\r\n");
     QByteArray requestData = sendRequest.toLocal8Bit();
     QString debugMessage = QString("<Shutter> close");
-    emit sendDebugMessage(debugMessage);
+    qDebug() << debugMessage;
     serial->write(requestData);
 
 }

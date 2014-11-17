@@ -1,4 +1,4 @@
-#include "stage.h"
+﻿#include "stage.h"
 #include "model/responseanalyzer.h"
 
 #include <QJsonObject>
@@ -26,84 +26,6 @@ Stage::Stage(EnumList::Axis stageAxis):
     }
 }
 
-// Stage action
-QString Stage::sendCommandDirectly(QString &cmd)
-{
-    if (!couldOpenSerialPort) return errorString;
-
-    QString sendRequest, debugMessage;
-    QString stx, etx; // stx = Start of TeXt, etx = End of TeXt
-    switch (this->company) {
-    case EnumList::TechnoHands:
-        stx = ">";
-        etx = "\r";
-        break;
-    default:
-        break;
-    }
-
-    sendRequest.append(stx);
-    sendRequest.append(cmd);
-    sendRequest.append(etx);
-
-    QByteArray requestData = sendRequest.toLocal8Bit();
-
-
-    debugMessage = QString("<stage:%1> ").arg(axisString);
-    emit sendDebugMessage(debugMessage + sendRequest);
-    serial->write(requestData);
-    QByteArray responseData = serial->readAll();
-    while (serial->waitForReadyRead(100))
-    {
-        responseData += serial->readAll();
-    }
-    QString response(responseData);
-
-    emit sendDebugMessage(debugMessage + response);
-
-    res = new ResponseAnalyzer();
-    res->parseTechnoHandsResponseText(response);
-
-    return response;
-}
-
-void Stage::moveAbsolute(float val)
-{
-    QString cmd = QString("ma %1").arg(val);
-
-    if (sendCommandDirectly(cmd) == errorString) return;
-}
-
-void Stage::moveRelative(float val)
-{
-    QString cmd = QString("mr %1").arg(val);
-
-    if (sendCommandDirectly(cmd) == errorString) return;
-}
-
-void Stage::moveHome()
-{
-     QString cmd = QString("home");
-
-    if (sendCommandDirectly(cmd) == errorString) return;
-}
-
-void Stage::stop()
-{
-    QString cmd = QString("stop");
-
-    if (sendCommandDirectly(cmd) == errorString) return;
-}
-
-float Stage::getCurrentPosition()
-{
-    QString cmd = QString("cp");
-
-    if (sendCommandDirectly(cmd) == errorString) return 0;
-
-    return res->currentPosition;
-}
-
 // Setting
 
 void Stage::read(const QJsonObject &json)
@@ -113,7 +35,6 @@ void Stage::read(const QJsonObject &json)
     baudrate = json["baudrate"].toInt();
     parity   = (QSerialPort::Parity)json["parity"].toInt();
     stopbits = (QSerialPort::StopBits)json["stopbits"].toInt();
-    company  = (EnumList::Company)json["company"].toInt();
 }
 
 bool Stage::openSerialPort()
@@ -137,5 +58,6 @@ bool Stage::openSerialPort()
 
 void Stage::closeSerialPort()
 {
+    couldOpenSerialPort = false;
     serial->close();
 }

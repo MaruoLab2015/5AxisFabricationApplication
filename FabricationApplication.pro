@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     graphic/giqglviewer.cpp \
     model/lines.cpp \
     settingDialog/sigmasetitngwidget.cpp \
-    settingDialog/technohandssettingwidget.cpp
+    settingDialog/technohandssettingwidget.cpp \
+    printpanel/technostage.cpp
 
 HEADERS  += mainwindow.h \
     settingDialog/stagesettingdialog.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     graphic/giqglviewer.h \
     model/lines.h \
     settingDialog/sigmasetitngwidget.h \
-    settingDialog/technohandssettingwidget.h
+    settingDialog/technohandssettingwidget.h \
+    printpanel/technostage.h
 
 FORMS    += mainwindow.ui \
     settingDialog/stagesettingdialog.ui \

@@ -67,6 +67,16 @@
            <string>Φ</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>Z(supply)</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>θ(supply)</string>
+          </property>
+         </item>
         </widget>
        </item>
       </layout>
@@ -554,7 +564,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="positionY_3">
+          <widget class="QLabel" name="positionTheta">
            <property name="text">
             <string>Not connected</string>
            </property>
@@ -563,14 +573,14 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="homeY_3">
+        <widget class="QPushButton" name="homeTheta">
          <property name="text">
           <string>home</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="cpY_3">
+        <widget class="QPushButton" name="cpTheta">
          <property name="text">
           <string>CurrentPosition</string>
          </property>
@@ -590,7 +600,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="positionY_4">
+          <widget class="QLabel" name="positionPhi">
            <property name="text">
             <string>Not connected</string>
            </property>
@@ -599,14 +609,14 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="homeY_4">
+        <widget class="QPushButton" name="homePhi">
          <property name="text">
           <string>home</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="cpY_4">
+        <widget class="QPushButton" name="cpPhi">
          <property name="text">
           <string>CurrentPosition</string>
          </property>
@@ -655,7 +665,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="pushButton">
+          <widget class="QPushButton" name="supplyButton">
            <property name="text">
             <string>Supply</string>
            </property>

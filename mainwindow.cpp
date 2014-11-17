@@ -76,7 +76,10 @@ void MainWindow::on_actionCanOpenStage_triggered()
 {
     // get serial communication status
     canOpenStageList = printTab->stageManager.canOpenStages();
-    sigmaStatusLabel->setText(canOpenStageList[EnumList::x]);
+    technoStatusZLabel->setText(canOpenStageList[EnumList::zSupply]);
+    technoStatusThetaLabel->setText(canOpenStageList[EnumList::thetaSupply]);
+    technoStatusPhiLabel->setText(canOpenStageList[EnumList::phi]);
+//    sigmaStatusLabel->setText(canOpenStageList[EnumList::x]);
 //    yStatusLabel->setText(canOpenStageList[EnumList::y]);
     shutterStatusLabel->setText(canOpenStageList[EnumList::shutter]);    
 }
@@ -123,7 +126,7 @@ void MainWindow::defaultSettings()
     ui->statusBar->addPermanentWidget(technoPhiLabel, 0);
     ui->statusBar->addPermanentWidget(technoStatusPhiLabel, 0);
     ui->statusBar->addPermanentWidget(technoZLabel, 0);
-    ui->statusBar->addPermanentWidget(technoZLabel, 0);
+    ui->statusBar->addPermanentWidget(technoStatusZLabel, 0);
     ui->statusBar->addPermanentWidget(technoThetaLabel, 0);
     ui->statusBar->addPermanentWidget(technoStatusThetaLabel, 10);
     ui->statusBar->addPermanentWidget(shutterLabel, 0);
@@ -181,4 +184,3 @@ bool MainWindow::loadStageSettings(SaveFormat saveFormat)
 
     return true;
 }
-

@@ -3,6 +3,7 @@
 #include "printpanel/stagewidget.h"
 #include "settingDialog/sigmasetitngwidget.h"
 #include "settingDialog/technohandssettingwidget.h"
+#include "EnumList.h"
 
 #include <QSerialPortInfo>
 #include <QDebug>
@@ -11,10 +12,6 @@
 #include <QMetaEnum>
 #include <QJsonObject>
 #include <QStackedWidget>
-
-const QString technoKey = "Techno";
-const QString sigmaKey = "sigma";
-const QString shutterKey = "shutter";
 
 void setSerialComboBoxButton(QString *name, QComboBox *box);
 
