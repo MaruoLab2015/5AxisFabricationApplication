@@ -79,7 +79,7 @@ void MainWindow::on_actionCanOpenStage_triggered()
     technoStatusZLabel->setText(canOpenStageList[EnumList::zSupply]);
     technoStatusThetaLabel->setText(canOpenStageList[EnumList::thetaSupply]);
     technoStatusPhiLabel->setText(canOpenStageList[EnumList::phi]);
-//    sigmaStatusLabel->setText(canOpenStageList[EnumList::x]);
+    sigmaStatusLabel->setText(canOpenStageList[EnumList::sigma]);
 //    yStatusLabel->setText(canOpenStageList[EnumList::y]);
     shutterStatusLabel->setText(canOpenStageList[EnumList::shutter]);    
 }
@@ -183,4 +183,9 @@ bool MainWindow::loadStageSettings(SaveFormat saveFormat)
     read(loadDoc.object());
 
     return true;
+}
+
+void MainWindow::on_actionStop_triggered()
+{
+    printTab->stageManager.stopStages();
 }

@@ -6,6 +6,7 @@
 
 #include "enumList.h"
 
+class SigmaStage;
 class TechnoStage;
 class Stage;
 class Shutter;
@@ -24,14 +25,16 @@ public:
     float theta, phi;
     float f;
 
+    SigmaStage *sigmaStage;
     TechnoStage *phiStage, *zSupplyStage, *thetaSupplyStage;
     Shutter *shutter;
 
     void loadStageSettings(const QJsonObject &json);
     void getStagePositions(EnumList::Axis axis);
     void moveHome(EnumList::Axis axis);
-//    void move(EnumList::Axis axis, float value,bool isAbsolute);
+    void move(EnumList::Axis axis, float value,bool isAbsolute);
     void supplyAction();
+    void stopStages();
 
     void pressTheShutter(bool isOpen);
 
@@ -42,7 +45,7 @@ public slots:
     void receiveDebugMessage(QString s);
 
 private:
-    QMap<int, QString> stagePositionList;
+    QMap<EnumList::Axis, float> sigmaPositionMap;
 
 };
 

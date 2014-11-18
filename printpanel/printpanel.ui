@@ -407,7 +407,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="positionY_2">
+          <widget class="QLabel" name="positionZ">
            <property name="text">
             <string>Not connected</string>
            </property>
@@ -416,14 +416,14 @@
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="homeY_2">
+        <widget class="QPushButton" name="homeZ">
          <property name="text">
           <string>home</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="cpY_2">
+        <widget class="QPushButton" name="cpZ">
          <property name="text">
           <string>CurrentPosition</string>
          </property>
@@ -437,7 +437,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QPushButton" name="moveN100Y_2">
+        <widget class="QPushButton" name="moveN100Z">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -456,7 +456,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="moveN10Y_2">
+        <widget class="QPushButton" name="moveN10Z">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -475,7 +475,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="moveN1Y_2">
+        <widget class="QPushButton" name="moveN1Z">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -494,7 +494,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="moveP1Y_2">
+        <widget class="QPushButton" name="moveP1Z">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -513,7 +513,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="moveP10Y_2">
+        <widget class="QPushButton" name="moveP10Z">
          <property name="minimumSize">
           <size>
            <width>60</width>
@@ -532,7 +532,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="moveP100Y_2">
+        <widget class="QPushButton" name="moveP100Z">
          <property name="minimumSize">
           <size>
            <width>60</width>
