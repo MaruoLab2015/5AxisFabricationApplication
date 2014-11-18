@@ -6,6 +6,7 @@
 
 #include "enumList.h"
 
+class SigmaStage;
 class TechnoStage;
 class Stage;
 class Shutter;
@@ -24,6 +25,7 @@ public:
     float theta, phi;
     float f;
 
+    SigmaStage *sigmaStage;
     TechnoStage *phiStage, *zSupplyStage, *thetaSupplyStage;
     Shutter *shutter;
 

@@ -50,7 +50,8 @@ public:
         phi,
         zSupply,
         thetaSupply,
-        shutter
+        shutter,
+        sigma
     };
 
     enum StageShutter{

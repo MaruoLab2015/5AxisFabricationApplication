@@ -1,6 +1,7 @@
 ﻿#include "stagecontroller.h"
 #include "enumList.h"
 #include "model/responseanalyzer.h"
+#include "sigmastage.h"
 #include "technostage.h"
 #include "stage.h"
 #include "shutter.h"
@@ -23,11 +24,23 @@ StageController::~StageController()
 
 void StageController::loadStageSettings(const QJsonObject &json)
 {
-    QJsonObject phiJson, zsJson, thetasJson, shutterJson;
+    QJsonObject sigmaJson,phiJson, zsJson, thetasJson, shutterJson;
+    sigmaJson   = json[sigmaKey].toObject();
     phiJson     = json[technoKey].toObject()[phiKey].toObject();
     zsJson      = json[technoKey].toObject()[zSuppliedKey].toObject();
     thetasJson  = json[technoKey].toObject()[thetaSuppliedKey].toObject();
     shutterJson = json[shutterKey].toObject();
+
+    if ( sigmaJson[axis1Key].toInt() != 0 |
+         sigmaJson[axis2Key].toInt() != 0 |
+         sigmaJson[axis3Key].toInt() != 0 |
+         sigmaJson[axis4Key].toInt() != 0
+        )
+    {
+        sigmaStage = new SigmaStage();
+        sigmaStage->read(sigmaJson);
+    }else
+        sigmaStage = NULL;
 
     if (!(Qt::CheckState)phiJson[disableKey].toInt())
     {
@@ -61,6 +74,15 @@ void StageController::loadStageSettings(const QJsonObject &json)
 QMap<int, QString> StageController::canOpenStages()
 {
     QMap<int, QString> map;
+    if (sigmaStage)
+    {
+        if (sigmaStage->openSerialPort())
+            map.insert(EnumList::sigma, sigmaStage->portName);
+        else
+            map.insert(EnumList::sigma, QString("Not connecting"));
+    }else
+        map.insert(EnumList::sigma, QString("Not connecting"));
+
     if (zSupplyStage)
     {
         if (zSupplyStage->openSerialPort())
@@ -168,6 +190,8 @@ void StageController::receiveRequest(const QString s, EnumList::Axis axis)
     QString request = s;
     switch (axis) {
     case EnumList::x:
+        qDebug() << "send stage";
+        sigmaStage->sendCommandDirectly(request);
         break;
     case EnumList::y:
         break;
