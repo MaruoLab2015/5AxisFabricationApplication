@@ -1,5 +1,6 @@
 ﻿#include "sigmasetitngwidget.h"
 #include "ui_sigmasetitngwidget.h"
+#include "EnumList.h"
 
 #include <QSerialPort>
 #include <QSerialPortInfo>
@@ -71,7 +72,7 @@ void SigmaSetitngWidget::initSigmaAxisComboBox()
 
 void SigmaSetitngWidget::read(const QJsonObject &json)
 {
-    QString portName = json["portName"].toString();
+    QString portName = json[portNameKey].toString();
     for (int i=0;i < ui->portNameComboBox->count(); i++)
     {
         if ( portName == ui->portNameComboBox->itemText(i))
@@ -81,13 +82,13 @@ void SigmaSetitngWidget::read(const QJsonObject &json)
         }
     }
 
-    ui->baudrateComboBox->setCurrentIndex(json["baudrateIndex"].toInt());
-    ui->stopbitsComboBox->setCurrentIndex(json["stopbitsIndex"].toInt());
-    ui->parityComboBox->setCurrentIndex(json["parityIndex"].toInt());
-    ui->axis1ComboBox->setCurrentIndex(json["axis1"].toInt());
-    ui->axis2ComboBox->setCurrentIndex(json["axis2"].toInt());
-    ui->axis3ComboBox->setCurrentIndex(json["axis3"].toInt());
-    ui->axis4ComboBox->setCurrentIndex(json["axis4"].toInt());
+    ui->baudrateComboBox->setCurrentIndex(json[baudrateIndexKey].toInt());
+    ui->stopbitsComboBox->setCurrentIndex(json[stopbitsIndexKey].toInt());
+    ui->parityComboBox->setCurrentIndex(json[parityIndexKey].toInt());
+    ui->axis1ComboBox->setCurrentIndex(json[axis1Key].toInt());
+    ui->axis2ComboBox->setCurrentIndex(json[axis2Key].toInt());
+    ui->axis3ComboBox->setCurrentIndex(json[axis3Key].toInt());
+    ui->axis4ComboBox->setCurrentIndex(json[axis4Key].toInt());
 
 }
 
@@ -100,15 +101,15 @@ void SigmaSetitngWidget::write(QJsonObject &json) const
     QMetaEnum stopBitsEnumType = metaObj->enumerator(metaObj->indexOfEnumerator("StopBits"));
     QMetaEnum parityEnumType = metaObj->enumerator(metaObj->indexOfEnumerator("Parity"));
 
-    json["portName"] = ui->portNameComboBox->currentText();
-    json["baudrateIndex"] = ui->baudrateComboBox->currentIndex();
-    json["stopbitsIndex"] = ui->stopbitsComboBox->currentIndex();
-    json["parityIndex"] = ui->parityComboBox->currentIndex();
-    json["baudrate"]      = baudrateEnumType.value(ui->baudrateComboBox->currentIndex()) ;
-    json["stopbits"]      = stopBitsEnumType.value(ui->stopbitsComboBox->currentIndex());
-    json["parity"]        = parityEnumType.value(ui->parityComboBox->currentIndex());
-    json["axis1"]		  = ui->axis1ComboBox->currentIndex();
-    json["axis2"]		  = ui->axis2ComboBox->currentIndex();
-    json["axis3"]		  = ui->axis3ComboBox->currentIndex();
-    json["axis4"]		  = ui->axis4ComboBox->currentIndex();
+    json[portNameKey] = ui->portNameComboBox->currentText();
+    json[baudrateIndexKey] = ui->baudrateComboBox->currentIndex();
+    json[stopbitsIndexKey] = ui->stopbitsComboBox->currentIndex();
+    json[parityIndexKey] = ui->parityComboBox->currentIndex();
+    json[baudrateKey]      = baudrateEnumType.value(ui->baudrateComboBox->currentIndex()) ;
+    json[stopbitsKey]      = stopBitsEnumType.value(ui->stopbitsComboBox->currentIndex());
+    json[parityKey]        = parityEnumType.value(ui->parityComboBox->currentIndex());
+    json[axis1Key]		  = ui->axis1ComboBox->currentIndex();
+    json[axis2Key]		  = ui->axis2ComboBox->currentIndex();
+    json[axis3Key]		  = ui->axis3ComboBox->currentIndex();
+    json[axis4Key]		  = ui->axis4ComboBox->currentIndex();
 }

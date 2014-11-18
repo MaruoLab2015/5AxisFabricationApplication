@@ -1,12 +1,9 @@
 ﻿#include "technohandssettingwidget.h"
 #include "ui_technohandssettingwidget.h"
 #include "printpanel/stagewidget.h"
+#include "EnumList.h"
 
 #include <QJsonObject>
-
-const QString thetaSuppliedKey = "thetaSupply";
-const QString zSuppliedKey = "zSupply";
-const QString phiKey = "phiaxis";
 
 TechnohandsSettingWidget::TechnohandsSettingWidget(QWidget *parent) :
     QWidget(parent),
@@ -17,7 +14,6 @@ TechnohandsSettingWidget::TechnohandsSettingWidget(QWidget *parent) :
     phiAxisWidget = createTabWithTitle(tr("Φ軸"));
     zAxisSuppliedWidget = createTabWithTitle(tr("Z軸(樹脂供給用)"));
     thetaAxisSuppliedWidget =  createTabWithTitle(tr("θ軸(樹脂供給用)"));
-
 }
 
 TechnohandsSettingWidget::~TechnohandsSettingWidget()
@@ -52,6 +48,3 @@ void TechnohandsSettingWidget::write(QJsonObject &json) const
     json[zSuppliedKey] = zAxisSuppliedObject;
     json[thetaSuppliedKey] = thetaAxisSuppliedObject;
 }
-
-
-

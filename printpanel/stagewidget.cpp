@@ -1,4 +1,6 @@
 ﻿#include "stagewidget.h"
+#include "EnumList.h"
+
 #include <QSerialPort>
 #include <QSerialPortInfo>
 #include <QMetaEnum>
@@ -94,10 +96,10 @@ void StageWidget::read(const QJsonObject &json)
         }
     }
 
-    baudrateComboBox->setCurrentIndex(json["baudrateIndex"].toInt());
-    stopbitsComboBox->setCurrentIndex(json["stopbitsIndex"].toInt());
-    parityComboBox->setCurrentIndex(json["parityIndex"].toInt());
-    isEnableCheckBox->setCheckState((Qt::CheckState)json["disable"].toInt());
+    baudrateComboBox->setCurrentIndex(json[baudrateIndexKey].toInt());
+    stopbitsComboBox->setCurrentIndex(json[stopbitsIndexKey].toInt());
+    parityComboBox->setCurrentIndex(json[parityIndexKey].toInt());
+    isEnableCheckBox->setCheckState((Qt::CheckState)json[disableKey].toInt());
     isEnableCheckBox->clicked(isEnableCheckBox->checkState());
 }
 
@@ -110,12 +112,12 @@ void StageWidget::write(QJsonObject &json) const
     QMetaEnum stopBitsEnumType = metaObj->enumerator(metaObj->indexOfEnumerator("StopBits"));
     QMetaEnum parityEnumType = metaObj->enumerator(metaObj->indexOfEnumerator("Parity"));
 
-    json["portName"] = portComboBox->currentText();
-    json["baudrateIndex"] = baudrateComboBox->currentIndex();
-    json["stopbitsIndex"] = stopbitsComboBox->currentIndex();
-    json["parityIndex"] = parityComboBox->currentIndex();
-    json["baudrate"]      = baudrateEnumType.value(baudrateComboBox->currentIndex()) ;
-    json["stopbits"]      = stopBitsEnumType.value(stopbitsComboBox->currentIndex());
-    json["parity"]        = parityEnumType.value(parityComboBox->currentIndex());
-    json["disable"]       = isEnableCheckBox->checkState();
+    json[portNameKey] = portComboBox->currentText();
+    json[baudrateIndexKey] = baudrateComboBox->currentIndex();
+    json[stopbitsIndexKey] = stopbitsComboBox->currentIndex();
+    json[parityIndexKey] = parityComboBox->currentIndex();
+    json[baudrateKey]      = baudrateEnumType.value(baudrateComboBox->currentIndex()) ;
+    json[stopbitsKey]      = stopBitsEnumType.value(stopbitsComboBox->currentIndex());
+    json[parityKey]        = parityEnumType.value(parityComboBox->currentIndex());
+    json[disableKey]       = isEnableCheckBox->checkState();
 }
