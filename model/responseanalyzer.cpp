@@ -1,10 +1,26 @@
-#include "responseanalyzer.h"
+﻿#include "responseanalyzer.h"
 #include <QDebug>
 
 ResponseAnalyzer::ResponseAnalyzer(QObject *parent) :
     QObject(parent)
   ,currentPosition(DBL_MAX)
+  ,x(FLT_MAX)
+  ,y(FLT_MAX)
+  ,z(FLT_MAX)
+  ,theta(FLT_MAX)
 {
+}
+
+void ResponseAnalyzer::parseSigmaResponseText(QString response)
+{
+    x = response.mid(0, 10).remove(" ").toFloat() / CONVERSION;
+    sigmaCurrPosMap.insert(EnumList::x, x);
+    y = response.mid(11, 10).remove(" ").toFloat()/ CONVERSION;
+    sigmaCurrPosMap.insert(EnumList::y, y);
+    z = response.mid(22, 10).remove(" ").toFloat()/ CONVERSION;
+    sigmaCurrPosMap.insert(EnumList::z, z);
+    theta = response.mid(33, 10).remove(" ").toFloat()/ CONVERSION_R;
+    sigmaCurrPosMap.insert(EnumList::theta, theta);
 }
 
 void ResponseAnalyzer::parseTechnoHandsResponseText(QString response)

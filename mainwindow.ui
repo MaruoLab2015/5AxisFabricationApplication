@@ -96,6 +96,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionCanOpenStage"/>
+   <addaction name="actionStop"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionOpenSTL">
@@ -128,6 +129,11 @@
    </property>
    <property name="toolTip">
     <string>openStage</string>
+   </property>
+  </action>
+  <action name="actionStop">
+   <property name="text">
+    <string>停止</string>
    </property>
   </action>
  </widget>

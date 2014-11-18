@@ -34,10 +34,11 @@ public:
     EnumList::Axis axis;
     QString axisString;
 
+    ResponseAnalyzer *res;
+
 protected:
     bool couldOpenSerialPort;
     const QString errorString;
-    ResponseAnalyzer *res;
 };
 
 #endif // STAGE_H

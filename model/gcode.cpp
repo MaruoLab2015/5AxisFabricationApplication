@@ -68,7 +68,7 @@ void GCode::parse(QString s)
 void GCode::addCode(QString c, QString val)
 {
     if ( val == QString("")) return;
-    else if (val == QString(":")) return; //Sigma perform comamnd
+    else if (val == QString(":")) return; //Sigma perform comamnd "G:"
 
     double d = val.toDouble();
 

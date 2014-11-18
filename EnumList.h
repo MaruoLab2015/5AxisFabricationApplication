@@ -21,6 +21,8 @@ const QString thetaSuppliedKey = "thetaSupply";
 const QString zSuppliedKey = "zSupply";
 const QString phiKey = "phiaxis";
 const QString disableKey = "disable";
+static const int CONVERSION = 125;//8nm/plsからμmの変換。基本分解能2μm/分割数250=8μm/pls
+static const int CONVERSION_R = 200;//400 //回転ステージ、ハーフステップでは0.0025°/pls
 
 
 class EnumList : public QObject

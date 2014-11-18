@@ -2,6 +2,8 @@
 #define SIGMASTAGE_H
 
 #include <QObject>
+#include <QMap>
+
 #include "stage.h"
 
 class SigmaStage : public Stage
@@ -11,11 +13,16 @@ public:
     explicit SigmaStage(QObject *parent = 0);
 
     QString sendCommandDirectly(QString &cmd);
-    void moveAbsolute(float val);
-    void moveRelative(float val);
-    void moveHome();
+    void moveAbsoluteCommand(float val, EnumList::Axis);
+    void moveRelativeCommand(float val, EnumList::Axis);
+    void moveHomeCommand(EnumList::Axis);
+    void performCommand();
     void stop();
-    float getCurrentPosition();
+    QMap<EnumList::Axis, float> getCurrentPosition();
+
+    void readAxis(const QJsonObject &json);
+
+    QMap<int, int> axisMap;
 
 signals:
 

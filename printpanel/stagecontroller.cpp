@@ -38,7 +38,8 @@ void StageController::loadStageSettings(const QJsonObject &json)
         )
     {
         sigmaStage = new SigmaStage();
-        sigmaStage->read(sigmaJson);
+        sigmaStage->readAxis(sigmaJson);
+//        sigmaStage->read(sigmaJson);
     }else
         sigmaStage = NULL;
 
@@ -124,16 +125,17 @@ QMap<int, QString> StageController::canOpenStages()
 
 void StageController::getStagePositions(EnumList::Axis axis)
 {
-    switch (axis) {
-    case EnumList::x:
-        break;
-    case EnumList::y:
-        break;
-    case EnumList::phi:
+    if ( axis == EnumList::phi)
+    {
         phi = phiStage->getCurrentPosition();
-        break;
-    default:
-        break;
+    }
+    else
+    {
+        sigmaPositionMap = sigmaStage->getCurrentPosition();
+        x = sigmaPositionMap[EnumList::x];
+        y = sigmaPositionMap[EnumList::y];
+        z = sigmaPositionMap[EnumList::z];
+        theta = sigmaPositionMap[EnumList::theta];
     }
 }
 
@@ -141,8 +143,20 @@ void StageController::moveHome(EnumList::Axis axis)
 {
     switch (axis) {
     case EnumList::x:
+        sigmaStage->moveHomeCommand(axis);
+        sigmaStage->performCommand();
         break;
     case EnumList::y:
+        sigmaStage->moveHomeCommand(axis);
+        sigmaStage->performCommand();
+        break;
+    case EnumList::z:
+        sigmaStage->moveHomeCommand(axis);
+        sigmaStage->performCommand();
+        break;
+    case EnumList::theta:
+        sigmaStage->moveHomeCommand(axis);
+        sigmaStage->performCommand();
         break;
     case EnumList::phi:
         phiStage->moveHome();
@@ -152,25 +166,29 @@ void StageController::moveHome(EnumList::Axis axis)
     }
 }
 
-//void StageController::move(EnumList::Axis axis, float value, bool isAbsolute)
-//{
-//    switch (axis) {
-//    case EnumList::x:
-//        if (isAbsolute)
-//            xStage->moveAbsolute(value);
-//        else
-//            xStage->moveRelative(value);
-//        break;
-//    case EnumList::y:
-//        if (isAbsolute)
-//            yStage->moveAbsolute(value);
-//        else
-//            yStage->moveRelative(value);
-//        break;
-//    default:
-//        break;
-//    }
-//}
+void StageController::move(EnumList::Axis axis, float value, bool isAbsolute)
+{
+    if (axis == EnumList::phi)
+    {
+        if (isAbsolute)
+            phiStage->moveAbsolute(value);
+        else
+            phiStage->moveRelative(value);
+    }else
+    {
+        if (isAbsolute)
+        {
+            qDebug() << "move Absolute";
+            sigmaStage->moveAbsoluteCommand(value, axis);
+        }
+        else
+        {
+            qDebug() << "move Relative";
+            sigmaStage->moveRelativeCommand(value, axis);
+        }
+        sigmaStage->performCommand();
+    }
+}
 
 void StageController::pressTheShutter(bool isOpen)
 {
@@ -183,6 +201,12 @@ void StageController::supplyAction()
     qDebug() << "Supply action coming soon...";
 }
 
+void StageController::stopStages()
+{
+    if (sigmaStage)
+        sigmaStage->stop();
+}
+
 /* SLOTS */
 
 void StageController::receiveRequest(const QString s, EnumList::Axis axis)
@@ -190,14 +214,16 @@ void StageController::receiveRequest(const QString s, EnumList::Axis axis)
     QString request = s;
     switch (axis) {
     case EnumList::x:
-        qDebug() << "send stage";
         sigmaStage->sendCommandDirectly(request);
         break;
     case EnumList::y:
+        sigmaStage->sendCommandDirectly(request);
         break;
     case EnumList::z:
+        sigmaStage->sendCommandDirectly(request);
         break;
     case EnumList::theta:
+        sigmaStage->sendCommandDirectly(request);
         break;
     case EnumList::phi:
         phiStage->sendCommandDirectly(request);

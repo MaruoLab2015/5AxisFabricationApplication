@@ -31,7 +31,7 @@ Stage::Stage(EnumList::Axis stageAxis):
 void Stage::read(const QJsonObject &json)
 {
     portName = json["portName"].toString();
-    waitTime = json["waitTime"].toInt();
+//    waitTime = json["waitTime"].toInt();
     baudrate = json["baudrate"].toInt();
     parity   = (QSerialPort::Parity)json["parity"].toInt();
     stopbits = (QSerialPort::StopBits)json["stopbits"].toInt();

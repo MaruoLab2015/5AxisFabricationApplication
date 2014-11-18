@@ -184,3 +184,8 @@ bool MainWindow::loadStageSettings(SaveFormat saveFormat)
 
     return true;
 }
+
+void MainWindow::on_actionStop_triggered()
+{
+    printTab->stageManager.stopStages();
+}
