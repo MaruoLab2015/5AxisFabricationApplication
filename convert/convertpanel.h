@@ -32,6 +32,7 @@ private:
     Ui::ConvertPanel *ui;
 
     int startLayer, endLayer;
+    bool isLowercase;
 };
 
 #endif // CONVERTPANEL_H

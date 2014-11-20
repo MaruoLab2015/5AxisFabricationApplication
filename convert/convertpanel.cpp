@@ -20,6 +20,7 @@ ConvertPanel::~ConvertPanel()
 
 void ConvertPanel::on_openFolderPathButton_clicked()
 {
+    isLowercase = false;
     QString fabDir = QFileDialog::getExistingDirectory(this,
                                                tr("Open Directory")
                                                );
@@ -29,11 +30,20 @@ void ConvertPanel::on_openFolderPathButton_clicked()
 
     for (uint i=0;i<dir.count();i++)
     {
-        QString modelName = QString("model.%1.csv")
+        QString modelName = QString("model.%1.CSV")
+                .arg(i, 3, 10, QChar('0'));
+        QString modelNameLowercase = QString("model.%1.csv")
                 .arg(i, 3, 10, QChar('0'));
         if (dir.exists(modelName))
+        {
+            isLowercase = false;
             continue;
-        else
+        }
+        else if(dir.exists(modelNameLowercase))
+        {
+            isLowercase = true;
+            continue;
+        }else
         {
             ui->endLayerLineEdit->setText(QString::number(i-1));
             break;
@@ -73,8 +83,12 @@ void ConvertPanel::on_convertPushButton_clicked()
             msgBox.exec();
             return;
         }
-        QString modelFilePath = QString("%1/model.%2.csv")
+        QString modelFilePath = QString("%1/model.%2")
                 .arg(ui->modelDirLineEdit->text()).arg(i, 3, 10, QChar('0'));
+        if (isLowercase)
+            modelFilePath.append(".csv");
+        else
+            modelFilePath.append(".CSV");
         QFile file(modelFilePath);
         if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
