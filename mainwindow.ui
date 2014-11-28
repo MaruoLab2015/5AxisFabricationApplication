@@ -115,6 +115,9 @@
    <property name="text">
     <string>Open GCode</string>
    </property>
+   <property name="shortcut">
+    <string>Meta+O</string>
+   </property>
   </action>
   <action name="actionStageSetting">
    <property name="text">

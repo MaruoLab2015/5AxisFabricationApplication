@@ -27,9 +27,9 @@ signals:
 
 public slots:
     void receiveGcodeText(QString gcodeText);
+    void on_openGcodeButton_clicked();
 
 private slots:
-    void on_openGcodeButton_clicked();
     void on_saveGcodeButton_clicked();
 
     void on_mainTextEdit_cursorPositionChanged();

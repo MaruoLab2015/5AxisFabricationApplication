@@ -46,6 +46,8 @@ private slots:
     void on_actionCanOpenStage_triggered();
     void on_actionStop_triggered();
 
+    void on_actionOpenGCode_triggered();
+
 private:
     Ui::MainWindow *ui;
 

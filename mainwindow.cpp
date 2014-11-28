@@ -151,7 +151,7 @@ void MainWindow::defaultSettings()
     printTab = new PrintPanel();
     ui->tabWidget->addTab(printTab, QIcon(), tr("Print Panel"));
 
-    ui->tabWidget->setCurrentIndex(1);
+    ui->tabWidget->setCurrentIndex(2);
 
     /* SIGNALS & SLOTS*/
     connect(convertTab, SIGNAL(sendGcodeText(QString)), editorTab, SLOT(receiveGcodeText(QString)));
@@ -200,4 +200,9 @@ void MainWindow::on_actionGCode_triggered()
 {
     GcodeListDialog *gDialog = new GcodeListDialog(this);
     gDialog->exec();
+}
+
+void MainWindow::on_actionOpenGCode_triggered()
+{
+    editorTab->on_openGcodeButton_clicked();
 }
