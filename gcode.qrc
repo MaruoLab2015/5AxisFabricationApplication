@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/gcode">
+        <file>gcodeList.csv</file>
+    </qresource>
+</RCC>

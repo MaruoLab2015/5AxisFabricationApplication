@@ -42,8 +42,8 @@ public slots:
 
 private slots:
     void on_actionStageSetting_triggered();
+    void on_actionGCode_triggered();
     void on_actionCanOpenStage_triggered();
-
     void on_actionStop_triggered();
 
 private:

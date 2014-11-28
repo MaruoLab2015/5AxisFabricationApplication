@@ -4,6 +4,7 @@
 #include "convert/convertpanel.h"
 #include "editor/editorpanel.h"
 #include "printpanel/printpanel.h"
+#include "gcodelistdialog.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -28,6 +29,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 {
     ui->setupUi(this);
+    // ui setting
+    QWidget *spacerWidget = new QWidget(this);
+    spacerWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    spacerWidget->setVisible(true);
+    ui->mainToolBar->insertWidget(ui->actionStop, spacerWidget);
 
     //Load setting
     defaultSettings();
@@ -188,4 +194,10 @@ bool MainWindow::loadStageSettings(SaveFormat saveFormat)
 void MainWindow::on_actionStop_triggered()
 {
     printTab->stageManager.stopStages();
+}
+
+void MainWindow::on_actionGCode_triggered()
+{
+    GcodeListDialog *gDialog = new GcodeListDialog(this);
+    gDialog->exec();
 }
