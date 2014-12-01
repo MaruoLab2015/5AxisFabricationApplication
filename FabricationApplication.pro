@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     settingDialog/sigmasetitngwidget.cpp \
     settingDialog/technohandssettingwidget.cpp \
     printpanel/technostage.cpp \
-    printpanel/sigmastage.cpp
+    printpanel/sigmastage.cpp \
+    gcodelistdialog.cpp
 
 HEADERS  += mainwindow.h \
     settingDialog/stagesettingdialog.h \
@@ -52,7 +53,8 @@ HEADERS  += mainwindow.h \
     settingDialog/sigmasetitngwidget.h \
     settingDialog/technohandssettingwidget.h \
     printpanel/technostage.h \
-    printpanel/sigmastage.h
+    printpanel/sigmastage.h \
+    gcodelistdialog.h
 
 FORMS    += mainwindow.ui \
     settingDialog/stagesettingdialog.ui \
@@ -60,7 +62,8 @@ FORMS    += mainwindow.ui \
     convert/convertpanel.ui \
     editor/editorpanel.ui \
     settingDialog/sigmasetitngwidget.ui \
-    settingDialog/technohandssettingwidget.ui
+    settingDialog/technohandssettingwidget.ui \
+    gcodelistdialog.ui
 
 ### setting
 ### Unix configuration ###
@@ -345,3 +348,8 @@ win32 {
       }
    }
 }
+
+OTHER_FILES +=
+
+RESOURCES += \
+    gcode.qrc
