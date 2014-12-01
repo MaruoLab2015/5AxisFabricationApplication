@@ -17,6 +17,8 @@ public:
     bool hasText();
 
     bool hasG(){ return  (g != USHRT_MAX);};
+    bool hasG_R(){ return  (g_r != USHRT_MAX);};
+    bool hasG_P(){ return (g_plane != USHRT_MAX);};
     bool hasX(){ return  (x != FLT_MAX);};
     bool hasY(){ return  (y != FLT_MAX);};
     bool hasZ(){ return  (z != FLT_MAX);};
@@ -25,8 +27,9 @@ public:
 
     bool isComment;
 
-    ushort g;
-    float x, y, z, e, f;
+    ushort g ,g_r;
+    ushort g_plane;
+    float x, y, z, e, f, r;
     QString origText;
 
 signals:

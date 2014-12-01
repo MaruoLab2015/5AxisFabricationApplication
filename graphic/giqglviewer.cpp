@@ -28,9 +28,10 @@ void GIQGLViewer::init()
 void GIQGLViewer::initFiber()
 {
 
-    frame = new qglviewer::ManipulatedFrame();
-    rotCenterStage = new qglviewer::Vec();
-    rotCenterFiber = new qglviewer::Vec();
+    baseStageframe = new qglviewer::ManipulatedFrame();
+    robotArmframe = new qglviewer::ManipulatedFrame();
+    rotCenterStage = qglviewer::Vec();
+    rotCenterFiber = qglviewer::Vec();
 }
 
 void GIQGLViewer::initCamera()
@@ -59,9 +60,11 @@ void GIQGLViewer::setCurrBlockNumber(int currBlockNumber)
 
 void GIQGLViewer::draw()
 {
-    float curr_z, curr_y, curr_x;
+    rotCenterStage = qglviewer::Vec( 0.0, 0.0, 0.0);
+//    rotCenterStageAxis = qglviewer::Vec( 0.1, 0.2, 0.3);
+
+    qglviewer::Vec curr_pos = qglviewer::Vec();
     float curr_theta, curr_phi;
-    curr_x = curr_y = curr_z = 0.0f;
     curr_theta, curr_phi = 0.0f;
     double shrinkRatio = lineList->maxSize(); // bounding box sizE
     float lineRadius = 1.0;
@@ -80,36 +83,34 @@ void GIQGLViewer::draw()
 
         int e = 0;
 
+        ManipulatedFrame f = ManipulatedFrame();
+
         if ( e_Gcode->hasG())
         {
+            s_Vec = e_Vec = curr_pos;
+
 
             switch (e_Gcode->g) {
             case 1:
                 if(s_Gcode->hasX()) s_Vec.x = s_Gcode->x / shrinkRatio;
-                else s_Vec.x = curr_x;
                 if(s_Gcode->hasY()) s_Vec.y = s_Gcode->y / shrinkRatio;
-                else s_Vec.y = curr_y;
                 if(s_Gcode->hasZ()) s_Vec.z = s_Gcode->z / shrinkRatio;
-                else s_Vec.z = curr_z;
 
                 if(e_Gcode->hasX())
                 {
                     e_Vec.x = e_Gcode->x / shrinkRatio;
-                    curr_x = e_Vec.x;
+                    curr_pos.x = e_Vec.x;
                 }
-                else e_Vec.x = curr_x;
                 if(e_Gcode->hasY())
                 {
                     e_Vec.y = e_Gcode->y / shrinkRatio;
-                    curr_y = e_Vec.y;
+                    curr_pos.y = e_Vec.y;
                 }
-                else e_Vec.y = curr_y;
                 if(e_Gcode->hasZ())
                 {
                     e_Vec.z = e_Gcode->z / shrinkRatio;
-                    curr_z = e_Vec.z;
+                    curr_pos.z = e_Vec.z;
                 }
-                else e_Vec.z = curr_z;
 
                 if(e_Gcode->hasE()) e = e_Gcode->e;
 
@@ -123,8 +124,39 @@ void GIQGLViewer::draw()
                     glColor3f(1,0,1);
                     lineRadius = 0.001;
                 }
+
+                drawArrow(s_Vec, e_Vec, lineRadius);
+
                 break;
             case 68:
+
+                switch (e_Gcode->g_plane) {
+                case 17: // xy plane
+                    f.translate(-rotCenterStage);
+                    f.rotate(Quaternion(rotCenterStageAxis, e_Gcode->r));
+                    f.translate(rotCenterStage);
+
+//                    f->rotateAroundPoint(Quaternion(rotCenterStageAxis, e_Gcode->r), rotCenterStage);
+
+                    curr_theta += e_Gcode->r;
+                    e_Vec = endPointArc(curr_pos, rotCenterStage, curr_theta, EnumList::theta);
+                    curr_pos = e_Vec;
+                    break;
+
+                case 18: // zx plane
+                    break;
+                case 19:
+                    curr_phi = e_Gcode->r;
+                    e_Vec = endPointArcPhi(curr_pos, rotCenterFiber, curr_phi, curr_theta, EnumList::phi);
+//                    e_Vec = endPointArcPhi(curr_pos, rotCenterFiber, curr_phi, curr_theta, EnumList::phi);
+                    curr_pos = e_Vec;
+
+                    break;
+
+                default:
+                    break;
+                }
+
                 break;
             default:
                 break;
@@ -132,47 +164,53 @@ void GIQGLViewer::draw()
 
         }
 
-
         if (i == (_currBlockNumber-1))
-        {
-            glColor3f(0,1,1);
-            frame->setPosition(e_Vec);
-        }
-
-        drawArrow(s_Vec, e_Vec, lineRadius);
+                {
+                    glColor3f(0,1,1);
+                    baseStageframe->setPosition(curr_pos);
+                    baseStageframe->setRotation(qglviewer::Quaternion(qglviewer::Vec(0,0,1),  curr_theta /180 * M_PI));
+                    robotArmframe->setRotation(qglviewer::Quaternion(qglviewer::Vec(1,0,0),  curr_theta / 180 * M_PI + curr_phi / 180 * M_PI));
+                }
 
     }
 
-    //theta axis
-    rotCenterStage = new qglviewer::Vec( 0.1, 0.2, 0.0);
-    rotCenterStageAxis = new qglviewer::Vec( 0.1, 0.2, 0.3);
-    rotStageVec = new qglviewer::Vec(0,0,1);
-    glBegin(GL_LINES);
-    line(rotCenterStage, rotCenterStageAxis);
-    glEnd();
-
-
-    drawArcPhi(0,0,1,0, M_PI, 50);
-//    frame->rotate(30.0, 0.0, 0.0, 1.0);
+    drawArcPhi(0,0,0.1,0, M_PI, 50);
 
     // moving frame
-    glMultMatrixd(frame->matrix());
+    glPushMatrix();// transform robot arm
+    glMultMatrixd(baseStageframe->matrix());
+//    frame->rotate(curr_theta, 0,0,1);
     glColor3f(1.0,1.0,1.0);
-    rotCenterFiber = new qglviewer::Vec( 0.0, 0.2, 0.2);
-    rotCenterFiberAxis = new qglviewer::Vec( 0.3, 0.2, 0.2);
+    rotCenterFiber = qglviewer::Vec( 0.0, 0.2, 0.2);
+    rotCenterFiberAxis = qglviewer::Vec( 0.3, 0.2, 0.2);
     rotFiberVec = new qglviewer::Vec(1,0,0);
     glBegin(GL_LINES);
     line(rotCenterFiber, rotCenterFiberAxis);
     glEnd();
 
-//    glRotated(30.0, 0.0, 0.0, 1.0);
+//    glRotated(60, 0.0, 0.0, 1.0);
 
     drawAxis(0.4f);
     const float scale = 0.3f;
     glScalef(scale, scale, scale);
 
+    glPushMatrix();// translated tip of Fiber
+    glTranslated(0.2,0.2,0.2);
+    glMultMatrixd(robotArmframe->matrix());
+    drawAxis(0.4f);;
     cylinder(0.03, 0.4, 10);
+    glPopMatrix();
+    glPopMatrix();
 //    drawAxis();
+
+    // show Materix
+//    GLfloat m[16];
+//    gl_model
+//    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+//    qDebug() << m[0] << m[1] << m[2];
+//    qDebug() << m[5] << m[6] << m[7];
+//    qDebug() << m[9] << m[10] << m[11];
+
 }
 
 void GIQGLViewer::animate()
@@ -218,10 +256,10 @@ void GIQGLViewer::cylinder(float radius,float height,int sides)
     glEnd();
 }
 
-void GIQGLViewer::line(qglviewer::Vec *v1, qglviewer::Vec *v2)
+void GIQGLViewer::line(qglviewer::Vec v1, qglviewer::Vec v2)
 {
-    glVertex3d(v1->x, v1->y, v1->z);
-    glVertex3d(v2->x, v2->y, v2->z);
+    glVertex3d(v1.x, v1.y, v1.z);
+    glVertex3d(v2.x, v2.y, v2.z);
 }
 
 void GIQGLViewer::drawFiberFlame()
@@ -229,8 +267,78 @@ void GIQGLViewer::drawFiberFlame()
 
 }
 
-void GIQGLViewer::drawArcTheta(float cx, float cy, float r, float start_angle, float arc_angle, int num_segments)
+Vec GIQGLViewer::endPointArc(Vec s_point, Vec rotationCenter, float angle, EnumList::Axis axis)
 {
+
+    drawArcTheta(s_point, rotationCenter, angle);
+
+    Vec v, tmpv;
+
+    angle = angle / 180 * M_PI;
+
+    v = s_point.operator -=( rotationCenter ); // translated center to origin
+    tmpv = v;
+
+    v.x = tmpv.x * cosf(angle) - tmpv.y * sinf(angle);
+    v.y = tmpv.x * sinf(angle) + tmpv.y * cosf(angle);
+//    v.z = v.z;
+
+    v = v.operator +=( rotationCenter);
+
+    return v;
+}
+
+Vec GIQGLViewer::endPointArcPhi(Vec s_point, Vec rotationCenter, float angle, float theta, EnumList::Axis axis)
+{
+
+//    drawArcTheta(s_point, rotationCenter, angle);
+
+    Vec v, tmpv;
+
+    angle = angle / 180 * M_PI;
+
+    // translated - stage center
+    v = s_point.operator -=( rotCenterStage );
+
+    tmpv = v;
+    // rotation - theta
+    v.x = tmpv.x * cosf(-theta) - tmpv.y * sinf(-theta);
+    v.y = tmpv.x * sinf(-theta) + tmpv.y * cosf(-theta);
+
+    // translated - rotacion center
+    tmpv = v.operator -=( rotationCenter ); // translated center to origin
+
+//    ManipulatedFrame *f = new ManipulatedFrame();
+
+    // rotation + phi
+    v.y = tmpv.y * cosf(angle) - tmpv.z * sinf(angle);
+    v.z = tmpv.y * sinf(angle) + tmpv.z * cosf(angle);
+
+    tmpv = v.operator +=( rotationCenter);
+
+    v.x = tmpv.x * cosf(theta) - tmpv.y * sinf(theta);
+    v.y = tmpv.x * sinf(theta) + tmpv.y * cosf(theta);
+
+    v = v.operator +=( rotCenterStage );
+
+    return v;
+}
+
+
+void GIQGLViewer::drawArcTheta(Vec s_point, Vec rotationCenter, float angle)
+
+{
+    Vec v, tmpv;
+    Vec lastV;
+    angle = angle / 180 * M_PI;
+
+    v = s_point.operator -=( rotationCenter );
+
+    float num_segments = 20;
+    float start_angle = atan(v.y / v.x);
+    float arc_angle = angle;
+    float r = v.norm();
+
     float theta = arc_angle / float(num_segments - 1);//theta is now calculated from the arc angle instead, the - 1 bit comes from the fact that the arc is open
 
     float tangetial_factor = tanf(theta);
@@ -241,10 +349,14 @@ void GIQGLViewer::drawArcTheta(float cx, float cy, float r, float start_angle, f
     float x = r * cosf(start_angle);//we now start at the start angle
     float y = r * sinf(start_angle);
 
+    glPushMatrix();
+//    glTranslated(rotationCenter.x, rotationCenter.y, rotationCenter.z);
     glBegin(GL_LINE_STRIP);//since the arc is not a closed curve, this is a strip now
-    for(int ii = 0; ii < num_segments; ii++)
+//    glLineWidth(0.3);
+    for(int ii = 0; ii < num_segments-1; ii++)
     {
-        glVertex2f(x + cx, y + cy);
+        lastV = Vec(x,y,v.z);
+        glVertex3f(x , y, v.z);
 
         float tx = -y;
         float ty = x;
@@ -256,6 +368,11 @@ void GIQGLViewer::drawArcTheta(float cx, float cy, float r, float start_angle, f
         y *= radial_factor;
     }
     glEnd();
+//	lineRadius = 0.003;
+
+    drawArrow(lastV, Vec(x,y,s_point.z), 0.003);
+    glPopMatrix();
+
 }
 
 void GIQGLViewer::drawArcPhi(float cx, float cy, float r, float start_angle, float arc_angle, int num_segments)
@@ -270,6 +387,10 @@ void GIQGLViewer::drawArcPhi(float cx, float cy, float r, float start_angle, flo
     float x = r * cosf(start_angle);//we now start at the start angle
     float y = r * sinf(start_angle);
 
+    glPushMatrix();
+    glTranslated(rotCenterFiber.x,
+                 rotCenterFiber.y,
+                 rotCenterFiber.z);
     glBegin(GL_LINE_STRIP);//since the arc is not a closed curve, this is a strip now
     for(int ii = 0; ii < num_segments; ii++)
     {
@@ -285,4 +406,5 @@ void GIQGLViewer::drawArcPhi(float cx, float cy, float r, float start_angle, flo
         y *= radial_factor;
     }
     glEnd();
+    glPopMatrix();
 }
