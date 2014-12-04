@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>910</width>
-    <height>646</height>
+    <height>691</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,13 +48,13 @@
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>100</height>
+          <height>300</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>100</height>
+          <height>16777215</height>
          </size>
         </property>
        </widget>
@@ -78,6 +78,7 @@
     </property>
     <addaction name="actionOpenSTL"/>
     <addaction name="actionOpenGCode"/>
+    <addaction name="actionSave_GCode"/>
    </widget>
    <widget class="QMenu" name="menu_2">
     <property name="title">
@@ -152,6 +153,14 @@
    </property>
    <property name="shortcut">
     <string>Meta+G</string>
+   </property>
+  </action>
+  <action name="actionSave_GCode">
+   <property name="text">
+    <string>Save GCode</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+S</string>
    </property>
   </action>
  </widget>

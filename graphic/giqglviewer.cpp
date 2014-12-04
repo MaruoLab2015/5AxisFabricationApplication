@@ -1,12 +1,17 @@
 ﻿#include "giqglviewer.h"
-#include "QGLViewer/vec.h"
-#include <QGLViewer/manipulatedCameraFrame.h>
+#include "graphic/modeldrawer.h"
 
+#include <QGLViewer/manipulatedCameraFrame.h>
 #include <QDebug>
 #include <QtMath>
 
 GIQGLViewer::GIQGLViewer(QWidget *parent) :
     QGLViewer(parent),
+    currentPosition(Vec()),
+    currentXYZ(Vec()),
+    currentTheta(0.0f),
+    currentPhi(0.0f),
+    lineList(new Lines()),
     _currBlockNumber(INT_MAX)
 {
 }
@@ -17,30 +22,28 @@ void GIQGLViewer::init()
   glDisable(GL_LIGHTING);
   glPointSize(3.0);
   setGridIsDrawn();
-//  setAxisIsDrawn();
 
   initCamera();
   initFiber();
-
-//  startAnimation();
 }
 
 void GIQGLViewer::initFiber()
 {
-
-    baseStageframe = new qglviewer::ManipulatedFrame();
+    fiberTipframe = new ManipulatedFrame();
     robotArmframe = new qglviewer::ManipulatedFrame();
-    rotCenterStage = qglviewer::Vec();
-    rotCenterFiber = qglviewer::Vec();
+
+    // initial
+    fromFiberCenterToTip = Vec(0.0f, -1.0f, -1.0f);
+    fromOriginToFiberCenter = Vec(0.0f, 1.0f, 1.0f);
 }
 
 void GIQGLViewer::initCamera()
 {
-    qglviewer::Camera *initCamera = camera();
-    qglviewer::Vec cameraPos = qglviewer::Vec(2, 2, 2);
+    Camera *initCamera = camera();
+    Vec cameraPos = Vec(2, 2, 2);
     initCamera->setPosition(cameraPos);
-    initCamera->setUpVector(qglviewer::Vec(0,0,1));
-    initCamera->lookAt(qglviewer::Vec());
+    initCamera->setUpVector(Vec(0,0,1));
+    initCamera->lookAt(Vec());
     initCamera->setZNearCoefficient(0.000001);
     initCamera->setZClippingCoefficient(10000);
     setCamera(initCamera);
@@ -52,7 +55,6 @@ void GIQGLViewer::setCurrBlockNumber(int currBlockNumber)
     updateGL();
 }
 
-
 //void GIQGLViewer::fastDraw()
 //{
 
@@ -60,162 +62,110 @@ void GIQGLViewer::setCurrBlockNumber(int currBlockNumber)
 
 void GIQGLViewer::draw()
 {
-    rotCenterStage = qglviewer::Vec( 0.0, 0.0, 0.0);
-//    rotCenterStageAxis = qglviewer::Vec( 0.1, 0.2, 0.3);
+    currentPosition = Vec();
+    currentXYZ = Vec();
+    currentTheta = 0.0f;
+    currentPhi = 0.0f;
+    Vec s_Vec, e_Vec;
+    s_Vec = Vec();
+    e_Vec = Vec();
 
-    qglviewer::Vec curr_pos = qglviewer::Vec();
-    float curr_theta, curr_phi;
-    curr_theta, curr_phi = 0.0f;
-    double shrinkRatio = lineList->maxSize(); // bounding box sizE
+    double shrinkRatio = lineList->maxSize(); // bounding box size
     float lineRadius = 1.0;
 
-
-    for(int i=0;i<_gcodeList.count() - 1;i++)
+    for(int i=0;i<_gcodeList.count();i++)
     {
-        GCode *s_Gcode = new GCode();
         GCode *e_Gcode = new GCode();
-        s_Gcode = _gcodeList[i];
-        e_Gcode = _gcodeList[i+1];
-
-        qglviewer::Vec s_Vec, e_Vec;
-        s_Vec = qglviewer::Vec();
-        e_Vec = qglviewer::Vec();
+        e_Gcode = _gcodeList[i];
 
         int e = 0;
 
-        ManipulatedFrame f = ManipulatedFrame();
-
         if ( e_Gcode->hasG())
         {
-            s_Vec = e_Vec = curr_pos;
+            s_Vec = e_Vec;
+
+            // line color
+            if(e_Gcode->hasE()) e = e_Gcode->e;
+
+            if (e == 1)
+            {
+                glColor3f(0, 0, 1);
+                lineRadius = 0.003;
+            }
+            else
+            {
+                glColor3f(1,0,1);
+                lineRadius = 0.001;
+            }
 
 
             switch (e_Gcode->g) {
             case 1:
-                if(s_Gcode->hasX()) s_Vec.x = s_Gcode->x / shrinkRatio;
-                if(s_Gcode->hasY()) s_Vec.y = s_Gcode->y / shrinkRatio;
-                if(s_Gcode->hasZ()) s_Vec.z = s_Gcode->z / shrinkRatio;
-
                 if(e_Gcode->hasX())
                 {
                     e_Vec.x = e_Gcode->x / shrinkRatio;
-                    curr_pos.x = e_Vec.x;
+                    currentXYZ.x = e_Vec.x;
                 }
                 if(e_Gcode->hasY())
                 {
                     e_Vec.y = e_Gcode->y / shrinkRatio;
-                    curr_pos.y = e_Vec.y;
+                    currentXYZ.y = e_Vec.y;
                 }
                 if(e_Gcode->hasZ())
                 {
                     e_Vec.z = e_Gcode->z / shrinkRatio;
-                    curr_pos.z = e_Vec.z;
+                    currentXYZ.z = e_Vec.z;
                 }
-
-                if(e_Gcode->hasE()) e = e_Gcode->e;
-
-                if (e == 1)
-                {
-                    glColor3f(0, 0, 1);
-                    lineRadius = 0.003;
-                }
-                else
-                {
-                    glColor3f(1,0,1);
-                    lineRadius = 0.001;
-                }
-
-                drawArrow(s_Vec, e_Vec, lineRadius);
 
                 break;
             case 68:
-
                 switch (e_Gcode->g_plane) {
                 case 17: // xy plane
-                    f.translate(-rotCenterStage);
-                    f.rotate(Quaternion(rotCenterStageAxis, e_Gcode->r));
-                    f.translate(rotCenterStage);
 
-//                    f->rotateAroundPoint(Quaternion(rotCenterStageAxis, e_Gcode->r), rotCenterStage);
-
-                    curr_theta += e_Gcode->r;
-                    e_Vec = endPointArc(curr_pos, rotCenterStage, curr_theta, EnumList::theta);
-                    curr_pos = e_Vec;
+//                    drawArcTheta(e_Vec, e_Gcode->r);
+                    currentTheta = e_Gcode->r;
                     break;
 
                 case 18: // zx plane
                     break;
                 case 19:
-                    curr_phi = e_Gcode->r;
-                    e_Vec = endPointArcPhi(curr_pos, rotCenterFiber, curr_phi, curr_theta, EnumList::phi);
-//                    e_Vec = endPointArcPhi(curr_pos, rotCenterFiber, curr_phi, curr_theta, EnumList::phi);
-                    curr_pos = e_Vec;
-
+//                    drawArcPhi(e_Vec, e_Gcode->r);
+                    currentPhi = e_Gcode->r;
                     break;
 
                 default:
                     break;
                 }
-
                 break;
             default:
                 break;
             }
 
+            e_Vec = computeEndPoint(currentXYZ, currentTheta, currentPhi);
+            drawArrow(s_Vec, e_Vec, lineRadius);
         }
 
-        if (i == (_currBlockNumber-1))
-                {
-                    glColor3f(0,1,1);
-                    baseStageframe->setPosition(curr_pos);
-                    baseStageframe->setRotation(qglviewer::Quaternion(qglviewer::Vec(0,0,1),  curr_theta /180 * M_PI));
-                    robotArmframe->setRotation(qglviewer::Quaternion(qglviewer::Vec(1,0,0),  curr_theta / 180 * M_PI + curr_phi / 180 * M_PI));
-                }
+        glColor3f(1,1,1);
 
+        if (i == (_currBlockNumber))
+        {
+            fiberTipframe->setPosition(e_Vec);
+            fiberTipframe->setRotation(Quaternion(Vec(0,0,1),  currentTheta /180 * M_PI));
+            fiberTipframe->rotate(Quaternion(Vec(1,0,0),   currentPhi / 180 * M_PI ));
+
+            displayText(currentXYZ, currentTheta, currentPhi, e_Vec, shrinkRatio);
+        }
     }
 
-    drawArcPhi(0,0,0.1,0, M_PI, 50);
-
-    // moving frame
+    // fiber tip frame
     glPushMatrix();// transform robot arm
-    glMultMatrixd(baseStageframe->matrix());
-//    frame->rotate(curr_theta, 0,0,1);
-    glColor3f(1.0,1.0,1.0);
-    rotCenterFiber = qglviewer::Vec( 0.0, 0.2, 0.2);
-    rotCenterFiberAxis = qglviewer::Vec( 0.3, 0.2, 0.2);
-    rotFiberVec = new qglviewer::Vec(1,0,0);
-    glBegin(GL_LINES);
-    line(rotCenterFiber, rotCenterFiberAxis);
-    glEnd();
-
-//    glRotated(60, 0.0, 0.0, 1.0);
-
-    drawAxis(0.4f);
-    const float scale = 0.3f;
-    glScalef(scale, scale, scale);
-
-    glPushMatrix();// translated tip of Fiber
-    glTranslated(0.2,0.2,0.2);
-    glMultMatrixd(robotArmframe->matrix());
-    drawAxis(0.4f);;
-    cylinder(0.03, 0.4, 10);
+    glMultMatrixd(fiberTipframe->matrix());
+    ModelDrawer::cylinder(0.03,0.4,10);
     glPopMatrix();
-    glPopMatrix();
-//    drawAxis();
 
-    // show Materix
-//    GLfloat m[16];
-//    gl_model
-//    glGetFloatv(GL_MODELVIEW_MATRIX, m);
-//    qDebug() << m[0] << m[1] << m[2];
-//    qDebug() << m[5] << m[6] << m[7];
-//    qDebug() << m[9] << m[10] << m[11];
-
-}
-
-void GIQGLViewer::animate()
-{
-//    qDebug() << "animate";
+    // display default position info
+    if (_currBlockNumber == INT_MAX)
+        displayText(Vec(), 0,0, Vec(), 1);
 }
 
 void GIQGLViewer::drawLines(QList<GCode*> gcodeList)
@@ -226,175 +176,69 @@ void GIQGLViewer::drawLines(QList<GCode*> gcodeList)
     updateGL();
 }
 
-void GIQGLViewer::cylinder(float radius,float height,int sides)
+//void GIQGLViewer::drawArcTheta(Vec s_point, float angle)
+//{
+//    Vec v;
+//    angle = angle / 180 * M_PI;
+
+//    v = Vec(s_point.x, s_point.y, 0);
+
+//    float num_segments = 20;
+//    float start_angle = atan2f(v.y, v.x);
+//    float arc_angle = angle;
+//    float r = v.norm();
+
+//    ModelDrawer::arcTheta(s_point, r, start_angle, arc_angle, num_segments);
+//}
+
+
+//void GIQGLViewer::drawArcPhi(Vec s_point, float angle)
+//{
+//    Vec v;
+//    v = Vec(0 , s_point.y, s_point.z);
+
+//    float num_segments = 20;
+//    float start_angle = -3.0/4.0 * M_PI;//atan(fromFiberCenterToTip.y / fromFiberCenterToTip.x);//currentPhi / 180 * M_PI;
+//    float arc_angle = angle / 180 * M_PI;
+//    float r = fromFiberCenterToTip.norm();
+
+//    glPushMatrix();
+
+//    glRotatef(currentTheta, 0,0,1);
+//    glTranslatef(
+//                currentXYZ.x,
+//                currentXYZ.y,
+//                currentXYZ.z
+//                );
+//    glTranslatef(
+//                fromOriginToFiberCenter.x,
+//                fromOriginToFiberCenter.y,
+//                fromOriginToFiberCenter.z
+//                );
+//    glRotatef(currentPhi, 1,0,0);
+
+//    ModelDrawer::arcPhi(s_point, r, start_angle, arc_angle, num_segments);
+
+//    glPopMatrix();
+//}
+
+void GIQGLViewer::drawPhiCircle()
 {
-//    double pi = 3.1415;
-    //上面
-    glNormal3d(0.0, 1.0, 0.0);
-    glBegin(GL_POLYGON);
-    for(double i = 0; i < sides; i++) {
-        double t = M_PI*2/sides * (double)i;
-        glVertex3d(radius * cos(t), radius * sin(t), height);
-    }
-    glEnd();
-    //側面
-    glBegin(GL_QUAD_STRIP);
-    for(double i=0;i<=sides;i=i+1){
-        double t = i*2*M_PI/sides;
-        glNormal3f((GLfloat)cos(t),0.0,(GLfloat)sin(t));
-        glVertex3f((GLfloat)(radius*cos(t)),(GLfloat)(radius*sin(t)), 0);
-        glVertex3f((GLfloat)(radius*cos(t)),(GLfloat)(radius*sin(t)), height);
-    }
-    glEnd();
-    //下面
-    glNormal3d(0.0, -1.0, 0.0);
-    glBegin(GL_POLYGON);
-    for(double i = sides; i >= 0; --i) {
-        double t = M_PI*2/sides * (double)i;
-        glVertex3d(radius * cos(t), radius * sin(t), 0);
-    }
-    glEnd();
-}
-
-void GIQGLViewer::line(qglviewer::Vec v1, qglviewer::Vec v2)
-{
-    glVertex3d(v1.x, v1.y, v1.z);
-    glVertex3d(v2.x, v2.y, v2.z);
-}
-
-void GIQGLViewer::drawFiberFlame()
-{
-
-}
-
-Vec GIQGLViewer::endPointArc(Vec s_point, Vec rotationCenter, float angle, EnumList::Axis axis)
-{
-
-    drawArcTheta(s_point, rotationCenter, angle);
-
-    Vec v, tmpv;
-
-    angle = angle / 180 * M_PI;
-
-    v = s_point.operator -=( rotationCenter ); // translated center to origin
-    tmpv = v;
-
-    v.x = tmpv.x * cosf(angle) - tmpv.y * sinf(angle);
-    v.y = tmpv.x * sinf(angle) + tmpv.y * cosf(angle);
-//    v.z = v.z;
-
-    v = v.operator +=( rotationCenter);
-
-    return v;
-}
-
-Vec GIQGLViewer::endPointArcPhi(Vec s_point, Vec rotationCenter, float angle, float theta, EnumList::Axis axis)
-{
-
-//    drawArcTheta(s_point, rotationCenter, angle);
-
-    Vec v, tmpv;
-
-    angle = angle / 180 * M_PI;
-
-    // translated - stage center
-    v = s_point.operator -=( rotCenterStage );
-
-    tmpv = v;
-    // rotation - theta
-    v.x = tmpv.x * cosf(-theta) - tmpv.y * sinf(-theta);
-    v.y = tmpv.x * sinf(-theta) + tmpv.y * cosf(-theta);
-
-    // translated - rotacion center
-    tmpv = v.operator -=( rotationCenter ); // translated center to origin
-
-//    ManipulatedFrame *f = new ManipulatedFrame();
-
-    // rotation + phi
-    v.y = tmpv.y * cosf(angle) - tmpv.z * sinf(angle);
-    v.z = tmpv.y * sinf(angle) + tmpv.z * cosf(angle);
-
-    tmpv = v.operator +=( rotationCenter);
-
-    v.x = tmpv.x * cosf(theta) - tmpv.y * sinf(theta);
-    v.y = tmpv.x * sinf(theta) + tmpv.y * cosf(theta);
-
-    v = v.operator +=( rotCenterStage );
-
-    return v;
-}
-
-
-void GIQGLViewer::drawArcTheta(Vec s_point, Vec rotationCenter, float angle)
-
-{
-    Vec v, tmpv;
-    Vec lastV;
-    angle = angle / 180 * M_PI;
-
-    v = s_point.operator -=( rotationCenter );
-
-    float num_segments = 20;
-    float start_angle = atan(v.y / v.x);
-    float arc_angle = angle;
-    float r = v.norm();
-
-    float theta = arc_angle / float(num_segments - 1);//theta is now calculated from the arc angle instead, the - 1 bit comes from the fact that the arc is open
+    int num_segments = 50;
+    float r = fromFiberCenterToTip.norm();
+    float theta = M_PI * 2 / float(num_segments - 1);//theta is now calculated from the arc angle instead, the - 1 bit comes from the fact that the arc is open
+    float start_angle = 0;
 
     float tangetial_factor = tanf(theta);
-
     float radial_factor = cosf(theta);
-
 
     float x = r * cosf(start_angle);//we now start at the start angle
     float y = r * sinf(start_angle);
 
-    glPushMatrix();
-//    glTranslated(rotationCenter.x, rotationCenter.y, rotationCenter.z);
-    glBegin(GL_LINE_STRIP);//since the arc is not a closed curve, this is a strip now
-//    glLineWidth(0.3);
-    for(int ii = 0; ii < num_segments-1; ii++)
-    {
-        lastV = Vec(x,y,v.z);
-        glVertex3f(x , y, v.z);
-
-        float tx = -y;
-        float ty = x;
-
-        x += tx * tangetial_factor;
-        y += ty * tangetial_factor;
-
-        x *= radial_factor;
-        y *= radial_factor;
-    }
-    glEnd();
-//	lineRadius = 0.003;
-
-    drawArrow(lastV, Vec(x,y,s_point.z), 0.003);
-    glPopMatrix();
-
-}
-
-void GIQGLViewer::drawArcPhi(float cx, float cy, float r, float start_angle, float arc_angle, int num_segments)
-{
-    float theta = arc_angle / float(num_segments - 1);//theta is now calculated from the arc angle instead, the - 1 bit comes from the fact that the arc is open
-
-    float tangetial_factor = tanf(theta);
-
-    float radial_factor = cosf(theta);
-
-
-    float x = r * cosf(start_angle);//we now start at the start angle
-    float y = r * sinf(start_angle);
-
-    glPushMatrix();
-    glTranslated(rotCenterFiber.x,
-                 rotCenterFiber.y,
-                 rotCenterFiber.z);
     glBegin(GL_LINE_STRIP);//since the arc is not a closed curve, this is a strip now
     for(int ii = 0; ii < num_segments; ii++)
     {
-        glVertex3f(0, x + cx, y + cy);
+        glVertex3f(0, x , y);
 
         float tx = -y;
         float ty = x;
@@ -406,5 +250,90 @@ void GIQGLViewer::drawArcPhi(float cx, float cy, float r, float start_angle, flo
         y *= radial_factor;
     }
     glEnd();
+
+}
+
+Vec GIQGLViewer::computeEndPoint(Vec moveXYZ, float theta, float phi)
+{
+    Vec e_Vec = Vec();
+
+    glPushMatrix();
+    glLoadIdentity();
+
+    // ratated phi
+    glRotatef(theta, 0,0,1);
+
+    // traslated origin
+    glTranslatef(
+                moveXYZ.x,
+                moveXYZ.y,
+                moveXYZ.z
+                );
+
+    //translated xyz
+    glTranslatef(
+                fromOriginToFiberCenter.x,
+                fromOriginToFiberCenter.y,
+                fromOriginToFiberCenter.z
+                );
+
+    //rotated theta
+    glRotatef(phi, 1,0,0);
+    e_Vec = applyModelViewMatrix(fromFiberCenterToTip);
+
     glPopMatrix();
+
+    return e_Vec;
+}
+
+Vec GIQGLViewer::applyModelViewMatrix(Vec v)
+{
+    GLfloat m[16];
+    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    float v_mat[4], tmp_v_mat[4];
+    tmp_v_mat[0] = v.x;
+    tmp_v_mat[1] = v.y;
+    tmp_v_mat[2] = v.z;
+    tmp_v_mat[3] = 1;
+
+    int column = 4;
+
+    for(int i = 0;i < column;i++) {
+        register double f = 0.0;
+        for(int j = 0;j < column;j++) {
+            f += m[i + j * column] * tmp_v_mat[j];
+        }
+        v_mat[i] = f;
+    }
+
+    return Vec(v_mat[0], v_mat[1], v_mat[2]);
+}
+
+void GIQGLViewer::showMatrix()
+{
+    GLfloat m[16];
+    glGetFloatv(GL_MODELVIEW_MATRIX, m);
+    qDebug() << "m = ";
+    qDebug() << m[0] << m[4] << m[8] << m[12];
+    qDebug() << m[1] << m[5] << m[9] << m[13];
+    qDebug() << m[2] << m[6] << m[10] << m[14];
+    qDebug() << m[3] << m[7] << m[11] << m[15];
+}
+
+void GIQGLViewer::showVector(Vec v)
+{
+    qDebug() << "v = (" << v.x << ", " << v.y << ", " << v.z << ")";
+}
+
+void GIQGLViewer::displayText(Vec xyz, float theta, float phi, Vec realPos, float scale)
+{
+    drawText(20, 20, QString("X : %1").arg(xyz.x * scale));
+    drawText(20, 40, QString("Y : %1").arg(xyz.y * scale));
+    drawText(20, 60, QString("Z : %1").arg(xyz.z * scale));
+    drawText(20, 80, QString("Theta : %1").arg(theta));
+    drawText(20, 100, QString("Phi : %1").arg(phi));
+    drawText(100, 20, QString("realX : %1").arg(realPos.x * scale));
+    drawText(100, 40, QString("realY : %1").arg(realPos.y * scale));
+    drawText(100, 60, QString("realZ : %1").arg(realPos.z * scale));
+
 }

@@ -16,37 +16,37 @@ public:
 
     void drawLines(QList<GCode*> lines);
 //    void changeCurrBlockNumber(int blockNumber);
-
     void setCurrBlockNumber(int currBlockNumber);
-    void cylinder(float radius,float height,int sides);
-    void line(qglviewer::Vec v1, qglviewer::Vec v2);
-    void drawFiberFlame();
-//    void drawArcTheta(float cx, float cy, float r, float start_angle, float arc_angle, int num_segments);
-    void drawArcPhi(float cx, float cy, float r, float start_angle, float arc_angle, int num_segments);
-    Vec endPointArc(Vec s_point, Vec rotationCenter, float angle, EnumList::Axis axis);
-    Vec endPointArcPhi(Vec s_point, Vec rotationCenter, float angle, float theta, EnumList::Axis axis);
-    void drawArcTheta(Vec s_point, Vec rotationCenter, float angle);
+
+//    void drawArcTheta(Vec s_point, float angle);
+//    void drawArcPhi(Vec s_point, float angle);
+    void drawPhiCircle();
+    Vec applyModelViewMatrix(Vec v);
 
 
 protected:
 //    virtual void fastDraw();
     virtual void draw();
     virtual void init();
-    virtual void animate();
 
 private:
     void initCamera();
     void initFiber();
 
-    ManipulatedFrame* baseStageframe;
+    void showMatrix();
+    void showVector(Vec v);
+    void displayText(Vec xyz, float theta, float phi, Vec realPos, float scale);
+
+    ManipulatedFrame* fiberTipframe;
     ManipulatedFrame* robotArmframe;
-    Vec *a;
-    qglviewer::Vec rotCenterStage;
-    qglviewer::Vec rotCenterStageAxis;
-    qglviewer::Vec *rotStageVec;
-    qglviewer::Vec rotCenterFiber;
-    qglviewer::Vec rotCenterFiberAxis;
-    qglviewer::Vec *rotFiberVec;
+
+    Vec fromFiberCenterToTip;
+    Vec fromOriginToFiberCenter;
+    Vec currentPosition;
+    Vec currentXYZ;
+    float currentTheta, currentPhi;
+    Vec computeEndPoint(Vec moveXYZ, float theta, float phi);
+//    float shrinkRatio;
 
     QList<GCode*> _gcodeList;
     Lines *lineList;
