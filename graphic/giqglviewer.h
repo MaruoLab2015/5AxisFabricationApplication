@@ -18,8 +18,6 @@ public:
 //    void changeCurrBlockNumber(int blockNumber);
     void setCurrBlockNumber(int currBlockNumber);
 
-//    void drawArcTheta(Vec s_point, float angle);
-//    void drawArcPhi(Vec s_point, float angle);
     void drawPhiCircle();
     Vec applyModelViewMatrix(Vec v);
 
@@ -35,7 +33,7 @@ private:
 
     void showMatrix();
     void showVector(Vec v);
-    void displayText(Vec xyz, float theta, float phi, Vec realPos, float scale);
+    void displayText(Vec xyz, float theta, float phi, Vec realPos, float v, float scale);
 
     ManipulatedFrame* fiberTipframe;
     ManipulatedFrame* robotArmframe;
@@ -45,6 +43,7 @@ private:
     Vec currentPosition;
     Vec currentXYZ;
     float currentTheta, currentPhi;
+    float currentVelocity;
     Vec computeEndPoint(Vec moveXYZ, float theta, float phi);
 //    float shrinkRatio;
 
