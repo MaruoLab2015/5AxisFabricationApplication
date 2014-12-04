@@ -21,7 +21,6 @@ public:
     void drawPhiCircle();
     Vec applyModelViewMatrix(Vec v);
 
-
 protected:
 //    virtual void fastDraw();
     virtual void draw();
@@ -45,7 +44,7 @@ private:
     float currentTheta, currentPhi;
     float currentVelocity;
     Vec computeEndPoint(Vec moveXYZ, float theta, float phi);
-//    float shrinkRatio;
+    float modelScale;
 
     QList<GCode*> _gcodeList;
     Lines *lineList;

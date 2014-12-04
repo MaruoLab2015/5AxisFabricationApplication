@@ -11,6 +11,7 @@ GIQGLViewer::GIQGLViewer(QWidget *parent) :
     currentXYZ(Vec()),
     currentTheta(0.0f),
     currentPhi(0.0f),
+    modelScale(1),
     lineList(new Lines()),
     _currBlockNumber(INT_MAX)
 {
@@ -35,6 +36,8 @@ void GIQGLViewer::initFiber()
     // initial
     fromFiberCenterToTip = Vec(0.0f, -1.0f, -1.0f);
     fromOriginToFiberCenter = Vec(0.0f, 1.0f, 1.0f);
+    fromFiberCenterToTip.operator /=(2);
+    fromOriginToFiberCenter.operator /=(2);
 }
 
 void GIQGLViewer::initCamera()
@@ -70,6 +73,7 @@ void GIQGLViewer::draw()
     s_Vec = Vec();
     e_Vec = Vec();
 
+    modelScale = lineList->maxSize();
     double shrinkRatio = lineList->maxSize(); // bounding box size
     float lineRadius = 1.0;
     int s = 0;
@@ -98,20 +102,11 @@ void GIQGLViewer::draw()
 
             // read value
             if(e_Gcode->hasX())
-            {
-                e_Vec.x = e_Gcode->x / shrinkRatio;
-                currentXYZ.x = e_Vec.x;
-            }
+                currentXYZ.x = e_Gcode->x / shrinkRatio;
             if(e_Gcode->hasY())
-            {
-                e_Vec.y = e_Gcode->y / shrinkRatio;
-                currentXYZ.y = e_Vec.y;
-            }
+                currentXYZ.y = e_Gcode->y / shrinkRatio;
             if(e_Gcode->hasZ())
-            {
-                e_Vec.z = e_Gcode->z / shrinkRatio;
-                currentXYZ.z = e_Vec.z;
-            }
+                currentXYZ.z = e_Gcode->z;
 
             if(e_Gcode->hasT())
                 currentTheta = e_Gcode->t;
@@ -119,6 +114,9 @@ void GIQGLViewer::draw()
                 currentPhi = e_Gcode->p;
             if(e_Gcode->hasV())
                 currentVelocity = e_Gcode->v;
+
+            //applyScale
+//TODO: applyFiberFlameScaleEffect
 
             e_Vec = computeEndPoint(currentXYZ, currentTheta, currentPhi);
             drawArrow(s_Vec, e_Vec, lineRadius);
@@ -141,6 +139,13 @@ void GIQGLViewer::draw()
     glMultMatrixd(fiberTipframe->matrix());
     drawAxis(0.4);
     ModelDrawer::cylinder(0.03,0.4,10);
+    glTranslatef(
+                -fromFiberCenterToTip.x,
+                -fromFiberCenterToTip.y,
+                -fromFiberCenterToTip.z
+                );
+    drawPhiCircle();
+    drawAxis(0.4f);
     glPopMatrix();
 
     // display default position info
@@ -184,7 +189,6 @@ void GIQGLViewer::drawPhiCircle()
         y *= radial_factor;
     }
     glEnd();
-
 }
 
 Vec GIQGLViewer::computeEndPoint(Vec moveXYZ, float theta, float phi)
@@ -274,5 +278,4 @@ void GIQGLViewer::displayText(Vec xyz, float theta, float phi, Vec realPos, floa
     drawText(300, 20, QString("realX : %1").arg(realPos.x * scale));
     drawText(300, 40, QString("realY : %1").arg(realPos.y * scale));
     drawText(300, 60, QString("realZ : %1").arg(realPos.z * scale));
-
 }
