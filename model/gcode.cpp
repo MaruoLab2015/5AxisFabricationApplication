@@ -6,17 +6,19 @@
 GCode::GCode(QObject *parent) :
     QObject(parent)
   ,isComment(false)
-  ,g(USHRT_MAX), g_r(USHRT_MAX), g_plane(USHRT_MAX)
   ,x(FLT_MAX),y(FLT_MAX),z(FLT_MAX)
   ,e(FLT_MAX),f(FLT_MAX), r(FLT_MAX)
+  ,ii(FLT_MAX),jj(FLT_MAX), kk(FLT_MAX)
+  ,v(FLT_MAX),s(FLT_MAX)
+  ,t(FLT_MAX),p(FLT_MAX)
 {
 }
 
-void GCode::parse(QString s)
+void GCode::parse(QString str)
 {
 
-    origText = s;
-    orig = s.trimmed(); // delete pre and post spaces
+    origText = str;
+    orig = str.trimmed(); // delete pre and post spaces
 
     orig = orig.toUpper();// convert string to uppercase
 
@@ -72,31 +74,19 @@ void GCode::addCode(QString c, QString val)
 
     double d = val.toDouble();
 
-//    qDebug() << hasG();
-
-    if      ( c == QString("G")) {
-//        if ( d == 68)
-//            g_r = (ushort)d;
-        if ( d == 17)
-        {
-            g_plane = (ushort)d;
-            return;
-        }
-        else if (d == 19)
-        {
-            g_plane = (ushort)d;
-            return;
-        }
-
-        g = (ushort)d;
-//        qDebug() << g_r;
-    }
-    else if ( c == QString("X")) x = (float)d;
+         if ( c == QString("X")) x = (float)d;
     else if ( c == QString("Y")) y = (float)d;
     else if ( c == QString("Z")) z = (float)d;
     else if ( c == QString("E")) e = (float)d;
     else if ( c == QString("F")) f = (float)d;
     else if ( c == QString("R")) r = (float)d;
+    else if ( c == QString("I")) ii = (float)d;
+    else if ( c == QString("J")) jj = (float)d;
+    else if ( c == QString("K")) kk = (float)d;
+    else if ( c == QString("S")) s = (float)d;
+    else if ( c == QString("V")) v = (float)d;
+    else if ( c == QString("T")) t = (float)d;
+    else if ( c == QString("P")) p = (float)d;
 }
 
 
