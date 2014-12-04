@@ -206,3 +206,8 @@ void MainWindow::on_actionOpenGCode_triggered()
 {
     editorTab->on_openGcodeButton_clicked();
 }
+
+void MainWindow::on_actionSave_GCode_triggered()
+{
+    editorTab->on_saveGcodeButton_clicked();
+}
