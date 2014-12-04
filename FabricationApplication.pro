@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     settingDialog/technohandssettingwidget.cpp \
     printpanel/technostage.cpp \
     printpanel/sigmastage.cpp \
-    gcodelistdialog.cpp
+    gcodelistdialog.cpp \
+    graphic/modeldrawer.cpp
 
 HEADERS  += mainwindow.h \
     settingDialog/stagesettingdialog.h \
@@ -54,7 +55,8 @@ HEADERS  += mainwindow.h \
     settingDialog/technohandssettingwidget.h \
     printpanel/technostage.h \
     printpanel/sigmastage.h \
-    gcodelistdialog.h
+    gcodelistdialog.h \
+    graphic/modeldrawer.h
 
 FORMS    += mainwindow.ui \
     settingDialog/stagesettingdialog.ui \

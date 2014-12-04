@@ -38,11 +38,27 @@ void EditorPanel::on_openGcodeButton_clicked()
     {
         QList<GCode*> gcodeList = createGcodeFromPlainText(fileName);
         emit sendGCodeListToGraphicArea(gcodeList);
+        openedFileName = QString(fileName);
     }
 }
 
 void EditorPanel::on_saveGcodeButton_clicked()
 {
+    if (!openedFileName.isEmpty())
+    {
+        QFile file(openedFileName);
+        if (!file.open(QIODevice::WriteOnly))
+        {
+
+        }else{
+            QTextStream stream(&file);
+            stream << ui->mainTextEdit->toPlainText();
+            stream.flush();
+            file.close();
+        }
+        return;
+    }
+
     QString fileName = QFileDialog::getSaveFileName(
                 this,
                 tr("Save Files"),

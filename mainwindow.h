@@ -48,6 +48,8 @@ private slots:
 
     void on_actionOpenGCode_triggered();
 
+    void on_actionSave_GCode_triggered();
+
 private:
     Ui::MainWindow *ui;
 
