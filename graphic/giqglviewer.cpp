@@ -83,7 +83,67 @@ void GIQGLViewer::draw()
         GCode *e_Gcode = new GCode();
         e_Gcode = _gcodeList[i];
 
-        if ( e_Gcode->hasCode())
+        if ( e_Gcode->hasNormalVec() )
+        {
+            s_Vec = e_Vec;
+
+            // line color
+            if(e_Gcode->hasS()) s = e_Gcode->s;
+            if (s == 1)
+            {
+                glColor3f(0, 0, 1);
+                lineRadius = 0.003;
+            }
+            else
+            {
+                glColor3f(1,0,1);
+                lineRadius = 0.001;
+            }
+
+            // draw normal
+            Vec n = Vec(e_Gcode->ii,e_Gcode->jj, e_Gcode->kk);
+            n.normalize();
+            Vec v = Vec(e_Gcode->x ,e_Gcode->y, e_Gcode->z);
+            v.operator /=(shrinkRatio);
+
+            Vec pt = fromFiberCenterToTip;
+            Vec d = fromOriginToFiberCenter;
+
+            // compute angle from normal
+            currentTheta = atan2(n.y, n.x)/ M_PI * 180 + 90;
+            currentPhi = atan2(
+                               sqrt(n.x * n.x +
+                                    n.y * n.y), n.z) / M_PI * 180;
+
+            float ct, st, cp, sp;
+            ct = cos(currentTheta / 180.0 * M_PI );
+            st = sin(currentTheta / 180.0 * M_PI );
+            cp = cos( currentPhi / 180.0 * M_PI);
+            sp = sin( currentPhi / 180.0 * M_PI);
+
+            // read value
+            currentXYZ.x = (v.x - pt.x * ct - d.x * ct + pt.y * cp * st - pt.z * sp * st + d.y * st) * ct
+                        +  (v.y - pt.x * ct - d.x * ct - pt.y * cp * ct + pt.z * sp * ct - d.y * ct) * st;
+
+            currentXYZ.y = (v.x - pt.x * ct - d.x * ct + pt.y * cp * st - pt.z * sp * st + d.y * st) * -st
+                         + (v.y - pt.x * st - d.x * st - pt.y * cp * ct + pt.z * sp * ct - d.y * ct) * ct;
+
+            currentXYZ.z = v.z
+                    -pt.y * sp
+                    -pt.z * cp
+                    +pt.z;
+
+            if(e_Gcode->hasV())
+                currentVelocity = e_Gcode->v;
+
+            //applyScale
+//TODO: applyFiberFlameScaleEffect
+
+            e_Vec = computeEndPoint(currentXYZ, currentTheta, currentPhi);
+            drawArrow(s_Vec, e_Vec, lineRadius);
+
+        }
+        else if ( e_Gcode->hasCode())
         {
             s_Vec = e_Vec;
 
@@ -106,7 +166,7 @@ void GIQGLViewer::draw()
             if(e_Gcode->hasY())
                 currentXYZ.y = e_Gcode->y / shrinkRatio;
             if(e_Gcode->hasZ())
-                currentXYZ.z = e_Gcode->z;
+                currentXYZ.z = e_Gcode->z / shrinkRatio;
 
             if(e_Gcode->hasT())
                 currentTheta = e_Gcode->t;
@@ -134,6 +194,15 @@ void GIQGLViewer::draw()
         }
     }
 
+    placeFiberFrame();
+
+    // display default position info
+    if (_currBlockNumber == INT_MAX)
+        displayText(Vec(), 0,0, Vec(), 0, 1);
+}
+
+void GIQGLViewer::placeFiberFrame()
+{
     // fiber tip frame
     glPushMatrix();// transform robot arm
     glMultMatrixd(fiberTipframe->matrix());
@@ -147,10 +216,6 @@ void GIQGLViewer::draw()
     drawPhiCircle();
     drawAxis(0.4f);
     glPopMatrix();
-
-    // display default position info
-    if (_currBlockNumber == INT_MAX)
-        displayText(Vec(), 0,0, Vec(), 0, 1);
 }
 
 void GIQGLViewer::drawLines(QList<GCode*> gcodeList)
@@ -197,28 +262,23 @@ Vec GIQGLViewer::computeEndPoint(Vec moveXYZ, float theta, float phi)
 
     glPushMatrix();
     glLoadIdentity();
-
     // ratated phi
     glRotatef(theta, 0,0,1);
-
     // traslated origin
     glTranslatef(
                 moveXYZ.x,
                 moveXYZ.y,
                 moveXYZ.z
                 );
-
     //translated xyz
     glTranslatef(
                 fromOriginToFiberCenter.x,
                 fromOriginToFiberCenter.y,
                 fromOriginToFiberCenter.z
                 );
-
     //rotated theta
     glRotatef(phi, 1,0,0);
     e_Vec = applyModelViewMatrix(fromFiberCenterToTip);
-
     glPopMatrix();
 
     return e_Vec;

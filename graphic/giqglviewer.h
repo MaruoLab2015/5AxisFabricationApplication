@@ -33,6 +33,8 @@ private:
     void showMatrix();
     void showVector(Vec v);
     void displayText(Vec xyz, float theta, float phi, Vec realPos, float v, float scale);
+    void placeFiberFrame();
+
 
     ManipulatedFrame* fiberTipframe;
     ManipulatedFrame* robotArmframe;

@@ -8,7 +8,7 @@ GCode::GCode(QObject *parent) :
   ,isComment(false)
   ,x(FLT_MAX),y(FLT_MAX),z(FLT_MAX)
   ,e(FLT_MAX),f(FLT_MAX), r(FLT_MAX)
-  ,ii(FLT_MAX),jj(FLT_MAX), kk(FLT_MAX)
+  ,ii(0),jj(0), kk(0)
   ,v(FLT_MAX),s(FLT_MAX)
   ,t(FLT_MAX),p(FLT_MAX)
 {
