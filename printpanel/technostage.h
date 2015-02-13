@@ -17,6 +17,12 @@ public:
     void moveHome();
     void stop();
     float getCurrentPosition();
+
+    bool isDebug;
+
+private:
+    static const float kPositiveConversion;
+    static const float kNegativeConversion;
 };
 
 #endif // TECHNOSTAGE_H

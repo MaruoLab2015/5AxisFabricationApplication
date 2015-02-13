@@ -34,8 +34,11 @@ void GIQGLViewer::initFiber()
     robotArmframe = new qglviewer::ManipulatedFrame();
 
     // initial
+//    fromFiberCenterToTip = Vec(0.0f, -1.430f, -16.19f);
+//    fromOriginToFiberCenter = Vec(0.0f, 1.430f, 16.19f);
     fromFiberCenterToTip = Vec(0.0f, -1.0f, -1.0f);
     fromOriginToFiberCenter = Vec(0.0f, 1.0f, 1.0f);
+
     fromFiberCenterToTip.operator /=(2);
     fromOriginToFiberCenter.operator /=(2);
 }
@@ -191,6 +194,10 @@ void GIQGLViewer::draw()
             fiberTipframe->rotate(Quaternion(Vec(1,0,0),   currentPhi / 180 * M_PI ));
 
             displayText(currentXYZ, currentTheta, currentPhi, e_Vec, currentVelocity,shrinkRatio);
+            emit computedCurrentPosition(currentXYZ.x * shrinkRatio,
+                                         currentXYZ.y * shrinkRatio,
+                                         currentXYZ.z * shrinkRatio,
+                                         currentTheta ,currentPhi);
         }
     }
 

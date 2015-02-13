@@ -4,7 +4,9 @@
 #include "convert/convertpanel.h"
 #include "editor/editorpanel.h"
 #include "printpanel/printpanel.h"
+#include "printpanel/stagecontroller.h"
 #include "gcodelistdialog.h"
+#include "graphic/giqglviewer.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -157,7 +159,8 @@ void MainWindow::defaultSettings()
     connect(convertTab, SIGNAL(sendGcodeText(QString)), editorTab, SLOT(receiveGcodeText(QString)));
     connect(editorTab, SIGNAL(sendGCodeListToGraphicArea(QList<GCode*>)), ui->graphicWidget, SLOT(drawLines(QList<GCode*>)));
     connect(editorTab, SIGNAL(changedCurrBlockNumber(int)), ui->graphicWidget, SLOT(changedCurrBlockNumber(int)));
-
+    connect(&printTab->stageManager, SIGNAL(currentFabricationLineNumber(int)), ui->graphicWidget, SLOT(changedCurrBlockNumber(int)));
+    connect(ui->graphicWidget->viewer, SIGNAL(computedCurrentPosition(float,float,float,float,float)), &printTab->stageManager, SLOT(receivedCurrentPosition(float,float,float,float,float)));
 }
 
 void MainWindow::read(const QJsonObject &json)
@@ -210,4 +213,9 @@ void MainWindow::on_actionOpenGCode_triggered()
 void MainWindow::on_actionSave_GCode_triggered()
 {
     editorTab->on_saveGcodeButton_clicked();
+}
+
+void MainWindow::on_actionStartFabrication_triggered()
+{
+    printTab->stageManager.startFabrication(editorTab->gcodeList);
 }

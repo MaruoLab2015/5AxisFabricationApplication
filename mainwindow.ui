@@ -101,9 +101,10 @@
     <enum>TopToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>false</bool>
+    <bool>true</bool>
    </attribute>
    <addaction name="actionCanOpenStage"/>
+   <addaction name="actionStartFabrication"/>
    <addaction name="actionStop"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -161,6 +162,14 @@
    </property>
    <property name="shortcut">
     <string>Meta+S</string>
+   </property>
+  </action>
+  <action name="actionStartFabrication">
+   <property name="text">
+    <string>造形開始</string>
+   </property>
+   <property name="toolTip">
+    <string>start to Fabrication</string>
    </property>
   </action>
  </widget>

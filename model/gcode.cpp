@@ -78,8 +78,8 @@ void GCode::addCode(QString c, QString val)
     else if ( c == QString("Y")) y = (float)d;
     else if ( c == QString("Z")) z = (float)d;
     else if ( c == QString("E")) e = (float)d;
-    else if ( c == QString("F")) f = (float)d;
-    else if ( c == QString("R")) r = (float)d;
+//    else if ( c == QString("F")) f = (float)d;
+//    else if ( c == QString("R")) r = (float)d;
     else if ( c == QString("I")) ii = (float)d;
     else if ( c == QString("J")) jj = (float)d;
     else if ( c == QString("K")) kk = (float)d;

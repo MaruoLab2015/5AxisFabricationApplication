@@ -15,11 +15,13 @@ public:
     explicit GIQGLViewer(QWidget *parent = 0);
 
     void drawLines(QList<GCode*> lines);
-//    void changeCurrBlockNumber(int blockNumber);
     void setCurrBlockNumber(int currBlockNumber);
 
     void drawPhiCircle();
     Vec applyModelViewMatrix(Vec v);
+
+signals:
+    void computedCurrentPosition(float x, float y, float z, float t, float p);
 
 protected:
 //    virtual void fastDraw();

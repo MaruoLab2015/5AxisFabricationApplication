@@ -24,3 +24,8 @@ void GraphicWidget::changedCurrBlockNumber(int blockNumber)
 {
     viewer->setCurrBlockNumber(blockNumber);
 }
+
+void GraphicWidget::receivedCurrentFabricationGCodeNumber(int lineNumber)
+{
+    viewer->setCurrBlockNumber(lineNumber);
+}

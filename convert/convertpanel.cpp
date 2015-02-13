@@ -147,12 +147,12 @@ QString ConvertPanel::convertCSVToGCodeXY(QString line)
 
     QString e = "0";
     if (list[2] == QString("1")) e = "1";
-    gc.append(QString("G1 X%1 Y%2 E%3\n").arg(list[0]).arg(list[1]).arg(e));
+    gc.append(QString("X%1 Y%2 S%3\n").arg(list[0]).arg(list[1]).arg(e));
     return gc;
 }
 
 QString ConvertPanel::convertCSVToGCodeZ(float layerPitch)
 {
-    QString gc = QString("G1 Z%1\n").arg(QString::number(layerPitch));
+    QString gc = QString("Z%1\n").arg(QString::number(layerPitch));
     return gc;
 }

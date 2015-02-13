@@ -22,21 +22,20 @@ void PrintPanel::on_sendRequestButton_clicked()
 //    QString str = QString("g : %1, x : %2, y : %3").arg(gc->g).arg(gc->x).arg(gc->y);
 
 
-//    if( gc->hasG())
+//    if( gc->hasCode())
 //    {
-//        switch (gc->g) {
-//        case 1:
-////            if (gc->hasX()) stageManager.move(EnumList::x, gc->x, false);
-////            if (gc->hasY()) stageManager.move(EnumList::y, gc->y, false);
-//            break;
-//        default:
-//            break;
-//        }
+//        if (gc->hasX()) stageManager.move(EnumList::x, gc->x, true);
+//        if (gc->hasY()) stageManager.move(EnumList::y, gc->y, true);
+//        if (gc->hasZ()) stageManager.move(EnumList::z, gc->z, true);
+//        if (gc->hasT()) stageManager.move(EnumList::theta, gc->t, true);
+//        if (gc->hasP()) stageManager.move(EnumList::phi, gc->p, true);
+
 //        return;
 //    }
 
-    if (ui->sendAxisComboBox->currentIndex() != 0)
+    if (ui->sendAxisComboBox->currentIndex() != 0){
         stageManager.receiveRequest(ui->requestLineEdit->text(), (EnumList::Axis)(ui->sendAxisComboBox->currentIndex()-1));
+    }
 }
 
 void PrintPanel::on_cpX_clicked()

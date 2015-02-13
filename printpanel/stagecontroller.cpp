@@ -5,12 +5,22 @@
 #include "technostage.h"
 #include "stage.h"
 #include "shutter.h"
+#include "model/gcode.h"
 
 #include <QJsonObject>
 #include <QDebug>
+#include <QEventLoop>
+#include <QTimer>
+#include <QtMath>
+#include <QAudioOutput>
+#include <QFile>
+#include <QMediaPlayer>
+#include <QMediaPlaylist>
+#include <QFileDialog>
+#include <QThread>
 
 StageController::StageController(QObject *parent) :
-    QObject(parent)
+    QObject(parent), isEmergencyStop(false)
 {
 }
 
@@ -77,8 +87,10 @@ QMap<int, QString> StageController::canOpenStages()
     QMap<int, QString> map;
     if (sigmaStage)
     {
-        if (sigmaStage->openSerialPort())
+        if (sigmaStage->openSerialPort()){
             map.insert(EnumList::sigma, sigmaStage->portName);
+//            sigmaStage->sendInitialSetting();
+        }
         else
             map.insert(EnumList::sigma, QString("Not connecting"));
     }else
@@ -105,7 +117,10 @@ QMap<int, QString> StageController::canOpenStages()
     if (phiStage)
     {
         if (phiStage->openSerialPort())
+        {
             map.insert(EnumList::phi, phiStage->portName);
+            phiStage->moveHome();
+        }
         else
             map.insert(EnumList::phi, QString("Not connecting"));
     }else
@@ -203,8 +218,103 @@ void StageController::supplyAction()
 
 void StageController::stopStages()
 {
+    qDebug() << "stop the stages";
+    isEmergencyStop = true;
+
     if (sigmaStage)
         sigmaStage->stop();
+
+}
+
+void StageController::startFabrication(QList<GCode *> &gcodeList)
+{
+
+
+    isEmergencyStop = false;
+
+    if (gcodeList.count() == 0){
+
+        qDebug() << "Can't read the fabrication file";
+        return;
+    }
+
+    qDebug("start Fabrication");
+
+    int percentage = 0;
+    float cx, cy, cz, ct; // current position
+    float cv; // current velocity
+    cv = 10; // default scan speed is 10micro meter per second
+    cx = cy = cz = ct = 0;
+
+    if (sigmaStage)
+        sigmaStage->sendSetScanSpeed();
+
+    for (int i=0;i<gcodeList.count();i++)
+    {
+        GCode *gc = gcodeList.at(i);
+
+        if (isEmergencyStop){ break; }
+
+
+        // shutter
+        if (shutter){
+        if (gc->hasS()){
+//            if (gcode->s == 0) qDebug() << "shutter open";
+//            else               qDebug() << "shutter close";
+//        }
+            if (gc->s == 0) shutter->close();
+            else               shutter->open();
+        }
+        }
+
+        // move Stages (sigma)
+//        if (gc->hasX()) cx = gc->x;
+//        if (gc->hasY()) cy = gc->y;
+//        if (gc->hasZ()) cz = gc->z;
+//        if (gc->hasT()) ct = gc->t;
+
+//        sigmaStage->moveAbsolute4Axis(cx, cy, -cz, ct);// zは動かす
+
+        // move stage (Technohands)
+//        if (gc->hasP())
+//            qDebug() << "move phi:" << gc->p;
+//            phiStage->moveAbsolute(gc->p);
+
+//        QHash<QString, float> dic;
+//        dic = currentFabricationLineNumber(i);
+//        qDebug() << dic.value("phi");
+
+        emit currentFabricationLineNumber(i);
+
+        // 進捗状況
+        int tmpP = qFloor((float)i / (float)gcodeList.count() * 100);
+        if (percentage != tmpP)
+        {
+            percentage = tmpP;
+            qDebug() << "now" << percentage << "%";
+        }
+
+        if (i == gcodeList.count() -1)
+        {
+            if (shutter) shutter->close();
+            playFinishMusic();
+        }
+
+        QEventLoop loop;
+        QTimer::singleShot(100, &loop, SLOT(quit()));
+        loop.exec();
+
+    }
+
+}
+
+void StageController::playFinishMusic()
+{
+
+    QMediaPlayer *player = new QMediaPlayer;
+    player->setMedia(QUrl::fromLocalFile("/Users/genki/Desktop/RingingVillageShort.mp3"));
+    player->setVolume(50);
+    player->play();
 }
 
 /* SLOTS */
@@ -215,15 +325,19 @@ void StageController::receiveRequest(const QString s, EnumList::Axis axis)
     switch (axis) {
     case EnumList::x:
         sigmaStage->sendCommandDirectly(request);
+        sigmaStage->performCommand();
         break;
     case EnumList::y:
         sigmaStage->sendCommandDirectly(request);
+        sigmaStage->performCommand();
         break;
     case EnumList::z:
         sigmaStage->sendCommandDirectly(request);
+        sigmaStage->performCommand();
         break;
     case EnumList::theta:
         sigmaStage->sendCommandDirectly(request);
+        sigmaStage->performCommand();
         break;
     case EnumList::phi:
         phiStage->sendCommandDirectly(request);
@@ -242,5 +356,22 @@ void StageController::receiveRequest(const QString s, EnumList::Axis axis)
 
 void StageController::receiveDebugMessage(QString s)
 {
-    qDebug() << s;
+//    qDebug() << s;
+}
+
+void StageController::receivedCurrentPosition(float x,float y,float z,float t,float p)
+{
+
+    if (sigmaStage)
+    {
+        sigmaStage->moveAbsolute4Axis(x, y, -z, p); //z down
+         while (!sigmaStage->isReady()){
+            if (isEmergencyStop) break;
+         }
+    }
+
+    if (phiStage){
+        phiStage->isDebug = false;
+        phiStage->moveAbsolute(p);
+    }
 }

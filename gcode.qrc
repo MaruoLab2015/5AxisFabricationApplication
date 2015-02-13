@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/gcode">
         <file>gcodeList.csv</file>
+        <file>RingingVillage.mp3</file>
+    </qresource>
+    <qresource prefix="/sounds">
+        <file>RingingVillage.mp3</file>
     </qresource>
 </RCC>

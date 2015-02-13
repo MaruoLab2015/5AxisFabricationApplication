@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui opengl serialport xml
+QT       += core gui opengl serialport xml multimedia
 
 CONFIG += console
 
